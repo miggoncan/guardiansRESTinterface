@@ -7,10 +7,14 @@ import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import lombok.Data;
+
+// TODO Add test for the constraints
 
 @Data
 @Entity
@@ -26,11 +30,15 @@ public class Doctor {
 	private Long id;
 	
 	@Column(name = "first_name", nullable = false)
+	@NotBlank
 	private String firstName;
 	
 	@Column(name = "last_names", nullable = false)
+	@NotBlank
 	private String lastNames;
 	
+	@Email
+	@NotBlank
 	private String email;
 	
 	@OneToOne(optional = true, mappedBy = "doctor")
@@ -45,4 +53,16 @@ public class Doctor {
 	}
 	
 	public Doctor() {}
+	
+	@Override
+	public String toString() {
+		return Doctor.class.getSimpleName() 
+				+ "("
+					+ "id=" + this.id + ", "
+					+ "firstName=" + this.firstName + ", "
+					+ "lastNames=" + this.lastNames + ", "
+					+ "email=" + this.email + ", "
+					+ "absence=" + this.absence
+				+ ")";
+	}
 }

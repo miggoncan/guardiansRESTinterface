@@ -53,4 +53,14 @@ public class Absence {
 			this.doctorId = null;
 		}
 	}
+	
+	@Override
+	public String toString() {
+		return Absence.class.getSimpleName() 
+				+ "("
+					+ "doctorId=" + this.doctorId + ", "
+					+ "start=" + this.start + ", "
+					+ "end=" + this.end
+				+ ")";
+	}
 }
