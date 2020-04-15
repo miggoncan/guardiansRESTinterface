@@ -7,9 +7,11 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
+import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
+import es.us.alumn.miggoncan2.model.entityvalidation.ValidAbsenceDates;
 import lombok.Data;
 
 /**
@@ -20,6 +22,7 @@ import lombok.Data;
  */
 @Data
 @Entity
+@ValidAbsenceDates
 public class Absence {
 	/**
 	 * doctor_id is the primary key of the Doctor with this Absence
@@ -32,9 +35,11 @@ public class Absence {
 	private Doctor doctor;
 	
 	@Column(nullable = false)
+	@NotNull
 	private Date start;
 	
 	@Column(nullable = false)
+	@NotNull
 	private Date end;
 	
 	

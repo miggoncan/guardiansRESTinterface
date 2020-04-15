@@ -8,11 +8,15 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.PositiveOrZero;
 
+import es.us.alumn.miggoncan2.model.entityvalidation.ValidShiftConfiguration;
 import lombok.Data;
 
 @Data
 @Entity
+@ValidShiftConfiguration
 public class ShiftConfiguration {
 	@Id
 	private Long doctorId;
@@ -21,12 +25,15 @@ public class ShiftConfiguration {
 	private Doctor doctor;
 	
 	@Column(nullable = false)
+	@PositiveOrZero
 	private Integer maxShifts;
 	
 	@Column(nullable = false)
+	@PositiveOrZero
 	private Integer minShifts;
 	
 	@Column(nullable = false)
+	@NotNull
 	private Boolean doesConsultations;
 	
 	@ManyToMany
