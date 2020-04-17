@@ -14,8 +14,6 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import lombok.Data;
 
-// TODO Add test for the constraints
-
 @Data
 @Entity
 @Table(

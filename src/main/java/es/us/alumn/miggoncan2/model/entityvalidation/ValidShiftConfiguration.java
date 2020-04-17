@@ -18,7 +18,10 @@ import javax.validation.Payload;
 /**
  * This Annotation is used to make sure that the number of minimum 
  * shifts a Doctor does is less than or equal to its maximum number 
- * of shifts 
+ * of shifts. It also checks that the intersection of the shift 
+ * preferences is empty. This means, for example, that the same 
+ * AllowedShift cannot be selected both as an UnwantedShift and a 
+ * MandatoryShift.
  * 
  * @author miggoncan
  */

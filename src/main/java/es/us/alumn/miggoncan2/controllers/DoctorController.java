@@ -22,6 +22,9 @@ public class DoctorController {
 	@Autowired
 	private ShiftConfigurationRepository shiftConfigurationRepository;
 	
+	// TODO Add links to the responses
+	// TODO Map all needed methods
+	
 	@GetMapping("/facultativos")
 	@ResponseBody
 	public List<Doctor> getDoctors() {

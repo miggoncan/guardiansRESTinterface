@@ -1,6 +1,6 @@
 package es.us.alumn.miggoncan2.model.entities;
 
-import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -26,10 +26,12 @@ public class ShiftConfiguration {
 	
 	@Column(nullable = false)
 	@PositiveOrZero
+	@NotNull
 	private Integer maxShifts;
 	
 	@Column(nullable = false)
 	@PositiveOrZero
+	@NotNull
 	private Integer minShifts;
 	
 	@Column(nullable = false)
@@ -37,16 +39,16 @@ public class ShiftConfiguration {
 	private Boolean doesConsultations;
 	
 	@ManyToMany
-	private List<AllowedShift> unwantedShifts;
+	private Set<AllowedShift> unwantedShifts;
 	
 	@ManyToMany
-	private List<AllowedShift> unavailableShifts;
+	private Set<AllowedShift> unavailableShifts;
 	
 	@ManyToMany
-	private List<AllowedShift> wantedShifts;
+	private Set<AllowedShift> wantedShifts;
 	
 	@ManyToMany
-	private List<AllowedShift> mandatoryShifts;
+	private Set<AllowedShift> mandatoryShifts;
 	
 	
 	public ShiftConfiguration(Integer maxShifts, Integer minShifts, Boolean doesConsultation) {

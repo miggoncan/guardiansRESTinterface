@@ -6,9 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Date;
-import java.util.Set;
-
-import javax.validation.ConstraintViolation;
+import java.util.HashSet;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,19 +23,9 @@ class AbsenceTest extends EntityTest{
 	
 	@Autowired
 	private DoctorRepository doctorRepository;
-
-	// Will contain the violated constraints in each test
-	private Set<ConstraintViolation<Absence>> constraintViolations;
 	
-	private boolean constraintViolationsContains(String message) {
-		boolean containsMessage = false;
-		for (ConstraintViolation<?> constraintViolation : constraintViolations) {
-			if (constraintViolation.getMessage().contains(message)) {
-				containsMessage = true;
-				break;
-			}
-		}
-		return containsMessage;
+	public AbsenceTest() {
+		super(Absence.class);
 	}
 	
 	///////////////////////////////////////
@@ -48,16 +36,12 @@ class AbsenceTest extends EntityTest{
 	
 	@Test
 	void validStartDate() {
-		constraintViolations = validator.validateValue(Absence.class, "start", 
-				new Date(System.currentTimeMillis() + 2*24*3600*1000));
-		assertEquals(0, constraintViolations.size());
+		this.assertValidValue("start", new Date(System.currentTimeMillis() + 2*24*3600*1000));
 	}
 	
 	@Test
 	void validEndDate() {
-		constraintViolations = validator.validateValue(Absence.class, "end", 
-				new Date(System.currentTimeMillis() + 2*24*3600*1000));
-		assertEquals(0, constraintViolations.size());
+		this.assertValidValue("end", new Date(System.currentTimeMillis() + 2*24*3600*1000));
 	}
 	
 	@Test
@@ -67,7 +51,7 @@ class AbsenceTest extends EntityTest{
 				new Date(System.currentTimeMillis() + 5*24*3600*1000));
 		absence.setDoctor(myDoctor);
 		
-		constraintViolations = validator.validate(absence);
+		constraintViolations = new HashSet<>(validator.validate(absence));
 		assertEquals(0, constraintViolations.size());
 		
 		absence = absenceRepository.save(absence);
@@ -83,16 +67,12 @@ class AbsenceTest extends EntityTest{
 	
 	@Test
 	void endCannotBeNull() {
-		constraintViolations = validator.validateValue(Absence.class, "end", null);
-		assertNotEquals(0, constraintViolations.size());
-		assertTrue(this.constraintViolationsContains("must not be null"));
+		this.assertAttributeCannotBeNull("end");
 	}
 	
 	@Test
 	void startCannotBeNull() {
-		constraintViolations = validator.validateValue(Absence.class, "start", null);
-		assertNotEquals(0, constraintViolations.size());
-		assertTrue(this.constraintViolationsContains("must not be null"));
+		this.assertAttributeCannotBeNull("start");
 	}
 	
 	@Test 
@@ -101,7 +81,7 @@ class AbsenceTest extends EntityTest{
 		Absence absence = new Absence(new Date(System.currentTimeMillis() + 2*24*3600*1000),
 				new Date(System.currentTimeMillis()));
 		absence.setDoctor(myDoctor);
-		constraintViolations = validator.validate(absence);
+		constraintViolations = new HashSet<>(validator.validate(absence));
 		assertNotEquals(0, constraintViolations.size());
 		assertTrue(this.constraintViolationsContains("The start date of the Absence must be before its end date"));
 	}

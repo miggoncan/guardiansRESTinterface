@@ -1,14 +1,12 @@
 package es.us.alumn.miggoncan2.model.entities;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Set;
-
-import javax.validation.ConstraintViolation;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,35 +19,28 @@ public class AllowedShiftTest extends EntityTest {
 	@Autowired
 	private AllowedShiftRepository allowedShiftRepository;
 	
-	// Will contain the violated constraints in each test
-	protected Set<ConstraintViolation<AllowedShift>> constraintViolations;
+	public AllowedShiftTest() {
+		super(AllowedShift.class);
+	}
 	
 	/**
-	 * This method creates a List of valid AllowedShift instances,
+	 * This method creates a Set of valid AllowedShift instances,
 	 * all different from each other. 
 	 * 
-	 * Calls to this method will always return the same List (the instances 
+	 * Calls to this method will always return the same Set (the instances 
 	 * will be new, but the attributes of the AllowedShifts will be the same)
+	 * 
+	 * The Set will have 4 or more AllowedShifts
 	 * 
 	 * @return The valid allowed shifts, but not persisted
 	 */
-	static public List<AllowedShift> createValidAllowedShifts() {
-		List<AllowedShift> allowedShifts = new ArrayList<>();
+	static public Set<AllowedShift> createValidAllowedShifts() {
+		Set<AllowedShift> allowedShifts = new HashSet<>();
 		allowedShifts.add(new AllowedShift("Monday"));
 		allowedShifts.add(new AllowedShift("Wednesday"));
+		allowedShifts.add(new AllowedShift("Tuesday"));
 		allowedShifts.add(new AllowedShift("Thursday"));
 		return allowedShifts;
-	}
-	
-	private boolean constraintViolationsContains(String message) {
-		boolean containsMessage = false;
-		for (ConstraintViolation<?> constraintViolation : constraintViolations) {
-			if (constraintViolation.getMessage().contains(message)) {
-				containsMessage = true;
-				break;
-			}
-		}
-		return containsMessage;
 	}
 	
 	///////////////////////////////////////
@@ -60,20 +51,34 @@ public class AllowedShiftTest extends EntityTest {
 	
 	@Test
 	void validShift() {
-		constraintViolations = validator.validateValue(AllowedShift.class, "shift", "Monday");
-		assertEquals(0, constraintViolations.size());
+		this.assertValidValue("shift", "Monday");
 	}
 	
 	@Test 
 	void createAndSaveValidAllowedShift() {
 		AllowedShift allowedShift = new AllowedShift("Tuesday");
 		
-		constraintViolations = validator.validate(allowedShift);
+		constraintViolations = new HashSet<>(validator.validate(allowedShift));
 		assertEquals(0, constraintViolations.size());
 		
 		allowedShift = allowedShiftRepository.save(allowedShift);
 		assertNotEquals(0, allowedShift.getId());
-		
+	}
+	
+	@Test
+	void compareAllowedShifts() {
+		AllowedShift shift1 = new AllowedShift("Monday");
+		AllowedShift shift2 = new AllowedShift("Monday");
+		AllowedShift shift3 = new AllowedShift("Tuesday");
+		assertTrue(shift1.equals(shift2));
+		assertFalse(shift1.equals(shift3));
+	}
+	
+	@Test
+	void compareSavedAllowedShifts() {
+		AllowedShift shift1 = allowedShiftRepository.save(new AllowedShift("Monday"));
+		AllowedShift shift2 = allowedShiftRepository.save(new AllowedShift("Tuesday"));
+		assertFalse(shift1.equals(shift2));
 	}
 	
 	///////////////////////////////////////
@@ -83,23 +88,7 @@ public class AllowedShiftTest extends EntityTest {
 	///////////////////////////////////////
 	
 	@Test
-	void shiftCannotBeNull() {
-		constraintViolations = validator.validateValue(AllowedShift.class, "shift", null);
-		assertNotEquals(0, constraintViolations.size());
-		assertTrue(this.constraintViolationsContains("must not be blank"));
-	}
-	
-	@Test
-	void shiftCannotBeEmpty() {
-		constraintViolations = validator.validateValue(AllowedShift.class, "shift", "");
-		assertNotEquals(0, constraintViolations.size());
-		assertTrue(this.constraintViolationsContains("must not be blank"));
-	}
-	
-	@Test
-	void shiftCannotBeAWhiteSpaceString() {
-		constraintViolations = validator.validateValue(AllowedShift.class, "shift", "  ");
-		assertNotEquals(0, constraintViolations.size());
-		assertTrue(this.constraintViolationsContains("must not be blank"));
+	void shiftCannotBeBlank() {
+		this.assertAttributeCannotBeBlank("shift");
 	}
 }

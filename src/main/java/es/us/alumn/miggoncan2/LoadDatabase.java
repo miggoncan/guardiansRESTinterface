@@ -2,7 +2,9 @@ package es.us.alumn.miggoncan2;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
@@ -41,19 +43,18 @@ public class LoadDatabase {
 			AllowedShift allowedShiftFriday = allowedShiftRepository.save(new AllowedShift("Friday"));
 			log.info("Preloading " + allowedShiftFriday);
 			
-			
 			// This will be a regular doctor
 			Doctor doctor1 = doctorRepository.save(new Doctor("Bilbo", "Baggins", "bilbo@mordor.com"));
-			List<AllowedShift> doctor1UnwantedShifts = new ArrayList<>();
+			Set<AllowedShift> doctor1UnwantedShifts = new HashSet<>();
 			ShiftConfiguration doctor1ShiftConf = new ShiftConfiguration(3, 2, true);
 			doctor1ShiftConf.setDoctor(doctor1);
 			doctor1UnwantedShifts.add(allowedShiftFriday);
 			doctor1UnwantedShifts.add(allowedShiftWednesday);
 			doctor1ShiftConf.setUnwantedShifts(doctor1UnwantedShifts);
-			List<AllowedShift> doctor1UnavailableShifts = new ArrayList<>();
+			Set<AllowedShift> doctor1UnavailableShifts = new HashSet<>();
 			doctor1UnavailableShifts.add(allowedShiftMonday);
 			doctor1ShiftConf.setUnavailableShifts(doctor1UnavailableShifts);
-			List<AllowedShift> doctor1WantedShifts = new ArrayList<>();
+			Set<AllowedShift> doctor1WantedShifts = new HashSet<>();
 			doctor1WantedShifts.add(allowedShiftTuesday);
 			doctor1ShiftConf.setWantedShifts(doctor1WantedShifts);
 			doctor1ShiftConf.setUnwantedShifts(doctor1UnwantedShifts);
@@ -72,7 +73,7 @@ public class LoadDatabase {
 			sickDoctorAbsence = absenceRepository.save(sickDoctorAbsence);
 			ShiftConfiguration sickDoctorShiftConf = new ShiftConfiguration(2, 2, true);
 			sickDoctorShiftConf.setDoctor(sickDoctor);
-			List<AllowedShift> sickDoctorMandatoryShifts = new ArrayList<>();
+			Set<AllowedShift> sickDoctorMandatoryShifts = new HashSet<>();
 			sickDoctorMandatoryShifts.add(allowedShiftThursday);
 			sickDoctorMandatoryShifts.add(allowedShiftTuesday);
 			sickDoctorShiftConf.setMandatoryShifts(sickDoctorMandatoryShifts);
@@ -84,11 +85,11 @@ public class LoadDatabase {
 			Doctor doctor4 = doctorRepository.save(new Doctor("Gandalf", "The Gray", "gandalf@lonelymountain.com"));
 			ShiftConfiguration doctor4ShiftConf = new ShiftConfiguration(3, 3, false);
 			doctor4ShiftConf.setDoctor(doctor4);
-			List<AllowedShift> doctor4UnwantedShifts = new ArrayList<>();
+			Set<AllowedShift> doctor4UnwantedShifts = new HashSet<>();
 			doctor4UnwantedShifts.add(allowedShiftThursday);
 			doctor4UnwantedShifts.add(allowedShiftFriday);
 			doctor4ShiftConf.setUnwantedShifts(doctor4UnwantedShifts);
-			List<AllowedShift> doctor4UnavailableShifts = new ArrayList<>();
+			Set<AllowedShift> doctor4UnavailableShifts = new HashSet<>();
 			doctor4UnavailableShifts.add(allowedShiftTuesday);
 			doctor4UnavailableShifts.add(allowedShiftMonday);
 			doctor4ShiftConf.setUnavailableShifts(doctor4UnavailableShifts);
