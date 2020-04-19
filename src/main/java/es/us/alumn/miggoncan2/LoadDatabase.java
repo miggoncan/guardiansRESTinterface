@@ -12,11 +12,17 @@ import org.springframework.context.annotation.Configuration;
 
 import es.us.alumn.miggoncan2.model.entities.Absence;
 import es.us.alumn.miggoncan2.model.entities.AllowedShift;
+import es.us.alumn.miggoncan2.model.entities.Calendar;
+import es.us.alumn.miggoncan2.model.entities.CycleChange;
+import es.us.alumn.miggoncan2.model.entities.DayConfiguration;
 import es.us.alumn.miggoncan2.model.entities.Doctor;
 import es.us.alumn.miggoncan2.model.entities.ShiftConfiguration;
 import es.us.alumn.miggoncan2.model.entities.ShiftCycle;
 import es.us.alumn.miggoncan2.model.repositories.AbsenceRepository;
 import es.us.alumn.miggoncan2.model.repositories.AllowedShiftRepository;
+import es.us.alumn.miggoncan2.model.repositories.CalendarRepository;
+import es.us.alumn.miggoncan2.model.repositories.CycleChangeRespository;
+import es.us.alumn.miggoncan2.model.repositories.DayConfigurationRepository;
 import es.us.alumn.miggoncan2.model.repositories.DoctorRepository;
 import es.us.alumn.miggoncan2.model.repositories.ShiftConfigurationRepository;
 import es.us.alumn.miggoncan2.model.repositories.ShiftCycleRepository;
@@ -30,7 +36,10 @@ public class LoadDatabase {
 									AbsenceRepository absenceRepository,
 									ShiftConfigurationRepository shiftConfigurationRepository, 
 									AllowedShiftRepository allowedShiftRepository,
-									ShiftCycleRepository shiftCycleRepository) {
+									ShiftCycleRepository shiftCycleRepository,
+									CalendarRepository calendarRepository,
+									DayConfigurationRepository dayConfigurationRepository,
+									CycleChangeRespository cycleChangeRespository) {
 		return args -> {
 			AllowedShift allowedShiftMonday = allowedShiftRepository.save(new AllowedShift("Monday"));
 			log.info("Preloading " + allowedShiftMonday);
@@ -108,6 +117,74 @@ public class LoadDatabase {
 			shiftCycle2Doctors.add(doctor4);
 			ShiftCycle shiftCycle2 = new ShiftCycle(2, shiftCycle2Doctors , true);
 			log.info("Preloading " + shiftCycleRepository.save(shiftCycle2));
+			
+			// First Calendar
+			Calendar calendarApril = calendarRepository.save(new Calendar(4, 2020));
+			// Day one of first calendar
+			DayConfiguration aprilConf1 = new DayConfiguration(1, true, 2, 0);
+			aprilConf1.setCalendar(calendarApril);
+			List<Doctor> aprilConf1UnwantedShifts = new ArrayList<>(2);
+			aprilConf1UnwantedShifts.add(doctor1);
+			aprilConf1UnwantedShifts.add(doctor2);
+			aprilConf1.setUnwantedShifts(aprilConf1UnwantedShifts);
+			List<Doctor> aprilConf1MandatoryShifts = new ArrayList<>(1);
+			aprilConf1MandatoryShifts.add(doctor4);
+			aprilConf1.setMandatoryShifts(aprilConf1MandatoryShifts);
+			aprilConf1 = dayConfigurationRepository.save(aprilConf1);
+			// Cycle change on the first day of the first calendar
+			CycleChange aprilConf1CycleChange = new CycleChange(doctor1, doctor4);
+			aprilConf1CycleChange.setDayConfiguration(aprilConf1);
+			aprilConf1CycleChange = cycleChangeRespository.save(aprilConf1CycleChange);
+			List<CycleChange> april1ConfChanges = new ArrayList<>(1);
+			april1ConfChanges.add(aprilConf1CycleChange);
+			aprilConf1.setCycleChanges(april1ConfChanges );
+			// Second day of first calendar
+			DayConfiguration aprilConf2 = new DayConfiguration(2, true, 2, 2);
+			aprilConf2.setCalendar(calendarApril);
+			List<Doctor> aprilConf2WantedShifts = new ArrayList<>(1);
+			aprilConf2WantedShifts.add(doctor2);
+			aprilConf2.setWantedShifts(aprilConf2WantedShifts);
+			aprilConf2 = dayConfigurationRepository.save(aprilConf2);
+			List<DayConfiguration> calendarAprilDays = new ArrayList<>(2);
+			calendarAprilDays.add(aprilConf1);
+			calendarAprilDays.add(aprilConf2);
+			calendarApril.setDayConfigurations(calendarAprilDays);
+			log.info("Preloading " + calendarApril);
+			
+			// Second Calendar
+			Calendar calendarMay = calendarRepository.save(new Calendar(5, 2020));
+			// Day one of first calendar
+			DayConfiguration mayConf1 = new DayConfiguration(1, true, 2, 0);
+			mayConf1.setCalendar(calendarMay);
+			List<Doctor> mayConf1UnwantedShifts = new ArrayList<>(2);
+			mayConf1UnwantedShifts.add(doctor2);
+			mayConf1UnwantedShifts.add(doctor4);
+			mayConf1.setUnwantedShifts(mayConf1UnwantedShifts);
+			List<Doctor> mayConf1MandatoryShifts = new ArrayList<>(1);
+			mayConf1MandatoryShifts.add(doctor1);
+			mayConf1.setMandatoryShifts(mayConf1MandatoryShifts);
+			mayConf1 = dayConfigurationRepository.save(mayConf1);
+			// Cycle change on the first day of the first calendar
+			CycleChange mayConf1CycleChange = new CycleChange(doctor1, doctor4);
+			mayConf1CycleChange.setDayConfiguration(mayConf1);
+			mayConf1CycleChange = cycleChangeRespository.save(mayConf1CycleChange);
+			List<CycleChange> may1ConfChanges = new ArrayList<>(1);
+			may1ConfChanges.add(mayConf1CycleChange);
+			mayConf1.setCycleChanges(may1ConfChanges );
+			// Second day of first calendar
+			DayConfiguration mayConf2 = new DayConfiguration(2, true, 2, 2);
+			mayConf2.setCalendar(calendarMay);
+			List<Doctor> mayConf2UnwantedShifts = new ArrayList<>(1);
+			mayConf2UnwantedShifts.add(doctor2);
+			mayConf2.setUnwantedShifts(mayConf2UnwantedShifts);;
+			mayConf2 = dayConfigurationRepository.save(mayConf2);
+			List<DayConfiguration> calendarMayDays = new ArrayList<>(2);
+			calendarMayDays.add(mayConf1);
+			calendarMayDays.add(mayConf2);
+			calendarMay.setDayConfigurations(calendarMayDays);
+			log.info("Preloading " + calendarMay);
+			
+			// TODO add a Schedule to the database
 	    };
 	}
 }

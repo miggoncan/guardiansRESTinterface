@@ -1,0 +1,46 @@
+package es.us.alumn.miggoncan2.model.entities;
+
+import java.util.List;
+
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.IdClass;
+import javax.persistence.OneToMany;
+
+import org.hibernate.validator.constraints.Range;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
+import es.us.alumn.miggoncan2.model.entities.primarykeys.CalendarPK;
+import lombok.Data;
+
+// TODO validate Calendar: all dayConfigurations have to be in order, and all days needed have to be supplied
+// TODO test Calendar
+
+@Data
+@Entity
+@IdClass(CalendarPK.class)
+public class Calendar {
+	@Id
+	@Range(min = 1, max = 12)
+	private Integer month;
+	@Id
+	@Range(min = 1970)
+	private Integer year;
+	
+	@OneToMany(mappedBy = "calendar")
+	@JsonManagedReference
+	private List<DayConfiguration> dayConfigurations;
+	
+	
+	public Calendar(Integer month, Integer year) {
+		this.month = month;
+		this.year = year;
+	}
+	
+	public Calendar() {}
+
+	public CalendarPK getPK() {
+		return new CalendarPK(month, year);
+	}
+}
