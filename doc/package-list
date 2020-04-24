@@ -1,0 +1,9 @@
+es.us.alumn.miggoncan2
+es.us.alumn.miggoncan2.controllers
+es.us.alumn.miggoncan2.controllers.exceptions
+es.us.alumn.miggoncan2.model.assembler
+es.us.alumn.miggoncan2.model.entities
+es.us.alumn.miggoncan2.model.entities.primarykeys
+es.us.alumn.miggoncan2.model.entities.serializers
+es.us.alumn.miggoncan2.model.repositories
+es.us.alumn.miggoncan2.model.validation

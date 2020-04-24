@@ -184,7 +184,7 @@ public class LoadDatabase {
 			calendarMay.setDayConfigurations(calendarMayDays);
 			log.info("Preloading " + calendarMay);
 			
-			// TODO add a Schedule to the database
+			// TODO load an example Schedule into the database
 	    };
 	}
 }

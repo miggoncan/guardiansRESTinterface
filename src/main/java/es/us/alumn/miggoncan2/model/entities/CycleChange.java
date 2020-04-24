@@ -17,6 +17,20 @@ import lombok.Data;
 //TODO add validation to cycleChange: the giver and the receiver cannot be the same doctor
 // TODO test cyclechange
 
+/**
+ * The CycleChange {@link Entity} is used to represent that two {@link Doctor}
+ * have changed their {@link ShiftCycle} a certain day of a certain
+ * {@link Calendar}
+ * 
+ * Note the primary key used for this {@link Entity} is composite. Hence, the
+ * {@link IdClass} annotation is used. Moreover, CycleChange is a weak entity,
+ * so it receives its primary key from the corresponding
+ * {@link DayConfiguration}
+ * 
+ * @see DayConfigurationPK
+ * 
+ * @author miggoncan
+ */
 @Data
 @Entity
 @IdClass(DayConfigurationPK.class)
@@ -37,15 +51,23 @@ public class CycleChange {
 	@MapsId
 	@JsonBackReference
 	private DayConfiguration dayConfiguration;
-	
+
 	/**
-	 * The cycle giver is the Doctor that gives their cycle-shift to another Doctor
+	 * The cycle giver is the {@link Doctor} that gives their {@link ShiftCycle} to
+	 * another {@link Doctor}. Hence, the cycle giver will not have a cycle-shift
+	 * this {@link CycleChange#day}
+	 * 
+	 * @see ShiftCycle
 	 */
 	@ManyToOne
-	private Doctor cycleGiver; 
-	
+	private Doctor cycleGiver;
+
 	/**
-	 * The cycle receiver is the Doctor that will take the cycle-shift
+	 * The cycle receiver is the {@link Doctor} that will take the
+	 * {@link ShiftCycle}. Hence, although the cycleReceiver would not have had a
+	 * cycle-shift this {@link CycleChange#day}, they will have it.
+	 * 
+	 * @see ShiftCycle
 	 */
 	@ManyToOne
 	private Doctor cycleReceiver;
@@ -57,6 +79,15 @@ public class CycleChange {
 	}
 	
 	public CycleChange() {}
+
+	public void setDayConfiguration(DayConfiguration dayConfiguration) {
+		this.dayConfiguration = dayConfiguration;
+		if (dayConfiguration != null) {
+			this.day = dayConfiguration.getDay();
+			this.month = dayConfiguration.getMonth();
+			this.year = dayConfiguration.getYear();
+		}
+	}
 	
 	@Override
 	public String toString() {
@@ -66,14 +97,5 @@ public class CycleChange {
 					+ "cycleGiver=" + cycleGiver + ", "
 					+ "cycleReceiver=" + cycleReceiver
 				+ ")";
-	}
-	
-	public void setDayConfiguration(DayConfiguration dayConfiguration) {
-		this.dayConfiguration = dayConfiguration;
-		if (dayConfiguration != null) {
-			this.day = dayConfiguration.getDay();
-			this.month = dayConfiguration.getMonth();
-			this.year = dayConfiguration.getYear();
-		}
 	}
 }

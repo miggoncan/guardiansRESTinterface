@@ -24,6 +24,17 @@ import lombok.Data;
 // TODO check all days given in days exist in this month
 // TODO test Schedule
 
+/**
+ * The Schedule {@link Entity} represents the scheduled shifts of a specific
+ * {@link Calendar}
+ * 
+ * Note the primary key of this entity is composite, hence the {@link IdClass}
+ * annotation. Moreover, this is a weak entity, so it receives its primary key
+ * from the {@link Calendar} it is associated to
+ * 
+ * @see ScheduleDay
+ * @author miggoncan
+ */
 @Data
 @Entity
 @IdClass(CalendarPK.class)
@@ -40,22 +51,29 @@ public class Schedule {
 	@OneToOne
 	@NotNull
 	private Calendar calendar;
-	
+
+	/**
+	 * This represents the status in which this schedule is. For example, the
+	 * schedule of this {@link Calendar} could not have been created yet. Or it
+	 * could be waiting for approval
+	 */
 	@Enumerated(EnumType.STRING)
 	private ScheduleStatus status;
-	
+
+	// TODO days could be an empty List, as the schedule could have not been created yet
+	// TODO validate Schedule: if status != NOT_CREATED, days should not be empty
 	@OneToMany(mappedBy = "schedule")
 	@NotEmpty
 	@JsonManagedReference
 	private List<ScheduleDay> days;
-	
-	
+
 	public Schedule(ScheduleStatus status) {
 		this.status = status;
 	}
-	
-	public Schedule() {}
-	
+
+	public Schedule() {
+	}
+
 	public void setCalendar(Calendar calendar) {
 		this.calendar = calendar;
 		if (calendar != null) {
