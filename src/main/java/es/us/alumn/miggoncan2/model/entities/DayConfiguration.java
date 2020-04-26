@@ -1,6 +1,7 @@
 package es.us.alumn.miggoncan2.model.entities;
 
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -18,11 +19,10 @@ import org.hibernate.validator.constraints.Range;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
-import es.us.alumn.miggoncan2.model.entities.primarykeys.DayConfigurationPK;
+import es.us.alumn.miggoncan2.model.entities.primarykeys.DayMothYearPK;
 import lombok.Data;
 
 // TODO validate dayConfiguration: the day has to be valid for the given month and there cannot be clashes between unwanted, wanted, .. shifts
-// TODO change List<Doctor> to Set<Doctor>
 // TODO test dayConfiguration
 
 /**
@@ -54,7 +54,7 @@ import lombok.Data;
  */
 @Data
 @Entity
-@IdClass(DayConfigurationPK.class)
+@IdClass(DayMothYearPK.class)
 public class DayConfiguration {
 	@Id
 	@Range(min = 1, max = 31)
@@ -106,28 +106,28 @@ public class DayConfiguration {
 	 * shift this {@link #day}
 	 */
 	@ManyToMany
-	private List<Doctor> unwantedShifts;
+	private Set<Doctor> unwantedShifts;
 
 	/**
 	 * unavailableShifts indicates the {@link Doctor}s that cannot, in any way, have
 	 * a shift this {@link #day}
 	 */
 	@ManyToMany
-	private List<Doctor> unavailableShifts;
+	private Set<Doctor> unavailableShifts;
 
 	/**
 	 * wantedShifts indicates the {@link Doctor}s that would like to have one of
 	 * their corresponding shifts this {@link #day}
 	 */
 	@ManyToMany
-	private List<Doctor> wantedShifts;
+	private Set<Doctor> wantedShifts;
 
 	/**
 	 * mandatoryShifts indicates the {@link Doctor}s that HAVE to have a shift this
 	 * {@link #day}
 	 */
 	@ManyToMany
-	private List<Doctor> mandatoryShifts;
+	private Set<Doctor> mandatoryShifts;
 
 	/**
 	 * cycleChanges indicates a change that should be done to the cycle-shifts of
@@ -157,8 +157,8 @@ public class DayConfiguration {
 		}
 	}
 
-	public DayConfigurationPK getPK() {
-		return new DayConfigurationPK(day, month, year);
+	public DayMothYearPK getPK() {
+		return new DayMothYearPK(day, month, year);
 	}
 
 	// the toString method of the @Data annotation is not used as it can cause an infinite loop between the Calendar#toString method and this method

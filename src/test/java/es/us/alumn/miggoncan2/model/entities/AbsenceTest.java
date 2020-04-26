@@ -17,7 +17,7 @@ import es.us.alumn.miggoncan2.model.repositories.AbsenceRepository;
 import es.us.alumn.miggoncan2.model.repositories.DoctorRepository;
 
 @DataJpaTest
-class AbsenceTest extends EntityTest{
+public class AbsenceTest extends EntityTest{
 	@Autowired
 	private AbsenceRepository absenceRepository;
 	
@@ -26,6 +26,18 @@ class AbsenceTest extends EntityTest{
 	
 	public AbsenceTest() {
 		super(Absence.class);
+	}
+	
+	/**
+	 * This method creates one valid Absence instance. 
+	 * 
+	 * Calls to this method will always return a Absence with the same 
+	 * attribute values
+	 * 
+	 * @return a new Absence object that has not been persisted
+	 */
+	public static Absence createValidAbsence() {
+		return new Absence(new Date(System.currentTimeMillis()), new Date(System.currentTimeMillis() + 3*24*3600*1000));
 	}
 	
 	///////////////////////////////////////

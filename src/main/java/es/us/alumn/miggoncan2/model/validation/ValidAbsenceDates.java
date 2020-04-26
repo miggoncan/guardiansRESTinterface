@@ -14,8 +14,6 @@ import java.lang.annotation.Target;
 import javax.validation.Constraint;
 import javax.validation.Payload;
 
-import es.us.alumn.miggoncan2.model.entities.Absence;
-
 /**
  * @see ValidAbsenceDatesValidator
  * 

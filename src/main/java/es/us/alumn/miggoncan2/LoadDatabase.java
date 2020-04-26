@@ -31,7 +31,9 @@ import lombok.extern.slf4j.Slf4j;
 @Configuration
 @Slf4j
 public class LoadDatabase {
-	@Bean
+	// CUrrently, the database is already preloaded. The Bean annotation is commented to
+	// not load it every time the service is launched
+//	@Bean
 	CommandLineRunner initDatabase(DoctorRepository doctorRepository, 
 									AbsenceRepository absenceRepository,
 									ShiftConfigurationRepository shiftConfigurationRepository, 
@@ -109,13 +111,13 @@ public class LoadDatabase {
 			List<Doctor> shiftCycle1Doctors = new ArrayList<>();
 			shiftCycle1Doctors.add(doctor1);
 			shiftCycle1Doctors.add(doctor2);
-			ShiftCycle shiftCycle1 = new ShiftCycle(1, shiftCycle1Doctors , true);
+			ShiftCycle shiftCycle1 = new ShiftCycle(1, 2, 2020, shiftCycle1Doctors);
 			log.info("Preloading " + shiftCycleRepository.save(shiftCycle1));
 			// Second day in the shift cycle
 			List<Doctor> shiftCycle2Doctors = new ArrayList<>();
 			shiftCycle2Doctors.add(sickDoctor);
 			shiftCycle2Doctors.add(doctor4);
-			ShiftCycle shiftCycle2 = new ShiftCycle(2, shiftCycle2Doctors , true);
+			ShiftCycle shiftCycle2 = new ShiftCycle(2, 2, 2020, shiftCycle2Doctors);
 			log.info("Preloading " + shiftCycleRepository.save(shiftCycle2));
 			
 			// First Calendar
@@ -123,11 +125,11 @@ public class LoadDatabase {
 			// Day one of first calendar
 			DayConfiguration aprilConf1 = new DayConfiguration(1, true, 2, 0);
 			aprilConf1.setCalendar(calendarApril);
-			List<Doctor> aprilConf1UnwantedShifts = new ArrayList<>(2);
+			Set<Doctor> aprilConf1UnwantedShifts = new HashSet<>(2);
 			aprilConf1UnwantedShifts.add(doctor1);
 			aprilConf1UnwantedShifts.add(doctor2);
 			aprilConf1.setUnwantedShifts(aprilConf1UnwantedShifts);
-			List<Doctor> aprilConf1MandatoryShifts = new ArrayList<>(1);
+			Set<Doctor> aprilConf1MandatoryShifts = new HashSet<>(1);
 			aprilConf1MandatoryShifts.add(doctor4);
 			aprilConf1.setMandatoryShifts(aprilConf1MandatoryShifts);
 			aprilConf1 = dayConfigurationRepository.save(aprilConf1);
@@ -141,7 +143,7 @@ public class LoadDatabase {
 			// Second day of first calendar
 			DayConfiguration aprilConf2 = new DayConfiguration(2, true, 2, 2);
 			aprilConf2.setCalendar(calendarApril);
-			List<Doctor> aprilConf2WantedShifts = new ArrayList<>(1);
+			Set<Doctor> aprilConf2WantedShifts = new HashSet<>(1);
 			aprilConf2WantedShifts.add(doctor2);
 			aprilConf2.setWantedShifts(aprilConf2WantedShifts);
 			aprilConf2 = dayConfigurationRepository.save(aprilConf2);
@@ -156,11 +158,11 @@ public class LoadDatabase {
 			// Day one of first calendar
 			DayConfiguration mayConf1 = new DayConfiguration(1, true, 2, 0);
 			mayConf1.setCalendar(calendarMay);
-			List<Doctor> mayConf1UnwantedShifts = new ArrayList<>(2);
+			Set<Doctor> mayConf1UnwantedShifts = new HashSet<>(2);
 			mayConf1UnwantedShifts.add(doctor2);
 			mayConf1UnwantedShifts.add(doctor4);
 			mayConf1.setUnwantedShifts(mayConf1UnwantedShifts);
-			List<Doctor> mayConf1MandatoryShifts = new ArrayList<>(1);
+			Set<Doctor> mayConf1MandatoryShifts = new HashSet<>(1);
 			mayConf1MandatoryShifts.add(doctor1);
 			mayConf1.setMandatoryShifts(mayConf1MandatoryShifts);
 			mayConf1 = dayConfigurationRepository.save(mayConf1);
@@ -174,7 +176,7 @@ public class LoadDatabase {
 			// Second day of first calendar
 			DayConfiguration mayConf2 = new DayConfiguration(2, true, 2, 2);
 			mayConf2.setCalendar(calendarMay);
-			List<Doctor> mayConf2UnwantedShifts = new ArrayList<>(1);
+			Set<Doctor> mayConf2UnwantedShifts = new HashSet<>(1);
 			mayConf2UnwantedShifts.add(doctor2);
 			mayConf2.setUnwantedShifts(mayConf2UnwantedShifts);;
 			mayConf2 = dayConfigurationRepository.save(mayConf2);

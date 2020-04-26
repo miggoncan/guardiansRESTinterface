@@ -32,21 +32,6 @@ public class ShiftCycleTest extends EntityTest {
 	//////////////////////////////////////////
 	
 	@Test
-	void validShiftNumber() {
-		this.assertValidValue("shiftNumber", 1);
-	}
-	
-	@Test
-	void isNextShiftInCycleCanBeTrue() {
-		this.assertValidValue("isNextShiftInCycle", true);
-	}
-	
-	@Test
-	void isNextShiftInCycleCanBeFalse() {
-		this.assertValidValue("isNextShiftInCycle", false);
-	}
-	
-	@Test
 	void validDoctors() {
 		this.assertValidValue("doctors", DoctorTest.createValidDoctors());
 	}
@@ -54,13 +39,15 @@ public class ShiftCycleTest extends EntityTest {
 	@Test
 	void createAndSaveValidShiftCycle() {
 		List<Doctor> doctors = doctorRepository.saveAll(DoctorTest.createValidDoctors());
-		ShiftCycle shiftCycle = new ShiftCycle(1, doctors , true);
+		ShiftCycle shiftCycle = new ShiftCycle(1, 2, 2020, doctors);
 		
 		constraintViolations = new HashSet<>(validator.validate(shiftCycle));
 		assertEquals(0, constraintViolations.size());
 		
 		shiftCycle = shiftCycleRepository.save(shiftCycle);
-		assertEquals(1, shiftCycle.getShiftNumber());
+		assertEquals(1, shiftCycle.getDay());
+		assertEquals(2, shiftCycle.getMonth());
+		assertEquals(2020, shiftCycle.getYear());
 	}
 	
 	//////////////////////////////////////////
@@ -68,21 +55,6 @@ public class ShiftCycleTest extends EntityTest {
 	// Tests for invalid values
 	//
 	//////////////////////////////////////////
-	
-	@Test
-	void shiftNumberCannotBeZero() {
-		this.assertInvalidValue("shiftNumber", new Integer(0), "must be greater than 0");
-	}
-	
-	@Test
-	void shiftNumberCannotBeNegative() {
-		this.assertInvalidValue("shiftNumber", new Integer(-1), "must be greater than 0");
-	}
-	
-	@Test
-	void isNextShiftInCycleCannotBeNull() {
-		this.assertAttributeCannotBeNull("isNextShiftInCycle");
-	}
 	
 	@Test
 	void doctorsCannotBeNull() {

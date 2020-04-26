@@ -1,5 +1,7 @@
 package es.us.alumn.miggoncan2.model.repositories;
 
+import java.util.Optional;
+
 import javax.persistence.Entity;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -17,4 +19,13 @@ import es.us.alumn.miggoncan2.model.entities.Doctor;
  */
 public interface DoctorRepository extends JpaRepository<Doctor, Long> {
 
+	/**
+	 * Retrieve a {@link Doctor} from the database if it exists, provided its
+	 * firstName and lastNames
+	 * 
+	 * @param firstName The first name of the {@link Doctor}
+	 * @param lastNames The lastNames of the {@link Doctor}
+	 * @return The {@link Doctor}, if found
+	 */
+	public Optional<Doctor> findByFirstNameAndLastNames(String firstName, String lastNames);
 }

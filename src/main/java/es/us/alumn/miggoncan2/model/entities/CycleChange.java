@@ -11,7 +11,7 @@ import org.hibernate.validator.constraints.Range;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
-import es.us.alumn.miggoncan2.model.entities.primarykeys.DayConfigurationPK;
+import es.us.alumn.miggoncan2.model.entities.primarykeys.DayMothYearPK;
 import lombok.Data;
 
 //TODO add validation to cycleChange: the giver and the receiver cannot be the same doctor
@@ -27,13 +27,13 @@ import lombok.Data;
  * so it receives its primary key from the corresponding
  * {@link DayConfiguration}
  * 
- * @see DayConfigurationPK
+ * @see DayMothYearPK
  * 
  * @author miggoncan
  */
 @Data
 @Entity
-@IdClass(DayConfigurationPK.class)
+@IdClass(DayMothYearPK.class)
 public class CycleChange {
 	@Id
 	@Range(min = 1, max = 31)

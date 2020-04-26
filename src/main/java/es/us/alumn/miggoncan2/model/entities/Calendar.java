@@ -14,7 +14,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import es.us.alumn.miggoncan2.model.entities.primarykeys.CalendarPK;
 import lombok.Data;
 
-// TODO validate Calendar: all dayConfigurations have to be in order, and all days needed have to be supplied
+// TODO validate Calendar: all dayConfigurations have to be in order, and all days have to be supplied
 // TODO test Calendar
 
 /**

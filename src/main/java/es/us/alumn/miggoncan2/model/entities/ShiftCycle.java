@@ -2,20 +2,21 @@ package es.us.alumn.miggoncan2.model.entities;
 
 import java.util.List;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.IdClass;
 import javax.persistence.ManyToMany;
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
 
+import org.hibernate.validator.constraints.Range;
+
+import es.us.alumn.miggoncan2.model.entities.primarykeys.DayMothYearPK;
 import lombok.Data;
 
 /**
  * {@link Doctor}s have some periodic shifts. This is, if some {@link Doctor}s
  * have a shift today, after a certain number of days, they will have another
- * one. This kind of shifts will be refered to as "cycle-shift", and should not
+ * one. This kind of shifts will be referred to as "cycle-shift", and should not
  * be confused with regular shifts. A "regular shift", or "shift" in short,
  * refers to the shifts that will vary from month to month and that do not occur
  * periodically.
@@ -27,24 +28,32 @@ import lombok.Data;
  */
 @Data
 @Entity
+@IdClass(DayMothYearPK.class)
 public class ShiftCycle {
-	// TODO Change shiftNumber and isNextShiftInCycle for a referenceDate (Date object)
 	/**
-	 * shiftNumber number this cycle-shift represents within all shift-cycles
+	 * All three field {@link #day}, {@link #month} and {@link #year} are used to 
+	 * identify from which day the cycle-shifts should be calculated
 	 * 
-	 * For example, if we had the following cycle: 
-	 * 		Day 1: Sebastian and Diana 
-	 * 		Day 2: Alex and Rasim 
-	 * 		Day 3: Irati and Laura 
-	 * Then, the shiftNumber of the cycle-shift "Sebastian and Diana" would be 1 
-	 * (as of "Day 1")
-	 * 
-	 * Moreover, the shiftNumbers should start from 1 and be increased one unit with
-	 * every cycle-shift (just as seen in the example above)
+	 * For example, if we had started on Frebuary of 2020 with the following cycle: 
+	 * 		1/2/2020: Sebastian and Diana 
+	 * 		2/2/2020: Alex and Rasim 
+	 * 		3/2/2020: Irati and Laura 
+	 * Then, the reference of the cycle-shift "Sebastian and Diana" would be:
+	 * 		day=1
+	 * 		month=2 
+	 * 		year=2020 
 	 */
 	@Id
-	@Positive
-	private Integer shiftNumber;
+	@Range(min = 1, max = 31)
+	private Integer day;
+	@Id
+	@Range(min = 1, max = 12)
+	private Integer month;
+	@Id
+	@Range(min = 1970)
+	private Integer year;
+	
+	// TODO make sure the provided date exists e.g. 30 February
 
 	/**
 	 * The {@link List} of {@link Doctor}s that have this cycle-shift
@@ -53,18 +62,12 @@ public class ShiftCycle {
 	@NotEmpty
 	private List<Doctor> doctors;
 
-	/**
-	 * This field will indicate which doctors will have the first cycle-shift the
-	 * next time shifts are scheduled
-	 */
-	@Column(nullable = false)
-	@NotNull
-	private Boolean isNextShiftInCycle;
-
-	public ShiftCycle(Integer shiftNumber, List<Doctor> doctors, Boolean isNextShiftInCycle) {
-		this.shiftNumber = shiftNumber;
+	public ShiftCycle(Integer referenceDay, Integer referenceMonth, Integer referenceYear, 
+			List<Doctor> doctors) {
+		this.day = referenceDay;
+		this.month = referenceMonth;
+		this.year = referenceYear;
 		this.doctors = doctors;
-		this.isNextShiftInCycle = isNextShiftInCycle;
 	}
 
 	public ShiftCycle() {

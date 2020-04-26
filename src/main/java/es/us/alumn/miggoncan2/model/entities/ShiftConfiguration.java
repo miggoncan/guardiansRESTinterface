@@ -11,9 +11,8 @@ import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
-import es.us.alumn.miggoncan2.model.entities.serializers.ShiftConfigurationSerializer;
 import es.us.alumn.miggoncan2.model.validation.ValidShiftConfiguration;
 import lombok.Data;
 
@@ -36,12 +35,12 @@ import lombok.Data;
 @Data
 @Entity
 @ValidShiftConfiguration
-@JsonSerialize(using = ShiftConfigurationSerializer.class)
 public class ShiftConfiguration {
 	@Id
 	private Long doctorId;
 	@MapsId
 	@OneToOne
+	@JsonBackReference
 	private Doctor doctor;
 
 	/**

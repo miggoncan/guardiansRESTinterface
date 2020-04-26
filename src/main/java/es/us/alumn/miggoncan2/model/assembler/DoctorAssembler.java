@@ -5,6 +5,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
@@ -23,14 +24,23 @@ import es.us.alumn.miggoncan2.model.entities.Doctor;
  */
 @Component
 public class DoctorAssembler implements RepresentationModelAssembler<Doctor, EntityModel<Doctor>> {
+	
+	@Value("${api.links.root}")
+	private String rootLink;
+	
+	@Value("${api.links.doctors}")
+	private String doctorsLink;
+	
+	@Value("${api.links.shiftconf}")
+	private String shiftConfLink;
 
 	@Override
 	public EntityModel<Doctor> toModel(Doctor enitity) {
 		return new EntityModel<Doctor>(enitity,
 				linkTo(methodOn(DoctorController.class).getDoctor(enitity.getId())).withSelfRel(),
-				linkTo(methodOn(DoctorController.class).getDoctors()).withRel("facultativos"),
+				linkTo(methodOn(DoctorController.class).getDoctors()).withRel(doctorsLink),
 				linkTo(methodOn(ShiftConfigurationController.class).getShitfConfiguration(enitity.getId()))
-						.withRel("config-ca"));
+						.withRel(shiftConfLink));
 	}
 
 	@Override
@@ -40,6 +50,6 @@ public class DoctorAssembler implements RepresentationModelAssembler<Doctor, Ent
 			doctors.add(this.toModel(entity));
 		}
 		return new CollectionModel<>(doctors, linkTo(methodOn(DoctorController.class).getDoctors()).withSelfRel(),
-				linkTo(methodOn(RootController.class).getRootLinks()).withRel("raiz"));
+				linkTo(methodOn(RootController.class).getRootLinks()).withRel(rootLink));
 	}
 }

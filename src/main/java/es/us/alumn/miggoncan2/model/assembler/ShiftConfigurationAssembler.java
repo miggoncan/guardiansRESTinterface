@@ -5,11 +5,13 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.stereotype.Component;
 
+import es.us.alumn.miggoncan2.controllers.AllowedShiftsController;
 import es.us.alumn.miggoncan2.controllers.DoctorController;
 import es.us.alumn.miggoncan2.controllers.RootController;
 import es.us.alumn.miggoncan2.controllers.ShiftConfigurationController;
@@ -26,16 +28,27 @@ import es.us.alumn.miggoncan2.model.entities.ShiftConfiguration;
 @Component
 public class ShiftConfigurationAssembler
 		implements RepresentationModelAssembler<ShiftConfiguration, EntityModel<ShiftConfiguration>> {
+	
+	@Value("${api.links.root}")
+	private String rootLink;
+	
+	@Value("${api.links.shiftconfs}")
+	private String shiftConfsLink;
+	
+	@Value("${api.links.doctor}")
+	private String doctorLink;
+	
+	@Value("${api.links.allowedshifts}")
+	private String allowedShiftsLink;
 
 	@Override
 	public EntityModel<ShiftConfiguration> toModel(ShiftConfiguration entity) {
 		return new EntityModel<ShiftConfiguration>(entity,
 				linkTo(methodOn(ShiftConfigurationController.class).getShitfConfiguration(entity.getDoctorId()))
 						.withSelfRel(),
-				// TODO there has to be a way to not use hard-coded strings
-				linkTo(methodOn(ShiftConfigurationController.class).getShitfConfigurations()).withRel("config-cas"),
-				linkTo(methodOn(DoctorController.class).getDoctor(entity.getDoctorId())).withRel("facultativo"),
-				linkTo(methodOn(ShiftConfigurationController.class).getAllowedShifts()).withRel("dias_elegibles"));
+				linkTo(methodOn(ShiftConfigurationController.class).getShitfConfigurations()).withRel(shiftConfsLink),
+				linkTo(methodOn(DoctorController.class).getDoctor(entity.getDoctorId())).withRel(doctorLink),
+				linkTo(methodOn(AllowedShiftsController.class).getAllowedShifts()).withRel(allowedShiftsLink));
 	}
 
 	@Override
@@ -47,6 +60,6 @@ public class ShiftConfigurationAssembler
 		}
 		return new CollectionModel<>(shiftConfs,
 				linkTo(methodOn(ShiftConfigurationController.class).getShitfConfigurations()).withSelfRel(),
-				linkTo(methodOn(RootController.class).getRootLinks()).withRel("raiz"));
+				linkTo(methodOn(RootController.class).getRootLinks()).withRel(rootLink));
 	}
 }

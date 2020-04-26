@@ -11,7 +11,6 @@ import javax.persistence.IdClass;
 import javax.persistence.MapsId;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.Range;
@@ -63,7 +62,7 @@ public class Schedule {
 	// TODO days could be an empty List, as the schedule could have not been created yet
 	// TODO validate Schedule: if status != NOT_CREATED, days should not be empty
 	@OneToMany(mappedBy = "schedule")
-	@NotEmpty
+	@NotNull
 	@JsonManagedReference
 	private List<ScheduleDay> days;
 

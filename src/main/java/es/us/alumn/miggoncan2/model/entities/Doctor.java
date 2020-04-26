@@ -11,9 +11,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
-import es.us.alumn.miggoncan2.model.entities.serializers.DoctorSerializer;
 import lombok.Data;
 
 /**
@@ -29,7 +27,6 @@ import lombok.Data;
 	uniqueConstraints = 
 		@UniqueConstraint(columnNames = {"first_name", "last_names"})
 )
-@JsonSerialize(using = DoctorSerializer.class)
 public class Doctor {
 	@Id
 	@GeneratedValue
