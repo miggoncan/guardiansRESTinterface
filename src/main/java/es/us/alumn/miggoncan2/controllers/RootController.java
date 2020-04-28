@@ -9,6 +9,8 @@ import org.springframework.hateoas.CollectionModel;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import lombok.extern.slf4j.Slf4j;
+
 // TODO Use the log in all classes
 
 /**
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author miggoncan
  */
 @RestController
+@Slf4j
 public class RootController {
 	
 	@Value("${api.links.doctors}")
@@ -37,6 +40,7 @@ public class RootController {
 	 */
 	@GetMapping("/")
 	public CollectionModel<Object> getRootLinks() {
+		log.info("Request received: get root");
 		return new CollectionModel<Object>(Collections.emptyList(),
 				linkTo(methodOn(RootController.class).getRootLinks()).withSelfRel(),
 				linkTo(methodOn(DoctorController.class).getDoctors()).withRel(doctorsLink),

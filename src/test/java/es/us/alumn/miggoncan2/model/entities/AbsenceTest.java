@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.HashSet;
 
@@ -37,7 +38,7 @@ public class AbsenceTest extends EntityTest{
 	 * @return a new Absence object that has not been persisted
 	 */
 	public static Absence createValidAbsence() {
-		return new Absence(new Date(System.currentTimeMillis()), new Date(System.currentTimeMillis() + 3*24*3600*1000));
+		return new Absence(LocalDate.of(2020, 5, 25), LocalDate.of(2020, 6, 30));
 	}
 	
 	///////////////////////////////////////
@@ -59,8 +60,7 @@ public class AbsenceTest extends EntityTest{
 	@Test
 	void createAndSaveValidAbsence() {
 		Doctor myDoctor = doctorRepository.save(DoctorTest.createValidDoctor());
-		Absence absence = new Absence(new Date(System.currentTimeMillis()), 
-				new Date(System.currentTimeMillis() + 5*24*3600*1000));
+		Absence absence = createValidAbsence();
 		absence.setDoctor(myDoctor);
 		
 		constraintViolations = new HashSet<>(validator.validate(absence));
@@ -90,8 +90,7 @@ public class AbsenceTest extends EntityTest{
 	@Test 
 	void createAbsenceWithStartAfterEnd() {
 		Doctor myDoctor = doctorRepository.save(DoctorTest.createValidDoctor());
-		Absence absence = new Absence(new Date(System.currentTimeMillis() + 2*24*3600*1000),
-				new Date(System.currentTimeMillis()));
+		Absence absence = new Absence(LocalDate.of(2020, 7, 30), LocalDate.of(2020, 4, 20));
 		absence.setDoctor(myDoctor);
 		constraintViolations = new HashSet<>(validator.validate(absence));
 		assertNotEquals(0, constraintViolations.size());

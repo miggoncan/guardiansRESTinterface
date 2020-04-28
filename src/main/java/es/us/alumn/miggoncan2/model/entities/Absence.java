@@ -1,6 +1,6 @@
 package es.us.alumn.miggoncan2.model.entities;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -46,17 +46,17 @@ public class Absence {
 	 */
 	@Column(nullable = false)
 	@NotNull
-	private Date start;
+	private LocalDate start;
 	
 	/**
 	 * end is the day in which the Absence will finish
 	 */
 	@Column(nullable = false)
 	@NotNull
-	private Date end;
+	private LocalDate end;
 	
 	
-	public Absence(Date start, Date end) {
+	public Absence(LocalDate start, LocalDate end) {
 		this.start = start;
 		this.end = end;
 	}

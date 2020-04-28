@@ -1,6 +1,7 @@
 package es.us.alumn.miggoncan2.model.entities;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -37,6 +38,14 @@ public class ShiftCycleTest extends EntityTest {
 	}
 	
 	@Test
+	void leapYearDateIsValid() {
+		ShiftCycle shiftCycle = new ShiftCycle(29, 2, 2020, DoctorTest.createValidDoctors());
+		
+		this.constraintViolations = new HashSet<>(this.validator.validate(shiftCycle));
+		assertEquals(0, this.constraintViolations.size());
+	}
+	
+	@Test
 	void createAndSaveValidShiftCycle() {
 		List<Doctor> doctors = doctorRepository.saveAll(DoctorTest.createValidDoctors());
 		ShiftCycle shiftCycle = new ShiftCycle(1, 2, 2020, doctors);
@@ -64,5 +73,14 @@ public class ShiftCycleTest extends EntityTest {
 	@Test
 	void doctorsCannotBeEmpty() {
 		this.assertInvalidValue("doctors", new ArrayList<Doctor>(), "must not be empty");
+	}
+	
+	@Test
+	void dateHasToBeValid() {
+		ShiftCycle shiftCycle = new ShiftCycle(31, 2, 2020, DoctorTest.createValidDoctors());
+		
+		this.constraintViolations = new HashSet<>(validator.validate(shiftCycle));
+		assertEquals(1, this.constraintViolations.size());
+		assertTrue(this.constraintViolationsContains("The day, month and year have to be valid"));
 	}
 }

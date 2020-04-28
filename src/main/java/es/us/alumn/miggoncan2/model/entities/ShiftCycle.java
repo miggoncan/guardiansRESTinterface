@@ -11,6 +11,7 @@ import javax.validation.constraints.NotEmpty;
 import org.hibernate.validator.constraints.Range;
 
 import es.us.alumn.miggoncan2.model.entities.primarykeys.DayMothYearPK;
+import es.us.alumn.miggoncan2.model.validation.ValidDayMonthYear;
 import lombok.Data;
 
 /**
@@ -29,6 +30,7 @@ import lombok.Data;
 @Data
 @Entity
 @IdClass(DayMothYearPK.class)
+@ValidDayMonthYear
 public class ShiftCycle {
 	/**
 	 * All three field {@link #day}, {@link #month} and {@link #year} are used to 
@@ -53,8 +55,6 @@ public class ShiftCycle {
 	@Range(min = 1970)
 	private Integer year;
 	
-	// TODO make sure the provided date exists e.g. 30 February
-
 	/**
 	 * The {@link List} of {@link Doctor}s that have this cycle-shift
 	 */

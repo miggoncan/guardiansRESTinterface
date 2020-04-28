@@ -1,6 +1,7 @@
 package es.us.alumn.miggoncan2.model.validation;
 
-import java.util.Date;
+
+import java.time.LocalDate;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
@@ -22,8 +23,8 @@ public class ValidAbsenceDatesValidator implements ConstraintValidator<ValidAbse
 		if (value == null) {
 			return true;
 		}
-		Date start = value.getStart();
-		Date end = value.getEnd();
-		return start != null && end != null && start.before(end);
+		LocalDate start = value.getStart();
+		LocalDate end = value.getEnd();
+		return start != null && end != null && start.isBefore(end);
 	}
 }

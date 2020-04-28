@@ -1,7 +1,7 @@
 package es.us.alumn.miggoncan2;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -33,7 +33,7 @@ import lombok.extern.slf4j.Slf4j;
 public class LoadDatabase {
 	// CUrrently, the database is already preloaded. The Bean annotation is commented to
 	// not load it every time the service is launched
-//	@Bean
+	@Bean
 	CommandLineRunner initDatabase(DoctorRepository doctorRepository, 
 									AbsenceRepository absenceRepository,
 									ShiftConfigurationRepository shiftConfigurationRepository, 
@@ -78,8 +78,7 @@ public class LoadDatabase {
 	  
 			// This doctor will be absent for 7 days from now
 			Doctor sickDoctor = doctorRepository.save(new Doctor("Gollumn", "aka Smeagol", "gollumn@mordor.com"));
-			Absence sickDoctorAbsence = new Absence(new Date(System.currentTimeMillis()), 
-					new Date(System.currentTimeMillis() + 7*24*3600*1000));
+			Absence sickDoctorAbsence = new Absence(LocalDate.of(2020, 5, 25), LocalDate.of(2020, 7, 30));
 			sickDoctorAbsence.setDoctor(sickDoctor);
 			sickDoctorAbsence = absenceRepository.save(sickDoctorAbsence);
 			ShiftConfiguration sickDoctorShiftConf = new ShiftConfiguration(2, 2, true);

@@ -66,8 +66,8 @@ class DoctorControllerTest {
 			doctor.put("lastNames", "son of Elvenking Thranduil of Mirkwood");
 			doctor.put("email", "legolas@mirkwood.com");
 			JSONObject absence = new JSONObject();
-			absence.put("start", "2020-02-10T00:00:00.000+0000");
-			absence.put("end", "2020-05-20T00:00:00.000+0000");
+			absence.put("start", "2020-02-10");
+			absence.put("end", "2020-05-20");
 			doctor.put("absence", absence);
 		} catch (JSONException e) {
 			fail("Unexpected JSONException: " + e.toString());
@@ -127,8 +127,8 @@ class DoctorControllerTest {
 		JSONObject doctor = getJSONDoctor();
 		JSONObject absence = new JSONObject();
 		// start date is after end date
-		absence.put("start", "2020-04-10T00:00:00.000+0000");
-		absence.put("end", "2020-02-20T00:00:00.000+0000");
+		absence.put("start", "2020-04-10");
+		absence.put("end", "2020-02-20");
 		doctor.put("absence", absence);
 		mockMvc.perform(post("/doctors").content(doctor.toString()).contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isBadRequest())
@@ -183,8 +183,8 @@ class DoctorControllerTest {
 		JSONObject doctor = getJSONDoctorWithAbsence();
 		JSONObject absence = new JSONObject();
 		// start date is after end date
-		absence.put("start", "2020-04-10T00:00:00.000+0000");
-		absence.put("end", "2020-02-20T00:00:00.000+0000");
+		absence.put("start", "2020-04-10");
+		absence.put("end", "2020-02-20");
 		doctor.put("absence", absence);
 		mockMvc.perform(put("/doctors/" + savedDoctor.getId())
 					.content(doctor.toString()).contentType(MediaType.APPLICATION_JSON))

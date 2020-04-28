@@ -20,9 +20,10 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import es.us.alumn.miggoncan2.model.entities.primarykeys.DayMothYearPK;
+import es.us.alumn.miggoncan2.model.validation.ValidDayMonthYear;
 import lombok.Data;
 
-// TODO validate dayConfiguration: the day has to be valid for the given month and there cannot be clashes between unwanted, wanted, .. shifts
+// TODO validate dayConfiguration: there cannot be clashes between unwanted, wanted, .. shifts
 // TODO test dayConfiguration
 
 /**
@@ -55,6 +56,7 @@ import lombok.Data;
 @Data
 @Entity
 @IdClass(DayMothYearPK.class)
+@ValidDayMonthYear
 public class DayConfiguration {
 	@Id
 	@Range(min = 1, max = 31)

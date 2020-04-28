@@ -20,7 +20,6 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import es.us.alumn.miggoncan2.model.entities.primarykeys.CalendarPK;
 import lombok.Data;
 
-// TODO check all days given in days exist in this month
 // TODO test Schedule
 
 /**

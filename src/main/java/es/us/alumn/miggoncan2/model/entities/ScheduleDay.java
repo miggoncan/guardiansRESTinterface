@@ -17,14 +17,13 @@ import org.hibernate.validator.constraints.Range;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import es.us.alumn.miggoncan2.model.entities.primarykeys.DayMothYearPK;
-
+import es.us.alumn.miggoncan2.model.validation.ValidDayMonthYear;
 import lombok.Data;
-
-//TODO test this day is valid this month (e.g. 30-February)
 
 @Data
 @Entity
 @IdClass(DayMothYearPK.class)
+@ValidDayMonthYear
 public class ScheduleDay {
 	@Id
 	@Range(min = 1, max = 31)

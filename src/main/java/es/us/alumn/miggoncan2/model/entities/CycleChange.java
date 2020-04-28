@@ -12,6 +12,7 @@ import org.hibernate.validator.constraints.Range;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import es.us.alumn.miggoncan2.model.entities.primarykeys.DayMothYearPK;
+import es.us.alumn.miggoncan2.model.validation.ValidDayMonthYear;
 import lombok.Data;
 
 //TODO add validation to cycleChange: the giver and the receiver cannot be the same doctor
@@ -34,6 +35,7 @@ import lombok.Data;
 @Data
 @Entity
 @IdClass(DayMothYearPK.class)
+@ValidDayMonthYear
 public class CycleChange {
 	@Id
 	@Range(min = 1, max = 31)
