@@ -1,5 +1,6 @@
 package es.us.alumn.miggoncan2.model.entities;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -45,7 +46,7 @@ public class Doctor {
 	@NotBlank
 	private String email;
 
-	@OneToOne(optional = true, mappedBy = "doctor")
+	@OneToOne(optional = true, mappedBy = "doctor", cascade = {CascadeType.ALL})
 	@JsonManagedReference
 	private Absence absence;
 

@@ -1,6 +1,5 @@
 package es.us.alumn.miggoncan2.model.entities;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -58,9 +57,6 @@ public class AllowedShiftTest extends EntityTest {
 	void createAndSaveValidAllowedShift() {
 		AllowedShift allowedShift = new AllowedShift("Tuesday");
 		
-		constraintViolations = new HashSet<>(validator.validate(allowedShift));
-		assertEquals(0, constraintViolations.size());
-		
 		allowedShift = allowedShiftRepository.save(allowedShift);
 		assertNotEquals(0, allowedShift.getId());
 	}
@@ -86,6 +82,11 @@ public class AllowedShiftTest extends EntityTest {
 	// Tests for invalid values
 	//
 	///////////////////////////////////////
+	
+	@Test
+	void idCannotBeNull() {
+		this.assertAttributeCannotBeNull("id");
+	}
 	
 	@Test
 	void shiftCannotBeBlank() {

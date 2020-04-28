@@ -37,6 +37,7 @@ import lombok.Data;
 @ValidShiftConfiguration
 public class ShiftConfiguration {
 	@Id
+	@NotNull
 	private Long doctorId;
 	@MapsId
 	@OneToOne

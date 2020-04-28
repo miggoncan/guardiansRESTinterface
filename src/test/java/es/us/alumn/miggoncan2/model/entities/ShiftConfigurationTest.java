@@ -341,10 +341,15 @@ public class ShiftConfigurationTest extends EntityTest {
 
 	///////////////////////////////////////
 	//
-	// Tests for valid values
+	// Tests for invalid values
 	//
 	///////////////////////////////////////
 
+	@Test
+	void doctorIdCannotBeNull() {
+		this.assertAttributeCannotBeNull("doctorId");
+	}
+	
 	//
 	// Tests for maxShifts, minShifts and doesConsultations
 	//

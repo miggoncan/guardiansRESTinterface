@@ -1,5 +1,6 @@
 package es.us.alumn.miggoncan2.controllers;
 
+import java.util.Optional;
 import java.util.Set;
 
 import javax.validation.ConstraintViolation;
@@ -9,12 +10,15 @@ import javax.validation.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import es.us.alumn.miggoncan2.controllers.exceptions.DoctorAlreadyExistsException;
@@ -49,8 +53,6 @@ public class DoctorController {
 
 	@Autowired
 	private Validator validator;
-
-	// TODO Map all needed methods
 
 	/**
 	 * Handle requests for all the existing {@link Doctor} in the database. Only the
@@ -89,11 +91,8 @@ public class DoctorController {
 			throw new DoctorAlreadyExistsException(firstName, lastNames);
 		}
 
-		// The Absence is kept separately as it has to be persisted after the Doctor
-		Absence newAbsence = newDoctor.getAbsence();
-		newDoctor.setAbsence(null);
-
 		// The Absence has to be valid
+		Absence newAbsence = newDoctor.getAbsence();
 		if (newAbsence != null) {
 			Set<ConstraintViolation<Absence>> violations = validator.validate(newAbsence);
 			if (!violations.isEmpty()) {
@@ -103,16 +102,9 @@ public class DoctorController {
 		}
 
 		log.info("Validation complete. Attempting to save Doctor");
-		// First, persist the Doctor, then the Absence
+		// Persist the Doctor and its Absence
 		Doctor savedDoctor = doctorRepository.save(newDoctor);
 		log.info("Doctor saved: " + savedDoctor);
-		if (newAbsence != null) {
-			log.info("The Doctor has an Absence. Attempting to persist it");
-			newAbsence.setDoctor(savedDoctor);
-			newAbsence = absenceRepository.save(newAbsence);
-			log.info("Absence saved: " + newAbsence);
-			newDoctor.setAbsence(newAbsence);
-		}
 		
 		return doctorAssembler.toModel(savedDoctor);
 	}
@@ -121,7 +113,7 @@ public class DoctorController {
 	 * Handle the request for the information related to a single {@link Doctor},
 	 * provided their id
 	 * 
-	 * @param doctorId The unique identifiers used to search for the {@link Doctor}
+	 * @param doctorId The unique identifier used to search for the {@link Doctor}
 	 * @return The {@link Doctor} found
 	 * @throws DoctorNotFoundException if the {@link Doctor} was not found in the
 	 *                                 database
@@ -153,42 +145,52 @@ public class DoctorController {
 		// The Doctor cannot already exist
 		String firstName = newDoctor.getFirstName();
 		String lastNames = newDoctor.getLastNames();
-		if (doctorRepository.findByFirstNameAndLastNames(firstName, lastNames).isPresent()) {
+		Optional<Doctor> existentDoctor = doctorRepository.findByFirstNameAndLastNames(firstName, lastNames);
+		if (existentDoctor.isPresent() && existentDoctor.get().getId() != doctorId) {
 			log.info("The provided Doctor already exists. Throwing DoctorAlreadyExistsException");
 			throw new DoctorAlreadyExistsException(firstName, lastNames);
 		}
-		
-		// The Absence is kept separately as it has to be persisted after the Doctor
-		Absence newAbsence = newDoctor.getAbsence();
-		newDoctor.setAbsence(null);
+		newDoctor.setId(doctorId);
 
 		// The Absence has to be valid
+		Absence newAbsence = newDoctor.getAbsence();
 		if (newAbsence != null) {
+			newAbsence.setDoctor(newDoctor);
 			Set<ConstraintViolation<Absence>> violations = validator.validate(newAbsence);
 			if (!violations.isEmpty()) {
 				log.info("The Doctor has an invalid Absence. Throwing InvalidAbsenceException");
 				throw new InvalidAbsenceException(violations);
 			}
-		}
-		
-		log.info("Attemting to persist the Doctor");
-		newDoctor.setId(doctorId);
-		Doctor savedDoctor = doctorRepository.save(newDoctor);
-		log.info("Doctor persisted: " + savedDoctor);
-		
-		if (newAbsence == null) {
-			log.info("The provided Absence is null, so trying to delete the Doctor's Absence if it exists");
+			log.info("The received Absence is valid");
+		} else {
+			log.info("The provided Absence is null: trying to delete the Doctor's Absence if it exists");
 			if (absenceRepository.findById(doctorId).isPresent()) {
 				absenceRepository.deleteById(doctorId);
 			}
-		} else {
-			log.info("An Absence was provided. Trying to persist it");
-			newAbsence.setDoctor(savedDoctor);
-			Absence savedAbsence = absenceRepository.save(newAbsence);
-			log.info("Absence persisted: " + savedAbsence);
-			savedDoctor.setAbsence(savedAbsence);
 		}
 		
+		log.info("Attemting to persist the Doctor");
+		Doctor savedDoctor = doctorRepository.save(newDoctor);
+		log.info("Doctor persisted: " + savedDoctor);
+		
 		return doctorAssembler.toModel(savedDoctor);
+	}
+	
+	/**
+	 * Handle the request to delete a {@link Doctor}, provided its id
+	 * 
+	 * @param doctorId The unique identifier used to search for the {@link Doctor}
+	 * @throws DoctorNotFoundException
+	 */
+	@DeleteMapping("/{doctorId}")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	void deleteDoctor(@PathVariable Long doctorId) {
+		log.info("Request received: delete doctor with id " + doctorId);
+		if (!doctorRepository.findById(doctorId).isPresent()) {
+			log.info("The doctor could not be found. Throwing DoctorNotFoundException");
+			throw new DoctorNotFoundException(doctorId);
+		}
+		doctorRepository.deleteById(doctorId);
+		log.info("The doctor was deleted successfully");
 	}
 }
