@@ -1,13 +1,11 @@
 package es.us.alumn.miggoncan2.model.entities;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDate;
 import java.util.Date;
-import java.util.HashSet;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,85 +16,84 @@ import es.us.alumn.miggoncan2.model.repositories.AbsenceRepository;
 import es.us.alumn.miggoncan2.model.repositories.DoctorRepository;
 
 @DataJpaTest
-public class AbsenceTest extends EntityTest{
+public class AbsenceTest {
 	@Autowired
 	private AbsenceRepository absenceRepository;
-	
+
 	@Autowired
 	private DoctorRepository doctorRepository;
-	
+
+	private EntityTester<Absence> entityTester;
+
 	public AbsenceTest() {
-		super(Absence.class);
+		this.entityTester = new EntityTester<>(Absence.class);
 	}
-	
+
 	/**
-	 * This method creates one valid Absence instance. 
+	 * This method creates one valid Absence instance.
 	 * 
-	 * Calls to this method will always return a Absence with the same 
-	 * attribute values
+	 * Calls to this method will always return a Absence with the same attribute
+	 * values
 	 * 
 	 * @return a new Absence object that has not been persisted
 	 */
 	public static Absence createValidAbsence() {
 		return new Absence(LocalDate.of(2020, 5, 25), LocalDate.of(2020, 6, 30));
 	}
-	
+
 	///////////////////////////////////////
 	//
 	// Tests for valid values
 	//
 	///////////////////////////////////////
-	
+
 	@Test
 	void validStartDate() {
-		this.assertValidValue("start", new Date(System.currentTimeMillis() + 2*24*3600*1000));
+		this.entityTester.assertValidValue("start", new Date(System.currentTimeMillis() + 2 * 24 * 3600 * 1000));
 	}
-	
+
 	@Test
 	void validEndDate() {
-		this.assertValidValue("end", new Date(System.currentTimeMillis() + 2*24*3600*1000));
+		this.entityTester.assertValidValue("end", new Date(System.currentTimeMillis() + 2 * 24 * 3600 * 1000));
 	}
-	
+
 	@Test
 	void createAndSaveValidAbsence() {
 		Doctor myDoctor = doctorRepository.save(DoctorTest.createValidDoctor());
 		Absence absence = createValidAbsence();
 		absence.setDoctor(myDoctor);
-		
-		constraintViolations = new HashSet<>(validator.validate(absence));
-		assertEquals(0, constraintViolations.size());
-		
+
+		this.entityTester.assertValidEnity(absence);
+
 		absence = absenceRepository.save(absence);
 		assertEquals(myDoctor.getId(), absence.getDoctorId());
 	}
-	
-	
+
 	///////////////////////////////////////
 	//
 	// Tests for invalid values
 	//
 	///////////////////////////////////////
-	
+
 	@Test
 	void endCannotBeNull() {
-		this.assertAttributeCannotBeNull("end");
+		this.entityTester.assertAttributeCannotBeNull("end");
 	}
-	
+
 	@Test
 	void startCannotBeNull() {
-		this.assertAttributeCannotBeNull("start");
+		this.entityTester.assertAttributeCannotBeNull("start");
 	}
-	
-	@Test 
+
+	@Test
 	void createAbsenceWithStartAfterEnd() {
 		Doctor myDoctor = doctorRepository.save(DoctorTest.createValidDoctor());
 		Absence absence = new Absence(LocalDate.of(2020, 7, 30), LocalDate.of(2020, 4, 20));
 		absence.setDoctor(myDoctor);
-		constraintViolations = new HashSet<>(validator.validate(absence));
-		assertNotEquals(0, constraintViolations.size());
-		assertTrue(this.constraintViolationsContains("The start date of the Absence must be before its end date"));
+		this.entityTester.assertEntityViolatedConstraint(absence,
+				"The start date of the Absence must be before its end date");
 	}
-	
+
 	@Test
 	void saveAbsenceWithoutDoctor() {
 		Absence absence = new Absence();

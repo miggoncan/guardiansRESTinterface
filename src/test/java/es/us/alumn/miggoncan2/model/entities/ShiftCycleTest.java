@@ -1,10 +1,8 @@
 package es.us.alumn.miggoncan2.model.entities;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -15,15 +13,29 @@ import es.us.alumn.miggoncan2.model.repositories.DoctorRepository;
 import es.us.alumn.miggoncan2.model.repositories.ShiftCycleRepository;
 
 @DataJpaTest
-public class ShiftCycleTest extends EntityTest {
+public class ShiftCycleTest {
 	@Autowired
 	ShiftCycleRepository shiftCycleRepository;
 	
 	@Autowired
 	DoctorRepository doctorRepository;
+	
+	private EntityTester<ShiftCycle> entityTester;
 
 	public ShiftCycleTest() {
-		super(ShiftCycle.class);
+		this.entityTester =  new EntityTester<>(ShiftCycle.class);
+	}
+	
+	@Test
+	void testDates() {
+		ShiftCycle shiftCycle = new ShiftCycle();
+		shiftCycle.setDoctors(DoctorTest.createValidDoctors());
+		DateTester<ShiftCycle> dateTester = new DateTester<>(ShiftCycle.class);
+		dateTester.testEntity(shiftCycle, (day, month, year) -> {
+			shiftCycle.setDay(day);
+			shiftCycle.setMonth(month);
+			shiftCycle.setYear(year);
+		});
 	}
 	
 	//////////////////////////////////////////
@@ -34,15 +46,7 @@ public class ShiftCycleTest extends EntityTest {
 	
 	@Test
 	void validDoctors() {
-		this.assertValidValue("doctors", DoctorTest.createValidDoctors());
-	}
-	
-	@Test
-	void leapYearDateIsValid() {
-		ShiftCycle shiftCycle = new ShiftCycle(29, 2, 2020, DoctorTest.createValidDoctors());
-		
-		this.constraintViolations = new HashSet<>(this.validator.validate(shiftCycle));
-		assertEquals(0, this.constraintViolations.size());
+		this.entityTester.assertValidValue("doctors", DoctorTest.createValidDoctors());
 	}
 	
 	@Test
@@ -50,8 +54,7 @@ public class ShiftCycleTest extends EntityTest {
 		List<Doctor> doctors = doctorRepository.saveAll(DoctorTest.createValidDoctors());
 		ShiftCycle shiftCycle = new ShiftCycle(1, 2, 2020, doctors);
 		
-		constraintViolations = new HashSet<>(validator.validate(shiftCycle));
-		assertEquals(0, constraintViolations.size());
+		this.entityTester.assertValidEnity(shiftCycle);
 		
 		shiftCycle = shiftCycleRepository.save(shiftCycle);
 		assertEquals(1, shiftCycle.getDay());
@@ -67,20 +70,11 @@ public class ShiftCycleTest extends EntityTest {
 	
 	@Test
 	void doctorsCannotBeNull() {
-		this.assertInvalidValue("doctors", null, "must not be empty");
+		this.entityTester.assertInvalidValue("doctors", null, "must not be empty");
 	}
 	
 	@Test
 	void doctorsCannotBeEmpty() {
-		this.assertInvalidValue("doctors", new ArrayList<Doctor>(), "must not be empty");
-	}
-	
-	@Test
-	void dateHasToBeValid() {
-		ShiftCycle shiftCycle = new ShiftCycle(31, 2, 2020, DoctorTest.createValidDoctors());
-		
-		this.constraintViolations = new HashSet<>(validator.validate(shiftCycle));
-		assertEquals(1, this.constraintViolations.size());
-		assertTrue(this.constraintViolationsContains("The day, month and year have to be valid"));
+		this.entityTester.assertInvalidValue("doctors", new ArrayList<Doctor>(), "must not be empty");
 	}
 }

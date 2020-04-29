@@ -1,11 +1,8 @@
 package es.us.alumn.miggoncan2.model.entities;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -15,9 +12,11 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import es.us.alumn.miggoncan2.model.repositories.DoctorRepository;
 
 @DataJpaTest
-public class DoctorTest extends EntityTest {
+public class DoctorTest {
 	@Autowired
 	private DoctorRepository doctorRepository;
+	
+	private EntityTester<Doctor> entityTester;
 	
 	/**
 	 * This method creates one valid Doctor instance. 
@@ -50,7 +49,7 @@ public class DoctorTest extends EntityTest {
 	}
 	
 	public DoctorTest() {
-		super(Doctor.class);
+		this.entityTester = new EntityTester<>(Doctor.class);
 	}
 
 	///////////////////////////////////////
@@ -61,30 +60,29 @@ public class DoctorTest extends EntityTest {
 	
 	@Test
 	void validFirstName() {
-		this.assertValidValue("firstName", "Aragorn son of Aragorn");
+		this.entityTester.assertValidValue("firstName", "Aragorn son of Aragorn");
 	}
 	
 	@Test
 	void validLastNames() {
-		this.assertValidValue("lastNames", "the heir of Isildur Elendil's son of Gondor");
+		this.entityTester.assertValidValue("lastNames", "the heir of Isildur Elendil's son of Gondor");
 	}
 	
 	@Test
 	void validEmail() {
-		this.assertValidValue("email", "elessar@reunitedkingdom.com");
+		this.entityTester.assertValidValue("email", "elessar@reunitedkingdom.com");
 	}
 	
 	@Test
 	void absenceCanBeNull() {
-		this.assertValidValue("absence", null);
+		this.entityTester.assertValidValue("absence", null);
 	}
 	
 	@Test
 	void createAndSaveValidDoctor() {
 		Doctor doctor = new Doctor("Bilbo", "Baggins", "bilbo@mordos.com");
 		
-		constraintViolations = new HashSet<>(validator.validate(doctor));
-		assertEquals(0, constraintViolations.size());
+		this.entityTester.assertValidEnity(doctor);
 		
 		doctor = doctorRepository.save(doctor);
 		assertNotEquals(0, doctor.getId());
@@ -98,38 +96,32 @@ public class DoctorTest extends EntityTest {
 
 	@Test
 	void firstNameCannotBeBlank() {
-		this.assertAttributeCannotBeBlank("firstName");
+		this.entityTester.assertAttributeCannotBeBlank("firstName");
 	}
 	
 	@Test
 	void lastNamesCannotBeBlank() {
-		this.assertAttributeCannotBeBlank("lastNames");
+		this.entityTester.assertAttributeCannotBeBlank("lastNames");
 	}
 	
 	@Test
 	void emailCannotBeBlank() {
-		this.assertAttributeCannotBeBlank("email");
+		this.entityTester.assertAttributeCannotBeBlank("email");
 	}
 	
 	@Test
 	void emailHasToHaveADomain() {
-		constraintViolations = new HashSet<>(validator.validateValue(Doctor.class, "email", "aragorn"));
-		assertNotEquals(0, constraintViolations.size());
-		assertTrue(this.constraintViolationsContains("must be a well-formed email address"));
+		this.entityTester.assertInvalidValue("email", "aragorn", "must be a well-formed email address");
 	}
 	
 	@Test
 	void emailHasToHaveAnAtSymbol() {
-		constraintViolations = new HashSet<>(validator.validateValue(Doctor.class, "email", "aragorn.com"));
-		assertNotEquals(0, constraintViolations.size());
-		assertTrue(this.constraintViolationsContains("must be a well-formed email address"));
+		this.entityTester.assertInvalidValue("email", "aragorn.com", "must be a well-formed email address");
 	}
 	
 
 	@Test
 	void emailCannotBeOnlyADomain() {
-		constraintViolations = new HashSet<>(validator.validateValue(Doctor.class, "email", "@mordor.com"));
-		assertNotEquals(0, constraintViolations.size());
-		assertTrue(this.constraintViolationsContains("must be a well-formed email address"));
+		this.entityTester.assertInvalidValue("email", "@mordor.com", "must be a well-formed email address");
 	}
 }

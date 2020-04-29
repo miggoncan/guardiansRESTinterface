@@ -5,7 +5,7 @@ import javax.persistence.Entity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import es.us.alumn.miggoncan2.model.entities.DayConfiguration;
-import es.us.alumn.miggoncan2.model.entities.primarykeys.DayMothYearPK;
+import es.us.alumn.miggoncan2.model.entities.primarykeys.DayMonthYearPK;
 
 /**
  * This interface will be used by Jpa to auto-generate a class having all the
@@ -15,6 +15,6 @@ import es.us.alumn.miggoncan2.model.entities.primarykeys.DayMothYearPK;
  * 
  * @author miggoncan
  */
-public interface DayConfigurationRepository extends JpaRepository<DayConfiguration, DayMothYearPK> {
+public interface DayConfigurationRepository extends JpaRepository<DayConfiguration, DayMonthYearPK> {
 
 }

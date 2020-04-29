@@ -3,6 +3,7 @@ package es.us.alumn.miggoncan2.model.entities;
 import java.util.List;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -19,12 +20,11 @@ import org.hibernate.validator.constraints.Range;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
-import es.us.alumn.miggoncan2.model.entities.primarykeys.DayMothYearPK;
+import es.us.alumn.miggoncan2.model.entities.primarykeys.DayMonthYearPK;
 import es.us.alumn.miggoncan2.model.validation.ValidDayMonthYear;
 import lombok.Data;
 
 // TODO validate dayConfiguration: there cannot be clashes between unwanted, wanted, .. shifts
-// TODO test dayConfiguration
 
 /**
  * This {@link Entity} represents a specific conditions to take into account
@@ -55,7 +55,7 @@ import lombok.Data;
  */
 @Data
 @Entity
-@IdClass(DayMothYearPK.class)
+@IdClass(DayMonthYearPK.class)
 @ValidDayMonthYear
 public class DayConfiguration {
 	@Id
@@ -137,7 +137,7 @@ public class DayConfiguration {
 	 * 
 	 * @see ShiftCycle
 	 */
-	@OneToMany(mappedBy = "dayConfiguration")
+	@OneToMany(mappedBy = "dayConfiguration", cascade = CascadeType.ALL)
 	@JsonManagedReference
 	private List<CycleChange> cycleChanges;
 
@@ -159,8 +159,8 @@ public class DayConfiguration {
 		}
 	}
 
-	public DayMothYearPK getPK() {
-		return new DayMothYearPK(day, month, year);
+	public DayMonthYearPK getPK() {
+		return new DayMonthYearPK(day, month, year);
 	}
 
 	// the toString method of the @Data annotation is not used as it can cause an infinite loop between the Calendar#toString method and this method

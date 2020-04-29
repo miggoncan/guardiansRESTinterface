@@ -17,19 +17,19 @@ import lombok.Data;
  * @author miggoncan
  */
 @Data
-public class DayMothYearPK implements Serializable {
+public class DayMonthYearPK implements Serializable {
 	private static final long serialVersionUID = 6732382410268399527L;
 
 	private Integer day;
 	private Integer month;
 	private Integer year;
 
-	public DayMothYearPK(Integer day, Integer month, Integer year) {
+	public DayMonthYearPK(Integer day, Integer month, Integer year) {
 		this.day = day;
 		this.month = month;
 		this.year = year;
 	}
 
-	public DayMothYearPK() {
+	public DayMonthYearPK() {
 	}
 }

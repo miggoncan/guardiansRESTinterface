@@ -2,6 +2,7 @@ package es.us.alumn.miggoncan2.model.entities;
 
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
@@ -41,7 +42,7 @@ public class Calendar {
 	@Range(min = 1970)
 	private Integer year;
 
-	@OneToMany(mappedBy = "calendar")
+	@OneToMany(mappedBy = "calendar", cascade = CascadeType.ALL)
 	@JsonManagedReference
 	private List<DayConfiguration> dayConfigurations;
 

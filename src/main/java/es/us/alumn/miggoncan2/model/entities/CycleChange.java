@@ -11,12 +11,10 @@ import org.hibernate.validator.constraints.Range;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
-import es.us.alumn.miggoncan2.model.entities.primarykeys.DayMothYearPK;
+import es.us.alumn.miggoncan2.model.entities.primarykeys.DayMonthYearPK;
+import es.us.alumn.miggoncan2.model.validation.ValidCycleChange;
 import es.us.alumn.miggoncan2.model.validation.ValidDayMonthYear;
 import lombok.Data;
-
-//TODO add validation to cycleChange: the giver and the receiver cannot be the same doctor
-// TODO test cyclechange
 
 /**
  * The CycleChange {@link Entity} is used to represent that two {@link Doctor}
@@ -28,14 +26,15 @@ import lombok.Data;
  * so it receives its primary key from the corresponding
  * {@link DayConfiguration}
  * 
- * @see DayMothYearPK
+ * @see DayMonthYearPK
  * 
  * @author miggoncan
  */
 @Data
 @Entity
-@IdClass(DayMothYearPK.class)
+@IdClass(DayMonthYearPK.class)
 @ValidDayMonthYear
+@ValidCycleChange
 public class CycleChange {
 	@Id
 	@Range(min = 1, max = 31)

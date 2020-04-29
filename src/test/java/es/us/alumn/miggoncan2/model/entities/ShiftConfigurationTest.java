@@ -1,7 +1,6 @@
 package es.us.alumn.miggoncan2.model.entities;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.HashSet;
 import java.util.List;
@@ -17,7 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @DataJpaTest
 @Slf4j
-public class ShiftConfigurationTest extends EntityTest {
+public class ShiftConfigurationTest {
 	@Autowired
 	private ShiftConfigurationRepository shiftConfigurationRepository;
 
@@ -26,6 +25,8 @@ public class ShiftConfigurationTest extends EntityTest {
 
 	@Autowired
 	private AllowedShiftRepository allowedShiftRepository;
+	
+	private EntityTester<ShiftConfiguration> entityTester;
 
 	/**
 	 * Create a ShiftConfiguration without Shift Preferences (e.g. unwantedShifts)
@@ -41,7 +42,7 @@ public class ShiftConfigurationTest extends EntityTest {
 	}
 
 	public ShiftConfigurationTest() {
-		super(ShiftConfiguration.class);
+		this.entityTester = new EntityTester<>(ShiftConfiguration.class);
 	}
 
 	/**
@@ -93,9 +94,7 @@ public class ShiftConfigurationTest extends EntityTest {
 		log.debug("Testing a valid ShiftConfiguration");
 		ShiftConfiguration shiftConfiguration = createShiftConfiguration(op);
 
-		constraintViolations = new HashSet<>(validator.validate(shiftConfiguration));
-		log.debug("The constraint violations of this configuration are: " + constraintViolations);
-		assertEquals(0, constraintViolations.size());
+		this.entityTester.assertValidEnity(shiftConfiguration);
 
 		shiftConfiguration = shiftConfigurationRepository.save(shiftConfiguration);
 		assertEquals(shiftConfiguration.getDoctor().getId(), shiftConfiguration.getDoctorId());
@@ -118,9 +117,7 @@ public class ShiftConfigurationTest extends EntityTest {
 		log.debug("Testing an invalid ShiftConfiguration");
 		ShiftConfiguration shiftConfiguration = createShiftConfiguration(op);
 
-		constraintViolations = new HashSet<>(validator.validate(shiftConfiguration));
-		log.debug("The constraint violations of this configuration are: " + constraintViolations);
-		assertTrue(constraintViolationsContains("The ShiftConfiguration is not valid"));
+		this.entityTester.assertEntityViolatedConstraint(shiftConfiguration, "The ShiftConfiguration is not valid");
 	}
 
 	///////////////////////////////////////
@@ -135,32 +132,32 @@ public class ShiftConfigurationTest extends EntityTest {
 
 	@Test
 	void validMaxShifts() {
-		this.assertValidValue("maxShifts", 2);
+		this.entityTester.assertValidValue("maxShifts", 2);
 	}
 
 	@Test
 	void maxShiftsCanBeZero() {
-		this.assertValidValue("maxShifts", 0);
+		this.entityTester.assertValidValue("maxShifts", 0);
 	}
 
 	@Test
 	void validMinShifts() {
-		this.assertValidValue("minShifts", 2);
+		this.entityTester.assertValidValue("minShifts", 2);
 	}
 
 	@Test
 	void minShiftsCanBeZero() {
-		this.assertValidValue("minShifts", 0);
+		this.entityTester.assertValidValue("minShifts", 0);
 	}
 
 	@Test
 	void doesConsultationCanBeTrue() {
-		this.assertValidValue("doesConsultations", true);
+		this.entityTester.assertValidValue("doesConsultations", true);
 	}
 
 	@Test
 	void doesConsultationCanBeFalse() {
-		this.assertValidValue("doesConsultations", false);
+		this.entityTester.assertValidValue("doesConsultations", false);
 	}
 
 	//
@@ -169,42 +166,42 @@ public class ShiftConfigurationTest extends EntityTest {
 
 	@Test
 	void validUnwantedShifts() {
-		this.assertValidValue("unwantedShifts", AllowedShiftTest.createValidAllowedShifts());
+		this.entityTester.assertValidValue("unwantedShifts", AllowedShiftTest.createValidAllowedShifts());
 	}
 
 	@Test
 	void unwantedShiftsCanBeNull() {
-		this.assertValidValue("unwantedShifts", null);
+		this.entityTester.assertValidValue("unwantedShifts", null);
 	}
 
 	@Test
 	void validUnavailableShifts() {
-		this.assertValidValue("unavailableShifts", AllowedShiftTest.createValidAllowedShifts());
+		this.entityTester.assertValidValue("unavailableShifts", AllowedShiftTest.createValidAllowedShifts());
 	}
 
 	@Test
 	void unavailableShiftsCanBeNull() {
-		this.assertValidValue("unavailableShifts", null);
+		this.entityTester.assertValidValue("unavailableShifts", null);
 	}
 
 	@Test
 	void validWantedShifts() {
-		this.assertValidValue("wantedShifts", AllowedShiftTest.createValidAllowedShifts());
+		this.entityTester.assertValidValue("wantedShifts", AllowedShiftTest.createValidAllowedShifts());
 	}
 
 	@Test
 	void wantedShiftsCanBeNull() {
-		this.assertValidValue("wantedShifts", null);
+		this.entityTester.assertValidValue("wantedShifts", null);
 	}
 
 	@Test
 	void validMandatoryShifts() {
-		this.assertValidValue("mandatoryShifts", AllowedShiftTest.createValidAllowedShifts());
+		this.entityTester.assertValidValue("mandatoryShifts", AllowedShiftTest.createValidAllowedShifts());
 	}
 
 	@Test
 	void mandatoryShiftsCanBeNull() {
-		this.assertValidValue("mandatoryShifts", null);
+		this.entityTester.assertValidValue("mandatoryShifts", null);
 	}
 
 	//
@@ -347,7 +344,7 @@ public class ShiftConfigurationTest extends EntityTest {
 
 	@Test
 	void doctorIdCannotBeNull() {
-		this.assertAttributeCannotBeNull("doctorId");
+		this.entityTester.assertAttributeCannotBeNull("doctorId");
 	}
 	
 	//
@@ -356,27 +353,27 @@ public class ShiftConfigurationTest extends EntityTest {
 
 	@Test
 	void maxShiftsCannotBeNegative() {
-		this.assertInvalidValue("maxShifts", -1, "must be greater than or equal to 0");
+		this.entityTester.assertInvalidValue("maxShifts", -1, "must be greater than or equal to 0");
 	}
 
 	@Test
 	void maxShiftsCannotBeNull() {
-		this.assertAttributeCannotBeNull("maxShifts");
+		this.entityTester.assertAttributeCannotBeNull("maxShifts");
 	}
 
 	@Test
 	void minShiftsCannotBeNegative() {
-		this.assertInvalidValue("minShifts", -1, "must be greater than or equal to 0");
+		this.entityTester.assertInvalidValue("minShifts", -1, "must be greater than or equal to 0");
 	}
 
 	@Test
 	void minShiftsCannotBeNull() {
-		this.assertAttributeCannotBeNull("minShifts");
+		this.entityTester.assertAttributeCannotBeNull("minShifts");
 	}
 
 	@Test
 	void doesConsultationsCannotBeNull() {
-		this.assertAttributeCannotBeNull("doesConsultations");
+		this.entityTester.assertAttributeCannotBeNull("doesConsultations");
 	}
 
 	@Test

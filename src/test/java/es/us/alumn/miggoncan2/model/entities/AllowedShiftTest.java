@@ -14,12 +14,14 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import es.us.alumn.miggoncan2.model.repositories.AllowedShiftRepository;
 
 @DataJpaTest
-public class AllowedShiftTest extends EntityTest {
+public class AllowedShiftTest {
 	@Autowired
 	private AllowedShiftRepository allowedShiftRepository;
 	
+	private EntityTester<AllowedShift> entityTester;
+	
 	public AllowedShiftTest() {
-		super(AllowedShift.class);
+		entityTester = new EntityTester<>(AllowedShift.class);
 	}
 	
 	/**
@@ -50,7 +52,7 @@ public class AllowedShiftTest extends EntityTest {
 	
 	@Test
 	void validShift() {
-		this.assertValidValue("shift", "Monday");
+		this.entityTester.assertValidValue("shift", "Monday");
 	}
 	
 	@Test 
@@ -85,11 +87,11 @@ public class AllowedShiftTest extends EntityTest {
 	
 	@Test
 	void idCannotBeNull() {
-		this.assertAttributeCannotBeNull("id");
+		this.entityTester.assertAttributeCannotBeNull("id");
 	}
 	
 	@Test
 	void shiftCannotBeBlank() {
-		this.assertAttributeCannotBeBlank("shift");
+		this.entityTester.assertAttributeCannotBeBlank("shift");
 	}
 }

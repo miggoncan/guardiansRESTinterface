@@ -105,7 +105,7 @@ public class DoctorController {
 		// Persist the Doctor and its Absence
 		Doctor savedDoctor = doctorRepository.save(newDoctor);
 		log.info("Doctor saved: " + savedDoctor);
-		
+
 		return doctorAssembler.toModel(savedDoctor);
 	}
 
@@ -124,15 +124,17 @@ public class DoctorController {
 		Doctor doctor = doctorRepository.findById(doctorId).orElseThrow(() -> new DoctorNotFoundException(doctorId));
 		return doctorAssembler.toModel(doctor);
 	}
-	
+
 	/**
 	 * Handle the request to update the information of a {@link Doctor}
 	 * 
-	 * Note: Every attribute of the {@link Doctor} is updated, even the {@link Absence}.
-	 * If the {@link Absence} is missing, it will be deleted (if it exists)
-	 *  
-	 * @param doctorId The id of the {@link Doctor} to update
-	 * @param newDoctor The values of newDoctor will be used to change the current {@link Doctor}
+	 * Note: Every attribute of the {@link Doctor} is updated, even the
+	 * {@link Absence}. If the {@link Absence} is missing, it will be deleted (if it
+	 * exists)
+	 * 
+	 * @param doctorId  The id of the {@link Doctor} to update
+	 * @param newDoctor The values of newDoctor will be used to change the current
+	 *                  {@link Doctor}
 	 * @return The {@link Doctor} that has been persisted
 	 */
 	@PutMapping("/{doctorId}")
@@ -168,14 +170,14 @@ public class DoctorController {
 				absenceRepository.deleteById(doctorId);
 			}
 		}
-		
+
 		log.info("Attemting to persist the Doctor");
 		Doctor savedDoctor = doctorRepository.save(newDoctor);
 		log.info("Doctor persisted: " + savedDoctor);
-		
+
 		return doctorAssembler.toModel(savedDoctor);
 	}
-	
+
 	/**
 	 * Handle the request to delete a {@link Doctor}, provided its id
 	 * 
@@ -190,6 +192,12 @@ public class DoctorController {
 			log.info("The doctor could not be found. Throwing DoctorNotFoundException");
 			throw new DoctorNotFoundException(doctorId);
 		}
+		// TODO what if the doctor has an associated shiftConfiguration? Does it get
+		// deleted as well?
+		// There are two options: delete all entries related to a Doctor (ShiftConfig,
+		// Schedules, DayConfigurations,...)
+		// Or create a status for Doctor, and set the status to DELETED (all other
+		// methods would have to be changed to check if the Doctor is DELETED(
 		doctorRepository.deleteById(doctorId);
 		log.info("The doctor was deleted successfully");
 	}
