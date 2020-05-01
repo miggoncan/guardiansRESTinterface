@@ -1,4 +1,4 @@
-package es.us.alumn.miggoncan2.model.entities;
+package guardians.model.entities;
 
 import java.util.List;
 
@@ -12,7 +12,7 @@ import org.hibernate.validator.constraints.Range;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
-import es.us.alumn.miggoncan2.model.entities.primarykeys.CalendarPK;
+import guardians.model.entities.primarykeys.CalendarPK;
 import lombok.Data;
 
 // TODO validate Calendar: all dayConfigurations have to be in order, and all days have to be supplied

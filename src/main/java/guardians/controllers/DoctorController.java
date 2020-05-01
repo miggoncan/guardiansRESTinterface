@@ -1,4 +1,4 @@
-package es.us.alumn.miggoncan2.controllers;
+package guardians.controllers;
 
 import java.util.Optional;
 import java.util.Set;
@@ -21,15 +21,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import es.us.alumn.miggoncan2.controllers.exceptions.DoctorAlreadyExistsException;
-import es.us.alumn.miggoncan2.controllers.exceptions.DoctorNotFoundException;
-import es.us.alumn.miggoncan2.controllers.exceptions.InvalidAbsenceException;
-import es.us.alumn.miggoncan2.model.assembler.DoctorAssembler;
-import es.us.alumn.miggoncan2.model.entities.Absence;
-import es.us.alumn.miggoncan2.model.entities.Doctor;
-import es.us.alumn.miggoncan2.model.entities.ShiftConfiguration;
-import es.us.alumn.miggoncan2.model.repositories.AbsenceRepository;
-import es.us.alumn.miggoncan2.model.repositories.DoctorRepository;
+import guardians.controllers.exceptions.DoctorAlreadyExistsException;
+import guardians.controllers.exceptions.DoctorDeletedException;
+import guardians.controllers.exceptions.DoctorNotFoundException;
+import guardians.controllers.exceptions.InvalidAbsenceException;
+import guardians.model.assembler.DoctorAssembler;
+import guardians.model.entities.Absence;
+import guardians.model.entities.Doctor;
+import guardians.model.entities.ShiftConfiguration;
+import guardians.model.entities.Doctor.DoctorStatus;
+import guardians.model.repositories.AbsenceRepository;
+import guardians.model.repositories.DoctorRepository;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -140,9 +142,15 @@ public class DoctorController {
 	@PutMapping("/{doctorId}")
 	public EntityModel<Doctor> updateDoctor(@PathVariable Long doctorId, @RequestBody @Valid Doctor newDoctor) {
 		log.info("Request received: update Doctor with id: " + doctorId + " to be: " + newDoctor);
-		if (!doctorRepository.findById(doctorId).isPresent()) {
+		Optional<Doctor> doctor = doctorRepository.findById(doctorId); 
+		if (!doctor.isPresent()) {
 			log.info("The selected doctorId was not found. Throwing DoctorNotFoundException");
 			throw new DoctorNotFoundException(doctorId);
+		}
+		
+		if (doctor.get().getStatus() == DoctorStatus.DELETED) {
+			log.info("The selected Doctor is deleted, so it cannot be modified. Throwing DoctorDeletedException");
+			throw new DoctorDeletedException(doctorId);
 		}
 		// The Doctor cannot already exist
 		String firstName = newDoctor.getFirstName();
@@ -188,17 +196,13 @@ public class DoctorController {
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	void deleteDoctor(@PathVariable Long doctorId) {
 		log.info("Request received: delete doctor with id " + doctorId);
-		if (!doctorRepository.findById(doctorId).isPresent()) {
+		Optional<Doctor> doctor = doctorRepository.findById(doctorId); 
+		if (!doctor.isPresent()) {
 			log.info("The doctor could not be found. Throwing DoctorNotFoundException");
 			throw new DoctorNotFoundException(doctorId);
 		}
-		// TODO what if the doctor has an associated shiftConfiguration? Does it get
-		// deleted as well?
-		// There are two options: delete all entries related to a Doctor (ShiftConfig,
-		// Schedules, DayConfigurations,...)
-		// Or create a status for Doctor, and set the status to DELETED (all other
-		// methods would have to be changed to check if the Doctor is DELETED(
-		doctorRepository.deleteById(doctorId);
-		log.info("The doctor was deleted successfully");
+		doctor.get().setStatus(DoctorStatus.DELETED);
+		doctorRepository.save(doctor.get());
+		log.info("The doctor was successfully marked as deleted");
 	}
 }

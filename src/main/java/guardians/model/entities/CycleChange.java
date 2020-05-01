@@ -1,4 +1,4 @@
-package es.us.alumn.miggoncan2.model.entities;
+package guardians.model.entities;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,9 +11,9 @@ import org.hibernate.validator.constraints.Range;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
-import es.us.alumn.miggoncan2.model.entities.primarykeys.DayMonthYearPK;
-import es.us.alumn.miggoncan2.model.validation.ValidCycleChange;
-import es.us.alumn.miggoncan2.model.validation.ValidDayMonthYear;
+import guardians.model.entities.primarykeys.DayMonthYearPK;
+import guardians.model.validation.ValidCycleChange;
+import guardians.model.validation.ValidDayMonthYear;
 import lombok.Data;
 
 /**

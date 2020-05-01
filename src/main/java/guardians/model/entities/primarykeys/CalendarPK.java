@@ -1,10 +1,10 @@
-package es.us.alumn.miggoncan2.model.entities.primarykeys;
+package guardians.model.entities.primarykeys;
 
 import java.io.Serializable;
 
 import javax.persistence.Entity;
 
-import es.us.alumn.miggoncan2.model.entities.Calendar;
+import guardians.model.entities.Calendar;
 import lombok.Data;
 
 /**

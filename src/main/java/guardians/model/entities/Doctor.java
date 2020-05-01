@@ -1,8 +1,10 @@
-package es.us.alumn.miggoncan2.model.entities;
+package guardians.model.entities;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
@@ -29,6 +31,12 @@ import lombok.Data;
 		@UniqueConstraint(columnNames = {"first_name", "last_names"})
 )
 public class Doctor {
+
+	public enum DoctorStatus {
+		AVAILABLE,
+		DELETED
+	}
+	
 	@Id
 	@GeneratedValue
 	@Column(name = "id")
@@ -45,6 +53,9 @@ public class Doctor {
 	@Email
 	@NotBlank
 	private String email;
+	
+	@Enumerated(EnumType.ORDINAL)
+	private DoctorStatus status = DoctorStatus.AVAILABLE;
 
 	@OneToOne(optional = true, mappedBy = "doctor", cascade = {CascadeType.ALL})
 	@JsonManagedReference

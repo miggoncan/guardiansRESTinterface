@@ -1,10 +1,10 @@
-package es.us.alumn.miggoncan2.model.validation;
+package guardians.model.validation;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
-import es.us.alumn.miggoncan2.model.entities.CycleChange;
-import es.us.alumn.miggoncan2.model.entities.Doctor;
+import guardians.model.entities.CycleChange;
+import guardians.model.entities.Doctor;
 import lombok.extern.slf4j.Slf4j;
 
 /**

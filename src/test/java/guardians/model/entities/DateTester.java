@@ -1,4 +1,4 @@
-package es.us.alumn.miggoncan2.model.entities;
+package guardians.model.entities;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -14,7 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 public class DateTester<TestedEntity> {
 
 	private static final String violationDateMessage = "The day, month and year have to be valid";
-	
+
 	private EntityTester<TestedEntity> entityTester;
 
 	/**
@@ -24,7 +24,7 @@ public class DateTester<TestedEntity> {
 	 * @author miggoncan
 	 */
 	public interface DayMonthYearSetter {
-		public void setDayMonthYear(int day, int month, int year);
+		public void setDayMonthYear(Integer day, Integer month, Integer year);
 	}
 
 	/**
@@ -44,7 +44,7 @@ public class DateTester<TestedEntity> {
 	 *                     entity (excluding day, month and year) are expected to be
 	 *                     valid
 	 * @param setter       The
-	 *                     {@link DayMonthYearSetter#setDayMonthYear(int, int, int)}
+	 *                     {@link DayMonthYearSetter#setDayMonthYear(Integer, Integer, Integer)}
 	 *                     method will be called with every received date from the
 	 *                     {@link DateProvider}. This method should set the
 	 *                     corresponding attributes in the objectToTest
@@ -52,7 +52,7 @@ public class DateTester<TestedEntity> {
 	public void testEntity(TestedEntity objectToTest, DayMonthYearSetter setter) {
 		log.debug("Validating entity: " + objectToTest);
 		DateProvider dateProvider = new DateProvider();
-		int day, month, year;
+		Integer day, month, year;
 		while (dateProvider.moveToNext()) {
 			day = dateProvider.getDay();
 			month = dateProvider.getMonth();
@@ -62,7 +62,7 @@ public class DateTester<TestedEntity> {
 
 			if (dateProvider.isValidDate()) {
 				log.debug("The provided date is valid. Asserting there are no constraint violations");
-				this.entityTester.assertValidEnity(objectToTest);
+				this.entityTester.assertValidEntity(objectToTest);
 			} else {
 				this.entityTester.assertEntityViolatedConstraint(objectToTest, violationDateMessage);
 			}

@@ -1,4 +1,4 @@
-package es.us.alumn.miggoncan2;
+package guardians;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -10,22 +10,22 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import es.us.alumn.miggoncan2.model.entities.Absence;
-import es.us.alumn.miggoncan2.model.entities.AllowedShift;
-import es.us.alumn.miggoncan2.model.entities.Calendar;
-import es.us.alumn.miggoncan2.model.entities.CycleChange;
-import es.us.alumn.miggoncan2.model.entities.DayConfiguration;
-import es.us.alumn.miggoncan2.model.entities.Doctor;
-import es.us.alumn.miggoncan2.model.entities.ShiftConfiguration;
-import es.us.alumn.miggoncan2.model.entities.ShiftCycle;
-import es.us.alumn.miggoncan2.model.repositories.AbsenceRepository;
-import es.us.alumn.miggoncan2.model.repositories.AllowedShiftRepository;
-import es.us.alumn.miggoncan2.model.repositories.CalendarRepository;
-import es.us.alumn.miggoncan2.model.repositories.CycleChangeRespository;
-import es.us.alumn.miggoncan2.model.repositories.DayConfigurationRepository;
-import es.us.alumn.miggoncan2.model.repositories.DoctorRepository;
-import es.us.alumn.miggoncan2.model.repositories.ShiftConfigurationRepository;
-import es.us.alumn.miggoncan2.model.repositories.ShiftCycleRepository;
+import guardians.model.entities.Absence;
+import guardians.model.entities.AllowedShift;
+import guardians.model.entities.Calendar;
+import guardians.model.entities.CycleChange;
+import guardians.model.entities.DayConfiguration;
+import guardians.model.entities.Doctor;
+import guardians.model.entities.ShiftConfiguration;
+import guardians.model.entities.ShiftCycle;
+import guardians.model.repositories.AbsenceRepository;
+import guardians.model.repositories.AllowedShiftRepository;
+import guardians.model.repositories.CalendarRepository;
+import guardians.model.repositories.CycleChangeRespository;
+import guardians.model.repositories.DayConfigurationRepository;
+import guardians.model.repositories.DoctorRepository;
+import guardians.model.repositories.ShiftConfigurationRepository;
+import guardians.model.repositories.ShiftCycleRepository;
 import lombok.extern.slf4j.Slf4j;
 
 @Configuration

@@ -1,4 +1,4 @@
-package es.us.alumn.miggoncan2.model.validation;
+package guardians.model.validation;
 
 import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
 import static java.lang.annotation.ElementType.TYPE;
@@ -21,7 +21,7 @@ import javax.validation.Payload;
 @Target({ TYPE, ANNOTATION_TYPE })
 @Constraint(validatedBy = { ValidShiftConfigurationValidator.class })
 public @interface ValidShiftConfiguration {
-	String message() default "{es.us.alumn.miggoncan2.model.entityvalidation.ValidShiftConfiguration.message}";
+	String message() default "{guardians.model.entityvalidation.ValidShiftConfiguration.message}";
 
 	Class<?>[] groups() default {};
 

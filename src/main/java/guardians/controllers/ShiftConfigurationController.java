@@ -1,4 +1,4 @@
-package es.us.alumn.miggoncan2.controllers;
+package guardians.controllers;
 
 import java.util.HashSet;
 import java.util.Optional;
@@ -17,18 +17,20 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import es.us.alumn.miggoncan2.controllers.exceptions.AllowedShiftNotFoundException;
-import es.us.alumn.miggoncan2.controllers.exceptions.DoctorNotFoundException;
-import es.us.alumn.miggoncan2.controllers.exceptions.InvalidEntityException;
-import es.us.alumn.miggoncan2.controllers.exceptions.ShiftConfigurationAlreadyExistsException;
-import es.us.alumn.miggoncan2.controllers.exceptions.ShiftConfigurationNotFoundException;
-import es.us.alumn.miggoncan2.model.assembler.ShiftConfigurationAssembler;
-import es.us.alumn.miggoncan2.model.entities.AllowedShift;
-import es.us.alumn.miggoncan2.model.entities.Doctor;
-import es.us.alumn.miggoncan2.model.entities.ShiftConfiguration;
-import es.us.alumn.miggoncan2.model.repositories.AllowedShiftRepository;
-import es.us.alumn.miggoncan2.model.repositories.DoctorRepository;
-import es.us.alumn.miggoncan2.model.repositories.ShiftConfigurationRepository;
+import guardians.controllers.exceptions.AllowedShiftNotFoundException;
+import guardians.controllers.exceptions.DoctorDeletedException;
+import guardians.controllers.exceptions.DoctorNotFoundException;
+import guardians.controllers.exceptions.InvalidEntityException;
+import guardians.controllers.exceptions.ShiftConfigurationAlreadyExistsException;
+import guardians.controllers.exceptions.ShiftConfigurationNotFoundException;
+import guardians.model.assembler.ShiftConfigurationAssembler;
+import guardians.model.entities.AllowedShift;
+import guardians.model.entities.Doctor;
+import guardians.model.entities.ShiftConfiguration;
+import guardians.model.entities.Doctor.DoctorStatus;
+import guardians.model.repositories.AllowedShiftRepository;
+import guardians.model.repositories.DoctorRepository;
+import guardians.model.repositories.ShiftConfigurationRepository;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -139,8 +141,13 @@ public class ShiftConfigurationController {
 			log.info("The provided doctor id \"" + doctorId
 					+ "\"does not match any existing doctor. Throwing DoctorNotFoundException");
 			throw new DoctorNotFoundException(doctorId);
-		}
+		}		
 		log.info("The doctor that will receive a shift configuration is " + doctor.get());
+		
+		if (doctor.get().getStatus() == DoctorStatus.DELETED) {
+			log.info("The doctor is marked as deleted. Throwing DoctorDeletedException");
+			throw new DoctorDeletedException(doctorId);
+		}
 
 		if (shiftConfigurationRepository.findById(doctorId).isPresent()) {
 			log.info("The doctor with id \"" + doctorId
@@ -207,6 +214,11 @@ public class ShiftConfigurationController {
 		if (!doctor.isPresent()) {
 			log.info("The requested doctor id \"" + doctorId + "\" was not found. Throwing DoctorNotFoundException");
 			throw new DoctorNotFoundException(doctorId);
+		}
+		
+		if (doctor.get().getStatus() == DoctorStatus.DELETED) {
+			log.info("The doctor is marked as deleted. Throwing DoctorDeletedException");
+			throw new DoctorDeletedException(doctorId);
 		}
 
 		if (!shiftConfigurationRepository.findById(doctorId).isPresent()) {

@@ -3,4 +3,4 @@
  * 
  * @author miggoncan
  */
-package es.us.alumn.miggoncan2.model.validation;
+package guardians.model.validation;

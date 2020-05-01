@@ -1,4 +1,4 @@
-package es.us.alumn.miggoncan2.model.assembler;
+package guardians.model.assembler;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
@@ -11,11 +11,11 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.stereotype.Component;
 
-import es.us.alumn.miggoncan2.controllers.AllowedShiftsController;
-import es.us.alumn.miggoncan2.controllers.DoctorController;
-import es.us.alumn.miggoncan2.controllers.RootController;
-import es.us.alumn.miggoncan2.controllers.ShiftConfigurationController;
-import es.us.alumn.miggoncan2.model.entities.ShiftConfiguration;
+import guardians.controllers.AllowedShiftsController;
+import guardians.controllers.DoctorController;
+import guardians.controllers.RootController;
+import guardians.controllers.ShiftConfigurationController;
+import guardians.model.entities.ShiftConfiguration;
 
 /**
  * DoctorAssembler is responsible for converting a {@link ShiftConfiguration}

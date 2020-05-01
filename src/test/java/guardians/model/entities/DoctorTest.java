@@ -1,4 +1,4 @@
-package es.us.alumn.miggoncan2.model.entities;
+package guardians.model.entities;
 
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
@@ -9,7 +9,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-import es.us.alumn.miggoncan2.model.repositories.DoctorRepository;
+import guardians.model.entities.Doctor;
+import guardians.model.repositories.DoctorRepository;
 
 @DataJpaTest
 public class DoctorTest {
@@ -82,7 +83,7 @@ public class DoctorTest {
 	void createAndSaveValidDoctor() {
 		Doctor doctor = new Doctor("Bilbo", "Baggins", "bilbo@mordos.com");
 		
-		this.entityTester.assertValidEnity(doctor);
+		this.entityTester.assertValidEntity(doctor);
 		
 		doctor = doctorRepository.save(doctor);
 		assertNotEquals(0, doctor.getId());

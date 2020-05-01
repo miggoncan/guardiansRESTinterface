@@ -1,4 +1,6 @@
-package es.us.alumn.miggoncan2.model.entities;
+package guardians.model.entities;
+
+import java.time.LocalDate;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -11,7 +13,7 @@ import lombok.extern.slf4j.Slf4j;
  * is intended to be used is as follows:
  * 
  * DateProvider myDateProvider = new DateProvider(); 
- * int day, month, year; 
+ * Integer day, month, year; 
  * while (myDateProvider.moveToNext()) { 
  *     day = myDateProvider.getDay(); 
  *     month = myDateProvider.getMonth(); 
@@ -35,7 +37,7 @@ public class DateProvider {
 	 * one will be the year, and the fourth and last one will be 1 if the date is
 	 * valid or 0 if invalid
 	 */
-	private int[][] data = { 
+	private Integer[][] data = { 
 			// First, valid dates
 			{01, 05, 2020, 1},
 			{30, 06, 2026, 1},
@@ -47,7 +49,15 @@ public class DateProvider {
 			{30, 02, 2021, 0}, // February cannot have 30 days
 			{31, 04, 2016, 0}, // April has 30 days
 			{01, 13, 2020, 0}, // There are only 12 months
-			{32, 05, 2020, 0}  //No month can have 32 days
+			{32, 05, 2020, 0}, //No month can have 32 days
+			// Null values are invalid
+			{null, 06,   2020, 0},
+			{null, null, 2020, 0},
+			{null, 06,   null, 0},
+			{null, null, null, 0},
+			{26,   null, 2020, 0},
+			{26,   null, null, 0},
+			{26,   06,   null, 0}
 	};
 	
 	// Index starts in -1 so that, when moveToNext is first called, it will be 0 
@@ -56,6 +66,16 @@ public class DateProvider {
 
 	public DateProvider() {
 		log.debug("This date provider has " + this.data.length + " dates to provide");
+	}
+	
+	/**
+	 * This method will create a valid date Note the returned date will be the same
+	 * every time this method is called
+	 * 
+	 * @return The created date
+	 */
+	public static LocalDate getValidDate() {
+		return LocalDate.of(2020, 6, 26);
 	}
 
 	public boolean moveToNext() {
@@ -66,23 +86,23 @@ public class DateProvider {
 		return hasMoreDateToProvide;
 	}
 
-	public int getDay() {
+	public Integer getDay() {
 		this.checkIndex();
-		int day = this.data[this.index][0];
+		Integer day = this.data[this.index][0];
 		log.debug("Requested day is: " + day);
 		return day;
 	}
 
-	public int getMonth() {
+	public Integer getMonth() {
 		this.checkIndex();
-		int month = this.data[this.index][1];
+		Integer month = this.data[this.index][1];
 		log.debug("Requested month is: " + month);
 		return month;
 	}
 
-	public int getYear() {
+	public Integer getYear() {
 		this.checkIndex();
-		int year = this.data[this.index][2];
+		Integer year = this.data[this.index][2];
 		log.debug("Requested year is: " + year);
 		return year;
 	}

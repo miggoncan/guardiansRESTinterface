@@ -1,4 +1,4 @@
-package es.us.alumn.miggoncan2.model.repositories;
+package guardians.model.repositories;
 
 import java.util.Optional;
 
@@ -6,7 +6,7 @@ import javax.persistence.Entity;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import es.us.alumn.miggoncan2.model.entities.Doctor;
+import guardians.model.entities.Doctor;
 
 /**
  * This interface will be used by Jpa to auto-generate a class having all the

@@ -1,6 +1,6 @@
-package es.us.alumn.miggoncan2.controllers.exceptions;
+package guardians.controllers.exceptions;
 
-import es.us.alumn.miggoncan2.model.entities.ShiftConfiguration;
+import guardians.model.entities.ShiftConfiguration;
 
 /**
  * This class represents the exception that will be thrown when a requested

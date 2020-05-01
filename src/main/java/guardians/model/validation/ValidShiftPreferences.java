@@ -12,21 +12,19 @@ import javax.validation.Constraint;
 import javax.validation.Payload;
 
 /**
- * @see ValidDayMonthYearValidator
- * @see ValidDayMonthYearShiftCycleValidator
- * @see ValidDayMonthYearDayConfigurationValidator
- * @see ValidDayMonthYearScheduleDayValidator
- * @see ValidDayMonthYearCycleChangeValidator
+ * @see ValidShiftPreferencesValidator
+ * @see ValidShiftPreferencesShiftConfigValidator
+ * @see ValidShiftPreferencesDayConfigValidator
  * 
  * @author miggoncan
  */
 @Documented
 @Retention(RUNTIME)
 @Target({ TYPE, ANNOTATION_TYPE })
-@Constraint(validatedBy = { ValidDayMonthYearShiftCycleValidator.class, ValidDayMonthYearScheduleDayValidator.class,
-		ValidDayMonthYearCycleChangeValidator.class, ValidDayMonthYearDayConfigurationValidator.class })
-public @interface ValidDayMonthYear {
-	String message() default "{guardians.model.entityvalidation.ValidDayMonthYear.message}";
+@Constraint(validatedBy = { ValidShiftPreferencesShiftConfigValidator.class,
+		ValidShiftPreferencesDayConfigValidator.class })
+public @interface ValidShiftPreferences {
+	String message() default "{guardians.model.entityvalidation.ValidShiftPreferences.message}";
 
 	Class<?>[] groups() default {};
 

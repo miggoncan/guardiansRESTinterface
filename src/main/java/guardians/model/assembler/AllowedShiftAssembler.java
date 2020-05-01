@@ -1,4 +1,4 @@
-package es.us.alumn.miggoncan2.model.assembler;
+package guardians.model.assembler;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
@@ -11,9 +11,9 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.stereotype.Component;
 
-import es.us.alumn.miggoncan2.controllers.AllowedShiftsController;
-import es.us.alumn.miggoncan2.controllers.ShiftConfigurationController;
-import es.us.alumn.miggoncan2.model.entities.AllowedShift;
+import guardians.controllers.AllowedShiftsController;
+import guardians.controllers.ShiftConfigurationController;
+import guardians.model.entities.AllowedShift;
 
 /**
  * AllowedShiftAssembler is responsible for converting {@link AllowedShift}s

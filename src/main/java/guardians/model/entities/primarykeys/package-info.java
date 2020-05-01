@@ -4,4 +4,4 @@
  * 
  * @author miggoncan
  */
-package es.us.alumn.miggoncan2.model.entities.primarykeys;
+package guardians.model.entities.primarykeys;

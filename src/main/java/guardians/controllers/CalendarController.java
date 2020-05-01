@@ -1,4 +1,4 @@
-package es.us.alumn.miggoncan2.controllers;
+package guardians.controllers;
 
 import java.util.List;
 
@@ -7,9 +7,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import es.us.alumn.miggoncan2.model.entities.Calendar;
-import es.us.alumn.miggoncan2.model.entities.Schedule;
-import es.us.alumn.miggoncan2.model.repositories.CalendarRepository;
+import guardians.model.entities.Calendar;
+import guardians.model.entities.Schedule;
+import guardians.model.repositories.CalendarRepository;
 
 /**
  * The CalendarController will handle all requests related to {@link Calendar}

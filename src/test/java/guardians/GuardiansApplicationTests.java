@@ -1,4 +1,4 @@
-package es.us.alumn.miggoncan2;
+package guardians;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

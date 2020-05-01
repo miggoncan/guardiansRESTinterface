@@ -1,4 +1,4 @@
-package es.us.alumn.miggoncan2;
+package guardians;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

@@ -1,4 +1,4 @@
-package es.us.alumn.miggoncan2.model.entities;
+package guardians.model.entities;
 
 import java.util.Set;
 
@@ -13,7 +13,8 @@ import javax.validation.constraints.PositiveOrZero;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
-import es.us.alumn.miggoncan2.model.validation.ValidShiftConfiguration;
+import guardians.model.validation.ValidShiftConfiguration;
+import guardians.model.validation.ValidShiftPreferences;
 import lombok.Data;
 
 /**
@@ -35,6 +36,7 @@ import lombok.Data;
 @Data
 @Entity
 @ValidShiftConfiguration
+@ValidShiftPreferences
 public class ShiftConfiguration {
 	@Id
 	@NotNull

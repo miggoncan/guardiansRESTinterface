@@ -1,4 +1,4 @@
-package es.us.alumn.miggoncan2.controllers;
+package guardians.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
@@ -8,10 +8,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import es.us.alumn.miggoncan2.controllers.exceptions.AllowedShiftNotFoundException;
-import es.us.alumn.miggoncan2.model.assembler.AllowedShiftAssembler;
-import es.us.alumn.miggoncan2.model.entities.AllowedShift;
-import es.us.alumn.miggoncan2.model.repositories.AllowedShiftRepository;
+import guardians.controllers.exceptions.AllowedShiftNotFoundException;
+import guardians.model.assembler.AllowedShiftAssembler;
+import guardians.model.entities.AllowedShift;
+import guardians.model.repositories.AllowedShiftRepository;
 
 /**
  * The purpose of the AllowedShiftsController will be serving the list of

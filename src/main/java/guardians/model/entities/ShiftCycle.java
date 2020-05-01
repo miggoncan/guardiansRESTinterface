@@ -1,4 +1,4 @@
-package es.us.alumn.miggoncan2.model.entities;
+package guardians.model.entities;
 
 import java.util.List;
 
@@ -10,8 +10,8 @@ import javax.validation.constraints.NotEmpty;
 
 import org.hibernate.validator.constraints.Range;
 
-import es.us.alumn.miggoncan2.model.entities.primarykeys.DayMonthYearPK;
-import es.us.alumn.miggoncan2.model.validation.ValidDayMonthYear;
+import guardians.model.entities.primarykeys.DayMonthYearPK;
+import guardians.model.validation.ValidDayMonthYear;
 import lombok.Data;
 
 /**

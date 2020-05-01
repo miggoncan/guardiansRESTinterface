@@ -1,4 +1,4 @@
-package es.us.alumn.miggoncan2.model.entities;
+package guardians.model.entities;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -9,9 +9,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-import es.us.alumn.miggoncan2.model.repositories.AllowedShiftRepository;
-import es.us.alumn.miggoncan2.model.repositories.DoctorRepository;
-import es.us.alumn.miggoncan2.model.repositories.ShiftConfigurationRepository;
+import guardians.model.entities.AllowedShift;
+import guardians.model.entities.Doctor;
+import guardians.model.entities.ShiftConfiguration;
+import guardians.model.repositories.AllowedShiftRepository;
+import guardians.model.repositories.DoctorRepository;
+import guardians.model.repositories.ShiftConfigurationRepository;
 import lombok.extern.slf4j.Slf4j;
 
 @DataJpaTest
@@ -25,15 +28,16 @@ public class ShiftConfigurationTest {
 
 	@Autowired
 	private AllowedShiftRepository allowedShiftRepository;
-	
+
 	private EntityTester<ShiftConfiguration> entityTester;
 
 	/**
-	 * Create a ShiftConfiguration without Shift Preferences (e.g. unwantedShifts)
+	 * Create a {@link ShiftConfiguration} without Shift Preferences (e.g.
+	 * unwantedShifts)
 	 * 
 	 * @param doctor The doctor to whom this shift configuration will apply. It
 	 *               should already be persisted
-	 * @return The created ShiftConfiguration
+	 * @return The created {@link ShiftConfiguration}
 	 */
 	public static ShiftConfiguration createValidShiftConfiguration(Doctor doctor) {
 		ShiftConfiguration shiftConfiguration = new ShiftConfiguration(3, 2, false);
@@ -56,14 +60,14 @@ public class ShiftConfigurationTest {
 	}
 
 	/**
-	 * Create a ShiftConfiguration and change it according to op.configure
+	 * Create a {@link ShiftConfiguration} and change it according to op.configure
 	 * 
 	 * The allowedShifts given to the op.configure method will always have, at
 	 * least, 4 elements
 	 * 
 	 * @param op The configure method of this object will be used to change the
 	 *           tested shiftConfiguration
-	 * @return The created ShiftConfiguration. It will not be persisted
+	 * @return The created {@link ShiftConfiguration}. It will not be persisted
 	 */
 	private ShiftConfiguration createShiftConfiguration(ShiftConfigurationModifier op) {
 		log.debug("Creating a new ShiftConfiguraton");
@@ -78,14 +82,14 @@ public class ShiftConfigurationTest {
 	}
 
 	/**
-	 * Create a valid ShiftConfiguration, change it according to op.configure and
-	 * test it
+	 * Create a valid {@link ShiftConfiguration}, change it according to
+	 * op.configure and test it
 	 * 
 	 * The allowedShifts given to the op.configure method will always have, at
 	 * least, 4 elements
 	 * 
 	 * The expected changed made by op are expected to create a valid
-	 * ShiftConfiguration
+	 * {@link ShiftConfiguration}
 	 * 
 	 * @param op The configure method of this object will be used to change the
 	 *           tested shiftConfiguration
@@ -94,7 +98,7 @@ public class ShiftConfigurationTest {
 		log.debug("Testing a valid ShiftConfiguration");
 		ShiftConfiguration shiftConfiguration = createShiftConfiguration(op);
 
-		this.entityTester.assertValidEnity(shiftConfiguration);
+		this.entityTester.assertValidEntity(shiftConfiguration);
 
 		shiftConfiguration = shiftConfigurationRepository.save(shiftConfiguration);
 		assertEquals(shiftConfiguration.getDoctor().getId(), shiftConfiguration.getDoctorId());
@@ -117,7 +121,8 @@ public class ShiftConfigurationTest {
 		log.debug("Testing an invalid ShiftConfiguration");
 		ShiftConfiguration shiftConfiguration = createShiftConfiguration(op);
 
-		this.entityTester.assertEntityViolatedConstraint(shiftConfiguration, "The ShiftConfiguration is not valid");
+		this.entityTester.assertEntityViolatedConstraint(shiftConfiguration,
+				"The shift preferences cannot have clashes between one another");
 	}
 
 	///////////////////////////////////////
@@ -346,7 +351,17 @@ public class ShiftConfigurationTest {
 	void doctorIdCannotBeNull() {
 		this.entityTester.assertAttributeCannotBeNull("doctorId");
 	}
-	
+
+	@Test
+	void minShiftCannotBeLargerThanMaxShifts() {
+		Doctor doctor = doctorRepository.save(DoctorTest.createValidDoctor());
+		ShiftConfiguration shiftConfiguration = createValidShiftConfiguration(doctor);
+		shiftConfiguration.setMinShifts(4);
+		shiftConfiguration.setMaxShifts(2);
+		this.entityTester.assertEntityViolatedConstraint(shiftConfiguration,
+				"The minimum shifts have to be less than the maximum shifts");
+	}
+
 	//
 	// Tests for maxShifts, minShifts and doesConsultations
 	//
@@ -383,7 +398,7 @@ public class ShiftConfigurationTest {
 			shiftConfiguration.setUnavailableShifts(new HashSet<>(allowedShifts.subList(0, 2)));
 		});
 	}
-	
+
 	@Test
 	void cannotHaveSameUnwantedAndWantedShifts() {
 		testInvalidShiftConfiguration((shiftConfiguration, allowedShifts) -> {
@@ -391,7 +406,7 @@ public class ShiftConfigurationTest {
 			shiftConfiguration.setWantedShifts(new HashSet<>(allowedShifts.subList(0, 2)));
 		});
 	}
-	
+
 	@Test
 	void cannotHaveSameUnwantedAndMandatoryShifts() {
 		testInvalidShiftConfiguration((shiftConfiguration, allowedShifts) -> {
@@ -399,7 +414,7 @@ public class ShiftConfigurationTest {
 			shiftConfiguration.setMandatoryShifts(new HashSet<>(allowedShifts.subList(0, 2)));
 		});
 	}
-	
+
 	@Test
 	void cannotHaveSameUnavailableAndWantedShifts() {
 		testInvalidShiftConfiguration((shiftConfiguration, allowedShifts) -> {
@@ -407,7 +422,7 @@ public class ShiftConfigurationTest {
 			shiftConfiguration.setWantedShifts(new HashSet<>(allowedShifts.subList(0, 2)));
 		});
 	}
-	
+
 	@Test
 	void cannotHaveSameUnavailableAndMandatoryShifts() {
 		testInvalidShiftConfiguration((shiftConfiguration, allowedShifts) -> {
@@ -415,7 +430,7 @@ public class ShiftConfigurationTest {
 			shiftConfiguration.setMandatoryShifts(new HashSet<>(allowedShifts.subList(0, 2)));
 		});
 	}
-	
+
 	@Test
 	void cannotHaveSameWantedAndMandatoryShifts() {
 		testInvalidShiftConfiguration((shiftConfiguration, allowedShifts) -> {

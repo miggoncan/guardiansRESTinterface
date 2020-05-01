@@ -1,10 +1,10 @@
-package es.us.alumn.miggoncan2.controllers.exceptions;
+package guardians.controllers.exceptions;
 
 import java.util.Set;
 
 import javax.validation.ConstraintViolation;
 
-import es.us.alumn.miggoncan2.model.entities.Absence;
+import guardians.model.entities.Absence;
 
 /**
  * This class represents the exception to be thrown when an {@link Absence} is

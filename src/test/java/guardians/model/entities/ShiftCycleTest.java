@@ -1,4 +1,4 @@
-package es.us.alumn.miggoncan2.model.entities;
+package guardians.model.entities;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -9,8 +9,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-import es.us.alumn.miggoncan2.model.repositories.DoctorRepository;
-import es.us.alumn.miggoncan2.model.repositories.ShiftCycleRepository;
+import guardians.model.repositories.DoctorRepository;
+import guardians.model.repositories.ShiftCycleRepository;
 
 @DataJpaTest
 public class ShiftCycleTest {
@@ -54,7 +54,7 @@ public class ShiftCycleTest {
 		List<Doctor> doctors = doctorRepository.saveAll(DoctorTest.createValidDoctors());
 		ShiftCycle shiftCycle = new ShiftCycle(1, 2, 2020, doctors);
 		
-		this.entityTester.assertValidEnity(shiftCycle);
+		this.entityTester.assertValidEntity(shiftCycle);
 		
 		shiftCycle = shiftCycleRepository.save(shiftCycle);
 		assertEquals(1, shiftCycle.getDay());

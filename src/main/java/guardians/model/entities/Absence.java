@@ -1,4 +1,4 @@
-package es.us.alumn.miggoncan2.model.entities;
+package guardians.model.entities;
 
 import java.time.LocalDate;
 
@@ -11,7 +11,7 @@ import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
-import es.us.alumn.miggoncan2.model.validation.ValidAbsenceDates;
+import guardians.model.validation.ValidAbsenceDates;
 import lombok.Data;
 
 /**

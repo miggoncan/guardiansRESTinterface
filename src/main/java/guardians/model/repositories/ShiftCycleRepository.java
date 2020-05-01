@@ -1,10 +1,10 @@
-package es.us.alumn.miggoncan2.model.repositories;
+package guardians.model.repositories;
 
 import javax.persistence.Entity;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import es.us.alumn.miggoncan2.model.entities.ShiftCycle;
+import guardians.model.entities.ShiftCycle;
 
 /**
  * This interface will be used by Jpa to auto-generate a class having all the

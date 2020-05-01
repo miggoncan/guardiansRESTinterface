@@ -1,13 +1,14 @@
-package es.us.alumn.miggoncan2.controllers;
+package guardians.controllers;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import es.us.alumn.miggoncan2.controllers.exceptions.AlreadyExistsException;
-import es.us.alumn.miggoncan2.controllers.exceptions.InvalidEntityException;
-import es.us.alumn.miggoncan2.controllers.exceptions.NotFoundException;
+import guardians.controllers.exceptions.AlreadyExistsException;
+import guardians.controllers.exceptions.DoctorDeletedException;
+import guardians.controllers.exceptions.InvalidEntityException;
+import guardians.controllers.exceptions.NotFoundException;
 
 /**
  * This Controller will catch the thrown {@link RuntimeException} declared in
@@ -51,6 +52,18 @@ public class MyAdviceController {
 	@ExceptionHandler(InvalidEntityException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	String invalidEntityHandler(InvalidEntityException e) {
+		return e.getMessage();
+	}
+	
+	/**
+	 * This method catches the exception {@link DoctorDeletedException}
+	 * 
+	 * @param e The caught exception
+	 * @return The String that should be returned in the HTTP response body
+	 */
+	@ExceptionHandler(DoctorDeletedException.class)
+	@ResponseStatus(HttpStatus.FORBIDDEN)
+	String doctorDeleterHandler(DoctorDeletedException e) {
 		return e.getMessage();
 	}
 }

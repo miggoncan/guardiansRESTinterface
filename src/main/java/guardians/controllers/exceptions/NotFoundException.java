@@ -1,4 +1,4 @@
-package es.us.alumn.miggoncan2.controllers.exceptions;
+package guardians.controllers.exceptions;
 
 /**
  * All exceptions that represent a resource has not been found will extend this

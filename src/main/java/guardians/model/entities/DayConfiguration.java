@@ -1,4 +1,4 @@
-package es.us.alumn.miggoncan2.model.entities;
+package guardians.model.entities;
 
 import java.util.List;
 import java.util.Set;
@@ -20,11 +20,10 @@ import org.hibernate.validator.constraints.Range;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
-import es.us.alumn.miggoncan2.model.entities.primarykeys.DayMonthYearPK;
-import es.us.alumn.miggoncan2.model.validation.ValidDayMonthYear;
+import guardians.model.entities.primarykeys.DayMonthYearPK;
+import guardians.model.validation.ValidDayMonthYear;
+import guardians.model.validation.ValidShiftPreferences;
 import lombok.Data;
-
-// TODO validate dayConfiguration: there cannot be clashes between unwanted, wanted, .. shifts
 
 /**
  * This {@link Entity} represents a specific conditions to take into account
@@ -57,6 +56,7 @@ import lombok.Data;
 @Entity
 @IdClass(DayMonthYearPK.class)
 @ValidDayMonthYear
+@ValidShiftPreferences
 public class DayConfiguration {
 	@Id
 	@Range(min = 1, max = 31)

@@ -1,4 +1,4 @@
-package es.us.alumn.miggoncan2.model.entities;
+package guardians.model.entities;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -42,7 +42,7 @@ public class EntityTester<TestedEntity> {
 	 * 
 	 * @param entity The {@link Entity} to be checked
 	 */
-	public void assertValidEnity(TestedEntity entity) {
+	public void assertValidEntity(TestedEntity entity) {
 		log.debug("Request to assert a valid entity: " + entity);
 		Set<ConstraintViolation<TestedEntity>> constraintViolations = validator.validate(entity);
 		log.debug("The contrains violations are: " + constraintViolations);

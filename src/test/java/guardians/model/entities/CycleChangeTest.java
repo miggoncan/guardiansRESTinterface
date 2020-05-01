@@ -1,4 +1,4 @@
-package es.us.alumn.miggoncan2.model.entities;
+package guardians.model.entities;
 
 import java.util.List;
 
@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-import es.us.alumn.miggoncan2.model.repositories.DoctorRepository;
+import guardians.model.repositories.DoctorRepository;
 
 @DataJpaTest
 public class CycleChangeTest {

@@ -1,11 +1,11 @@
-package es.us.alumn.miggoncan2.model.repositories;
+package guardians.model.repositories;
 
 import javax.persistence.Entity;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import es.us.alumn.miggoncan2.model.entities.Schedule;
-import es.us.alumn.miggoncan2.model.entities.primarykeys.CalendarPK;
+import guardians.model.entities.Schedule;
+import guardians.model.entities.primarykeys.CalendarPK;
 
 /**
  * This interface will be used by Jpa to auto-generate a class having all the

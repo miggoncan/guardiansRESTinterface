@@ -1,4 +1,4 @@
-package es.us.alumn.miggoncan2.model.entities;
+package guardians.model.entities;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -12,8 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.orm.jpa.JpaSystemException;
 
-import es.us.alumn.miggoncan2.model.repositories.AbsenceRepository;
-import es.us.alumn.miggoncan2.model.repositories.DoctorRepository;
+import guardians.model.repositories.AbsenceRepository;
+import guardians.model.repositories.DoctorRepository;
 
 @DataJpaTest
 public class AbsenceTest {
@@ -63,7 +63,7 @@ public class AbsenceTest {
 		Absence absence = createValidAbsence();
 		absence.setDoctor(myDoctor);
 
-		this.entityTester.assertValidEnity(absence);
+		this.entityTester.assertValidEntity(absence);
 
 		absence = absenceRepository.save(absence);
 		assertEquals(myDoctor.getId(), absence.getDoctorId());

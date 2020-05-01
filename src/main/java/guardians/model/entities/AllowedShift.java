@@ -1,4 +1,4 @@
-package es.us.alumn.miggoncan2.model.entities;
+package guardians.model.entities;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

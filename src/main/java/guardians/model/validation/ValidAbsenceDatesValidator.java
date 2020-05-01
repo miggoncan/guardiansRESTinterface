@@ -1,4 +1,4 @@
-package es.us.alumn.miggoncan2.model.validation;
+package guardians.model.validation;
 
 
 import java.time.LocalDate;
@@ -6,7 +6,7 @@ import java.time.LocalDate;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
-import es.us.alumn.miggoncan2.model.entities.Absence;
+import guardians.model.entities.Absence;
 
 /**
  * This class is used to validate the {@link Absence}s annotated with

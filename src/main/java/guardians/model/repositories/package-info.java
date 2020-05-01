@@ -6,4 +6,4 @@
  * 
  * @author miggoncan
  */
-package es.us.alumn.miggoncan2.model.repositories;
+package guardians.model.repositories;

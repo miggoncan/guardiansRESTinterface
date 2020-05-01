@@ -1,4 +1,4 @@
-package es.us.alumn.miggoncan2.controllers;
+package guardians.controllers;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -20,12 +20,12 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import es.us.alumn.miggoncan2.model.entities.Absence;
-import es.us.alumn.miggoncan2.model.entities.AbsenceTest;
-import es.us.alumn.miggoncan2.model.entities.Doctor;
-import es.us.alumn.miggoncan2.model.entities.DoctorTest;
-import es.us.alumn.miggoncan2.model.repositories.AbsenceRepository;
-import es.us.alumn.miggoncan2.model.repositories.DoctorRepository;
+import guardians.model.entities.Absence;
+import guardians.model.entities.AbsenceTest;
+import guardians.model.entities.Doctor;
+import guardians.model.entities.DoctorTest;
+import guardians.model.repositories.AbsenceRepository;
+import guardians.model.repositories.DoctorRepository;
 
 @SpringBootTest
 @Transactional

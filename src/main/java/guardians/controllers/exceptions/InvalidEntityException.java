@@ -1,4 +1,4 @@
-package es.us.alumn.miggoncan2.controllers.exceptions;
+package guardians.controllers.exceptions;
 
 import javax.persistence.Entity;
 

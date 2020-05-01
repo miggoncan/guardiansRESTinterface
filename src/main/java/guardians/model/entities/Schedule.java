@@ -1,7 +1,8 @@
-package es.us.alumn.miggoncan2.model.entities;
+package guardians.model.entities;
 
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -17,7 +18,8 @@ import org.hibernate.validator.constraints.Range;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
-import es.us.alumn.miggoncan2.model.entities.primarykeys.CalendarPK;
+import guardians.model.entities.primarykeys.CalendarPK;
+import guardians.model.validation.ValidSchedule;
 import lombok.Data;
 
 // TODO test Schedule
@@ -36,7 +38,15 @@ import lombok.Data;
 @Data
 @Entity
 @IdClass(CalendarPK.class)
+@ValidSchedule
 public class Schedule {
+	
+	public enum ScheduleStatus {
+		NOT_CREATED,
+		PENDING_CONFIRMATION,
+		CONFIRMED
+	}
+	
 	@Id
 	@Column(name = "calendar_month")
 	@Range(min = 1, max = 12)
@@ -56,11 +66,10 @@ public class Schedule {
 	 * could be waiting for approval
 	 */
 	@Enumerated(EnumType.STRING)
-	private ScheduleStatus status;
+	@NotNull
+	private ScheduleStatus status = ScheduleStatus.NOT_CREATED;
 
-	// TODO days could be an empty List, as the schedule could have not been created yet
-	// TODO validate Schedule: if status != NOT_CREATED, days should not be empty
-	@OneToMany(mappedBy = "schedule")
+	@OneToMany(mappedBy = "schedule", cascade = CascadeType.ALL)
 	@NotNull
 	@JsonManagedReference
 	private List<ScheduleDay> days;

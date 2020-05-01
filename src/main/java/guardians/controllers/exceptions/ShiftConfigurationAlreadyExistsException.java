@@ -1,7 +1,7 @@
-package es.us.alumn.miggoncan2.controllers.exceptions;
+package guardians.controllers.exceptions;
 
-import es.us.alumn.miggoncan2.model.entities.Doctor;
-import es.us.alumn.miggoncan2.model.entities.ShiftConfiguration;
+import guardians.model.entities.Doctor;
+import guardians.model.entities.ShiftConfiguration;
 
 /**
  * This exception will be thrown whenever a new {@link ShiftConfiguration} for a
