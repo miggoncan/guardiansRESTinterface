@@ -31,13 +31,16 @@ import lombok.Data;
 public class ScheduleDay {
 	@Id
 	@Range(min = 1, max = 31)
+	@NotNull
 	private Integer day;
 	@Id
 	@Range(min = 1, max = 12)
+	@NotNull
 	@Column(name = "schedule_calendar_month")
 	private Integer month;
 	@Id
 	@Range(min = 1970)
+	@NotNull
 	@Column(name = "schedule_calendar_year")
 	private Integer year;
 	@MapsId
@@ -60,7 +63,8 @@ public class ScheduleDay {
 	private Set<Doctor> consultations;
 	
 	
-	public ScheduleDay(Boolean isWorkingDay) {
+	public ScheduleDay(Integer day, Boolean isWorkingDay) {
+		this.day = day;
 		this.isWorkingDay = isWorkingDay;
 	}
 	

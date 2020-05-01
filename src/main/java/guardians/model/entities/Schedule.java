@@ -16,13 +16,12 @@ import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.Range;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import guardians.model.entities.primarykeys.CalendarPK;
 import guardians.model.validation.ValidSchedule;
 import lombok.Data;
-
-// TODO test Schedule
 
 /**
  * The Schedule {@link Entity} represents the scheduled shifts of a specific
@@ -50,14 +49,16 @@ public class Schedule {
 	@Id
 	@Column(name = "calendar_month")
 	@Range(min = 1, max = 12)
+	@NotNull
 	private Integer month;
 	@Id
 	@Column(name = "calendar_year")
 	@Range(min = 1970)
+	@NotNull
 	private Integer year;
 	@MapsId
 	@OneToOne
-	@NotNull
+	@JsonBackReference
 	private Calendar calendar;
 
 	/**
@@ -70,7 +71,6 @@ public class Schedule {
 	private ScheduleStatus status = ScheduleStatus.NOT_CREATED;
 
 	@OneToMany(mappedBy = "schedule", cascade = CascadeType.ALL)
-	@NotNull
 	@JsonManagedReference
 	private List<ScheduleDay> days;
 

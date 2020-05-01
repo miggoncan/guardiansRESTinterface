@@ -53,11 +53,4 @@ public class Calendar {
 
 	public Calendar() {
 	}
-
-	/**
-	 * @return a CalendarPK instance that uniquely identifies this {@link Entity}
-	 */
-	public CalendarPK getPK() {
-		return new CalendarPK(month, year);
-	}
 }

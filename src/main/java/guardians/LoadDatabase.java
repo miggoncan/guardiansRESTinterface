@@ -1,11 +1,14 @@
 package guardians;
 
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,14 +19,18 @@ import guardians.model.entities.Calendar;
 import guardians.model.entities.CycleChange;
 import guardians.model.entities.DayConfiguration;
 import guardians.model.entities.Doctor;
+import guardians.model.entities.Schedule;
+import guardians.model.entities.ScheduleDay;
 import guardians.model.entities.ShiftConfiguration;
 import guardians.model.entities.ShiftCycle;
+import guardians.model.entities.Schedule.ScheduleStatus;
 import guardians.model.repositories.AbsenceRepository;
 import guardians.model.repositories.AllowedShiftRepository;
 import guardians.model.repositories.CalendarRepository;
 import guardians.model.repositories.CycleChangeRespository;
 import guardians.model.repositories.DayConfigurationRepository;
 import guardians.model.repositories.DoctorRepository;
+import guardians.model.repositories.ScheduleRepository;
 import guardians.model.repositories.ShiftConfigurationRepository;
 import guardians.model.repositories.ShiftCycleRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -31,17 +38,29 @@ import lombok.extern.slf4j.Slf4j;
 @Configuration
 @Slf4j
 public class LoadDatabase {
-	// CUrrently, the database is already preloaded. The Bean annotation is commented to
+	@Autowired
+	DoctorRepository doctorRepository;
+	@Autowired
+	AbsenceRepository absenceRepository;
+	@Autowired
+	ShiftConfigurationRepository shiftConfigurationRepository; 
+	@Autowired
+	AllowedShiftRepository allowedShiftRepository;
+	@Autowired
+	ShiftCycleRepository shiftCycleRepository;
+	@Autowired
+	CalendarRepository calendarRepository;
+	@Autowired
+	DayConfigurationRepository dayConfigurationRepository;
+	@Autowired
+	CycleChangeRespository cycleChangeRespository;
+	@Autowired
+	ScheduleRepository scheduleRepository;
+	
+	// Currently, the database is already preloaded. The Bean annotation is commented to
 	// not load it every time the service is launched
-//	@Bean
-	CommandLineRunner initDatabase(DoctorRepository doctorRepository, 
-									AbsenceRepository absenceRepository,
-									ShiftConfigurationRepository shiftConfigurationRepository, 
-									AllowedShiftRepository allowedShiftRepository,
-									ShiftCycleRepository shiftCycleRepository,
-									CalendarRepository calendarRepository,
-									DayConfigurationRepository dayConfigurationRepository,
-									CycleChangeRespository cycleChangeRespository) {
+	@Bean
+	CommandLineRunner initDatabase() {
 		return args -> {
 			AllowedShift allowedShiftMonday = allowedShiftRepository.save(new AllowedShift("Monday"));
 			log.info("Preloading " + allowedShiftMonday);
@@ -120,7 +139,8 @@ public class LoadDatabase {
 			log.info("Preloading " + shiftCycleRepository.save(shiftCycle2));
 			
 			// First Calendar
-			Calendar calendarApril = calendarRepository.save(new Calendar(4, 2020));
+			YearMonth april = YearMonth.of(2020, 4);
+			Calendar calendarApril = calendarRepository.save(new Calendar(april.getMonthValue(), april.getYear()));
 			// Day one of first calendar
 			DayConfiguration aprilConf1 = new DayConfiguration(1, true, 2, 0);
 			aprilConf1.setCalendar(calendarApril);
@@ -185,7 +205,20 @@ public class LoadDatabase {
 			calendarMay.setDayConfigurations(calendarMayDays);
 			log.info("Preloading " + calendarMay);
 			
-			// TODO load an example Schedule into the database
+			Schedule schedule = new Schedule(ScheduleStatus.CONFIRMED);
+			schedule.setCalendar(calendarApril);
+			List<ScheduleDay> scheduleDays = new LinkedList<>();
+			ScheduleDay scheduleDay;
+			for (int day = 1; day <= april.lengthOfMonth(); day++) {
+				scheduleDay = new ScheduleDay(day, true);
+				scheduleDay.setSchedule(schedule);
+				scheduleDay.setCycle(aprilConf1MandatoryShifts);
+				scheduleDay.setShifts(aprilConf1MandatoryShifts);
+				scheduleDays.add(scheduleDay);
+			}
+			schedule.setDays(scheduleDays);
+			schedule = scheduleRepository.save(schedule);
+			log.info("Preloading " + schedule);
 	    };
 	}
 }

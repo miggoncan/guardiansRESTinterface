@@ -6,6 +6,8 @@ import java.util.List;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
+import javax.validation.Validation;
+import javax.validation.Validator;
 
 import guardians.model.entities.Schedule;
 import guardians.model.entities.ScheduleDay;
@@ -21,6 +23,13 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class ValidScheduleValidator implements ConstraintValidator<ValidSchedule, Schedule> {
+
+	private Validator validator;
+
+	public ValidScheduleValidator() {
+		this.validator = Validation.buildDefaultValidatorFactory().getValidator();
+	}
+
 	@Override
 	public boolean isValid(Schedule value, ConstraintValidatorContext context) {
 		log.debug("Request to validate Schedule: " + value);
@@ -69,12 +78,18 @@ public class ValidScheduleValidator implements ConstraintValidator<ValidSchedule
 				log.debug("The month " + yearMonth + " has " + lengthOfMonth + " days. However, only " + numDays
 						+ " days where provided. The schedule is invalid");
 				scheduleIsValid = false;
+			// If any of the days is invalid
+			} else if (days.parallelStream().anyMatch((scheduleDay) -> {
+				return scheduleDay == null || !validator.validate(scheduleDay).isEmpty();
+			})) {
+				log.debug("At least one of the provided ScheduleDays is invalid. The Schedule is invalid");
+				scheduleIsValid = false;
 			} else {
 				// If the schedule has been created and has the number of needed days, sort them
 				// by day number. This allows to easily check all days within the month are
 				// present
 				days.sort((day1, day2) -> {
-					return day2.getDay() - day1.getDay();
+						return day1.getDay() - day2.getDay();
 				});
 				log.debug("The ScheduleDay list after being sorted is: " + days);
 
@@ -83,7 +98,7 @@ public class ValidScheduleValidator implements ConstraintValidator<ValidSchedule
 					currentDay = days.get(i);
 					// As soon as one of the required days is not present, the Schedule is invalid
 					if (i + 1 != currentDay.getDay()) {
-						log.debug("The " + i + " day of " + yearMonth + " is missing. The schedule is invalid");
+						log.debug("The " + (i+1) + " day of " + yearMonth + " is missing. The schedule is invalid");
 						scheduleIsValid = false;
 						break;
 					}

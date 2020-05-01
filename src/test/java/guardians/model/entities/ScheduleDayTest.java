@@ -11,11 +11,29 @@ import org.junit.platform.commons.annotation.Testable;
 public class ScheduleDayTest {
 
 	private EntityTester<ScheduleDay> entityTester;
-	
+
 	public ScheduleDayTest() {
 		this.entityTester = new EntityTester<>(ScheduleDay.class);
 	}
-	
+
+	/**
+	 * This method will create a {@link ScheduleDay} with valid fields (a valid
+	 * cycle, valid shifts and a valid isWorkingDay).
+	 * 
+	 * Note that, for it to be completely valid, a month and a year have to be
+	 * assigned.
+	 * 
+	 * @param day The day of the month of this {@link ScheduleDay} [1, 31]
+	 * @return The created {@link ScheduleDay}
+	 */
+	public static ScheduleDay createValidScheduleDay(int day) {
+		ScheduleDay scheduleDay = new ScheduleDay(day, true);
+		Set<Doctor> doctors = new HashSet<>(DoctorTest.createValidDoctors());
+		scheduleDay.setCycle(doctors);
+		scheduleDay.setShifts(doctors);
+		return scheduleDay;
+	}
+
 	@Test
 	void testDates() {
 		ScheduleDay scheduleDay = new ScheduleDay();
@@ -31,52 +49,51 @@ public class ScheduleDayTest {
 			scheduleDay.setYear(year);
 		});
 	}
-	
+
 	////////////////////////////////////
 	//
 	// Test for valid values
 	//
 	////////////////////////////////////
-	
-	
+
 	@Test
 	void isWorkingDayCanBeTrue() {
 		this.entityTester.assertValidValue("isWorkingDay", true);
 	}
-	
+
 	@Test
 	void isWorkingDayCanBeFalse() {
 		this.entityTester.assertValidValue("isWorkingDay", false);
 	}
-	
+
 	@Test
 	void consultationsCanBeNull() {
 		this.entityTester.assertValidValue("consultations", null);
 	}
-	
+
 	@Test
 	void consultationsCanBeEmpty() {
 		this.entityTester.assertValidValue("consultations", Collections.emptySet());
 	}
-	
+
 	@Test
 	void validCycle() {
 		Set<Doctor> doctors = new HashSet<>(DoctorTest.createValidDoctors());
 		this.entityTester.assertValidValue("cycle", doctors);
 	}
-	
+
 	@Test
 	void validShifts() {
 		Set<Doctor> doctors = new HashSet<>(DoctorTest.createValidDoctors());
 		this.entityTester.assertValidValue("shifts", doctors);
 	}
-	
+
 	@Test
 	void validConsultations() {
 		Set<Doctor> doctors = new HashSet<>(DoctorTest.createValidDoctors());
 		this.entityTester.assertValidValue("consultations", doctors);
 	}
-	
+
 	////////////////////////////////////
 	//
 	// Test for invalid values
@@ -84,15 +101,30 @@ public class ScheduleDayTest {
 	////////////////////////////////////
 	
 	@Test
+	void dayCannotBeNull() {
+		this.entityTester.assertAttributeCannotBeNull("day");
+	}
+	
+	@Test
+	void monthCannotBeNull() {
+		this.entityTester.assertAttributeCannotBeNull("month");
+	}
+	
+	@Test
+	void yearCannotBeNull() {
+		this.entityTester.assertAttributeCannotBeNull("year");
+	}
+
+	@Test
 	void isWorkingDayCannotBeNull() {
 		this.entityTester.assertAttributeCannotBeNull("isWorkingDay");
 	}
-	
+
 	@Test
 	void cycleCannotBeEmpty() {
 		this.entityTester.assertAttributeCannotBeEmpty("cycle");
 	}
-	
+
 	@Test
 	void shiftsCannotBeEmpty() {
 		this.entityTester.assertAttributeCannotBeEmpty("shifts");

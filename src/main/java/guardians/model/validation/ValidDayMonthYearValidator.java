@@ -14,14 +14,14 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ValidDayMonthYearValidator {
 	public boolean isValid(Integer day, Integer month, Integer year) {
-		log.info("Request to validate the date: " + day + "/" + month + "/" + year);
+		log.debug("Request to validate the date: " + day + "/" + month + "/" + year);
 		boolean valid = false;
 		try {
 			LocalDate.of(year, month, day);
-			log.info("The given date is valid");
+			log.debug("The given date is valid");
 			valid = true;
 		} catch (DateTimeException e) {
-			log.info("The given date is invalid");
+			log.debug("The given date is invalid");
 		}
 		return valid;
 	}

@@ -174,6 +174,7 @@ public class DoctorController {
 			log.info("The received Absence is valid");
 		} else {
 			log.info("The provided Absence is null: trying to delete the Doctor's Absence if it exists");
+			// TODO the absence is not correctly deleted
 			if (absenceRepository.findById(doctorId).isPresent()) {
 				absenceRepository.deleteById(doctorId);
 			}

@@ -159,10 +159,6 @@ public class DayConfiguration {
 		}
 	}
 
-	public DayMonthYearPK getPK() {
-		return new DayMonthYearPK(day, month, year);
-	}
-
 	// the toString method of the @Data annotation is not used as it can cause an infinite loop between the Calendar#toString method and this method
 	@Override
 	public String toString() {
