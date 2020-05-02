@@ -8,8 +8,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-import guardians.model.entities.DayConfiguration;
-import guardians.model.entities.Doctor;
 import guardians.model.repositories.DoctorRepository;
 import guardians.model.validation.annotations.ValidShiftPreferences;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +22,17 @@ public class DayConfigurationTests {
 
 	public DayConfigurationTests() {
 		this.entityTester = new EntityTester<>(DayConfiguration.class);
+	}
+	
+	/**
+	 * This method will create a valid {@link DayConfiguration} for the given day.
+	 * Note neither a month or a year are configured, nor shift preferences
+	 * 
+	 * @param day The day the created {@link DayConfiguration} will represent
+	 * @return the created {@link DayConfiguration}
+	 */
+	public static DayConfiguration createValidDayConfiguration(Integer day) {
+		return new DayConfiguration(day, true, 2, 0);
 	}
 
 	/**
@@ -52,14 +61,11 @@ public class DayConfigurationTests {
 
 		List<Doctor> doctors = doctorRepository.saveAll(DoctorTest.createValidDoctors());
 
-		DayConfiguration dayConfiguration = new DayConfiguration();
 		LocalDate validDate = DateProvider.getValidDate();
-		dayConfiguration.setDay(validDate.getDayOfMonth());
+		DayConfiguration dayConfiguration = createValidDayConfiguration(validDate.getDayOfMonth());
 		dayConfiguration.setMonth(validDate.getMonthValue());
 		dayConfiguration.setYear(validDate.getYear());
-		dayConfiguration.setIsWorkingDay(false);
-		dayConfiguration.setNumShifts(0);
-		dayConfiguration.setNumConsultations(0);
+		
 		modifier.configure(dayConfiguration, doctors);
 		log.debug("The created DayConfiguration is: " + dayConfiguration);
 

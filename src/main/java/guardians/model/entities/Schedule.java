@@ -1,6 +1,6 @@
 package guardians.model.entities;
 
-import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -72,7 +72,7 @@ public class Schedule {
 
 	@OneToMany(mappedBy = "schedule", cascade = CascadeType.ALL)
 	@JsonManagedReference
-	private List<ScheduleDay> days;
+	private Set<ScheduleDay> days;
 
 	public Schedule(ScheduleStatus status) {
 		this.status = status;

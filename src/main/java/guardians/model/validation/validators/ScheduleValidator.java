@@ -2,7 +2,7 @@ package guardians.model.validation.validators;
 
 import java.time.DateTimeException;
 import java.time.YearMonth;
-import java.util.List;
+import java.util.Set;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
@@ -54,7 +54,7 @@ public class ScheduleValidator implements ConstraintValidator<ValidSchedule, Sch
 			return false;
 		}
 
-		List<ScheduleDay> days = value.getDays();
+		Set<ScheduleDay> days = value.getDays();
 		// If the schedule has not yet been created, it is allowed to have a null or
 		// empty list of ScheduleDays
 		if (status == ScheduleStatus.NOT_CREATED) {

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import guardians.model.entities.Calendar;
 import guardians.model.repositories.CalendarRepository;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * The CalendarController will handle all requests related to {@link Calendar}
@@ -17,6 +18,7 @@ import guardians.model.repositories.CalendarRepository;
  */
 @RestController
 @RequestMapping("/calendars")
+@Slf4j
 public class CalendarController {
 	@Autowired
 	CalendarRepository calendarRepository;
@@ -28,6 +30,7 @@ public class CalendarController {
 	 */
 	@GetMapping("")
 	public List<Calendar> getCalendars() {
+		log.info("Request received: returning all available calendars");
 		return calendarRepository.findAll();
 	}
 }

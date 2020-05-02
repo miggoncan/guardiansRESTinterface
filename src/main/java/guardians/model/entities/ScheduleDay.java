@@ -18,17 +18,24 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import guardians.model.entities.primarykeys.DayMonthYearPK;
 import guardians.model.validation.annotations.ValidDayMonthYear;
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * 
  * @author miggoncan
  */
-@Data
+@Getter
+@Setter
+//This annotations are used instead of @Data as the default hashcode() method 
+//would case an infinite loop between schedule.hashcode() and 
+//scheduleDay.hashcode()
+@EqualsAndHashCode(exclude = "schedule", callSuper = false)
 @Entity
 @IdClass(DayMonthYearPK.class)
 @ValidDayMonthYear
-public class ScheduleDay implements DayGetterInterface {
+public class ScheduleDay extends AbstractDay {
 	@Id
 	@Range(min = 1, max = 31)
 	@NotNull

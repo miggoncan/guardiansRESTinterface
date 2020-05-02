@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -169,7 +168,7 @@ public class LoadDatabase {
 			List<DayConfiguration> calendarAprilDays = new ArrayList<>(2);
 			calendarAprilDays.add(aprilConf1);
 			calendarAprilDays.add(aprilConf2);
-			calendarApril.setDayConfigurations(calendarAprilDays);
+//			calendarApril.setDayConfigurations(calendarAprilDays);
 			log.info("Preloading " + calendarApril);
 			
 			// Second Calendar
@@ -202,12 +201,12 @@ public class LoadDatabase {
 			List<DayConfiguration> calendarMayDays = new ArrayList<>(2);
 			calendarMayDays.add(mayConf1);
 			calendarMayDays.add(mayConf2);
-			calendarMay.setDayConfigurations(calendarMayDays);
+//			calendarMay.setDayConfigurations(calendarMayDays);
 			log.info("Preloading " + calendarMay);
 			
 			Schedule schedule = new Schedule(ScheduleStatus.CONFIRMED);
 			schedule.setCalendar(calendarApril);
-			List<ScheduleDay> scheduleDays = new LinkedList<>();
+			Set<ScheduleDay> scheduleDays = new HashSet<>();
 			ScheduleDay scheduleDay;
 			for (int day = 1; day <= april.lengthOfMonth(); day++) {
 				scheduleDay = new ScheduleDay(day, true);

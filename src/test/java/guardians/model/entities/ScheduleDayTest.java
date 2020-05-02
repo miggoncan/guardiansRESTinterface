@@ -26,9 +26,8 @@ public class ScheduleDayTest {
 	 * @param day The day of the month of this {@link ScheduleDay} [1, 31]
 	 * @return The created {@link ScheduleDay}
 	 */
-	public static ScheduleDay createValidScheduleDay(int day) {
+	public static ScheduleDay createValidScheduleDay(int day, Set<Doctor> doctors) {
 		ScheduleDay scheduleDay = new ScheduleDay(day, true);
-		Set<Doctor> doctors = new HashSet<>(DoctorTest.createValidDoctors());
 		scheduleDay.setCycle(doctors);
 		scheduleDay.setShifts(doctors);
 		return scheduleDay;

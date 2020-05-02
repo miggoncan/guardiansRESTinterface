@@ -9,6 +9,7 @@ import guardians.controllers.exceptions.AlreadyExistsException;
 import guardians.controllers.exceptions.DoctorDeletedException;
 import guardians.controllers.exceptions.InvalidEntityException;
 import guardians.controllers.exceptions.NotFoundException;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * This Controller will catch the thrown {@link RuntimeException} declared in
@@ -17,6 +18,7 @@ import guardians.controllers.exceptions.NotFoundException;
  * @author miggoncan
  */
 @RestControllerAdvice
+@Slf4j
 public class MyAdviceController {
 
 	/**
@@ -28,6 +30,7 @@ public class MyAdviceController {
 	@ExceptionHandler(NotFoundException.class)
 	@ResponseStatus(HttpStatus.NOT_FOUND)
 	String notFoundHandler(NotFoundException e) {
+		log.info("Cauth NotFoundException: " + e.getMessage());
 		return e.getMessage();
 	}
 
@@ -40,6 +43,7 @@ public class MyAdviceController {
 	@ExceptionHandler(AlreadyExistsException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	String alreadyExistsHandler(AlreadyExistsException e) {
+		log.info("Cauth AlreadyExistsException: " + e.getMessage());
 		return e.getMessage();
 	}
 
@@ -52,6 +56,7 @@ public class MyAdviceController {
 	@ExceptionHandler(InvalidEntityException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	String invalidEntityHandler(InvalidEntityException e) {
+		log.info("Cauth InvalidEntityException: " + e.getMessage());
 		return e.getMessage();
 	}
 	
@@ -64,6 +69,7 @@ public class MyAdviceController {
 	@ExceptionHandler(DoctorDeletedException.class)
 	@ResponseStatus(HttpStatus.FORBIDDEN)
 	String doctorDeleterHandler(DoctorDeletedException e) {
+		log.info("Cauth DoctorDeletedException: " + e.getMessage());
 		return e.getMessage();
 	}
 }

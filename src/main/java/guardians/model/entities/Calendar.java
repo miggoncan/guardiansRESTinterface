@@ -1,6 +1,6 @@
 package guardians.model.entities;
 
-import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -15,8 +15,6 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import guardians.model.entities.primarykeys.CalendarPK;
 import guardians.model.validation.annotations.ValidCalendar;
 import lombok.Data;
-
-// TODO test Calendar
 
 /**
  * The Calendar {@link Entity} represents a certain month o a certain year, and
@@ -45,7 +43,7 @@ public class Calendar {
 
 	@OneToMany(mappedBy = "calendar", cascade = CascadeType.ALL)
 	@JsonManagedReference
-	private List<DayConfiguration> dayConfigurations;
+	private Set<DayConfiguration> dayConfigurations;
 
 	public Calendar(Integer month, Integer year) {
 		this.month = month;

@@ -33,6 +33,8 @@ import guardians.model.repositories.DoctorRepository;
 import guardians.model.repositories.ShiftConfigurationRepository;
 import lombok.extern.slf4j.Slf4j;
 
+// TODO Test ShiftConfiguratinController
+
 /**
  * The ShiftConfigurationController will handle all requests related to the
  * shift configuration of doctors
