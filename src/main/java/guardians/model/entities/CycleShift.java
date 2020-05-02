@@ -22,7 +22,7 @@ import lombok.Data;
  * refers to the shifts that will vary from month to month and that do not occur
  * periodically.
  * 
- * This way, the ShiftCycle {@link Entity} represents one recurring cycle-shift
+ * This way, the CycleShift {@link Entity} represents one recurring cycle-shift
  * taken by several {@link Doctor}s
  * 
  * @author miggoncan
@@ -31,7 +31,7 @@ import lombok.Data;
 @Entity
 @IdClass(DayMonthYearPK.class)
 @ValidDayMonthYear
-public class ShiftCycle {
+public class CycleShift {
 	/**
 	 * All three field {@link #day}, {@link #month} and {@link #year} are used to 
 	 * identify from which day the cycle-shifts should be calculated
@@ -62,7 +62,7 @@ public class ShiftCycle {
 	@NotEmpty
 	private List<Doctor> doctors;
 
-	public ShiftCycle(Integer referenceDay, Integer referenceMonth, Integer referenceYear, 
+	public CycleShift(Integer referenceDay, Integer referenceMonth, Integer referenceYear, 
 			List<Doctor> doctors) {
 		this.day = referenceDay;
 		this.month = referenceMonth;
@@ -70,6 +70,6 @@ public class ShiftCycle {
 		this.doctors = doctors;
 	}
 
-	public ShiftCycle() {
+	public CycleShift() {
 	}
 }

@@ -21,7 +21,7 @@ import guardians.model.entities.Doctor;
 import guardians.model.entities.Schedule;
 import guardians.model.entities.ScheduleDay;
 import guardians.model.entities.ShiftConfiguration;
-import guardians.model.entities.ShiftCycle;
+import guardians.model.entities.CycleShift;
 import guardians.model.entities.Schedule.ScheduleStatus;
 import guardians.model.repositories.AbsenceRepository;
 import guardians.model.repositories.AllowedShiftRepository;
@@ -128,14 +128,14 @@ public class LoadDatabase {
 			List<Doctor> shiftCycle1Doctors = new ArrayList<>();
 			shiftCycle1Doctors.add(doctor1);
 			shiftCycle1Doctors.add(doctor2);
-			ShiftCycle shiftCycle1 = new ShiftCycle(1, 2, 2020, shiftCycle1Doctors);
-			log.info("Preloading " + shiftCycleRepository.save(shiftCycle1));
+			CycleShift cycleShift1 = new CycleShift(1, 2, 2020, shiftCycle1Doctors);
+			log.info("Preloading " + shiftCycleRepository.save(cycleShift1));
 			// Second day in the shift cycle
 			List<Doctor> shiftCycle2Doctors = new ArrayList<>();
 			shiftCycle2Doctors.add(sickDoctor);
 			shiftCycle2Doctors.add(doctor4);
-			ShiftCycle shiftCycle2 = new ShiftCycle(2, 2, 2020, shiftCycle2Doctors);
-			log.info("Preloading " + shiftCycleRepository.save(shiftCycle2));
+			CycleShift cycleShift2 = new CycleShift(2, 2, 2020, shiftCycle2Doctors);
+			log.info("Preloading " + shiftCycleRepository.save(cycleShift2));
 			
 			// First Calendar
 			YearMonth april = YearMonth.of(2020, 4);

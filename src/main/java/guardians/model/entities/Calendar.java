@@ -19,7 +19,7 @@ import lombok.Data;
 /**
  * The Calendar {@link Entity} represents a certain month o a certain year, and
  * might have some specific configuration besides the specified in
- * {@link ShiftConfiguration} and {@link ShiftCycle}.
+ * {@link ShiftConfiguration} and {@link CycleShift}.
  * 
  * Note the primary key used for this {@link Entity} is composite, so the
  * {@link IdClass} annotation is used.

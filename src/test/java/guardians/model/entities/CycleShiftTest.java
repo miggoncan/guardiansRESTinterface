@@ -13,28 +13,28 @@ import guardians.model.repositories.DoctorRepository;
 import guardians.model.repositories.ShiftCycleRepository;
 
 @DataJpaTest
-public class ShiftCycleTest {
+public class CycleShiftTest {
 	@Autowired
 	ShiftCycleRepository shiftCycleRepository;
 	
 	@Autowired
 	DoctorRepository doctorRepository;
 	
-	private EntityTester<ShiftCycle> entityTester;
+	private EntityTester<CycleShift> entityTester;
 
-	public ShiftCycleTest() {
-		this.entityTester =  new EntityTester<>(ShiftCycle.class);
+	public CycleShiftTest() {
+		this.entityTester =  new EntityTester<>(CycleShift.class);
 	}
 	
 	@Test
 	void testDates() {
-		ShiftCycle shiftCycle = new ShiftCycle();
-		shiftCycle.setDoctors(DoctorTest.createValidDoctors());
-		DateTester<ShiftCycle> dateTester = new DateTester<>(ShiftCycle.class);
-		dateTester.testEntity(shiftCycle, (day, month, year) -> {
-			shiftCycle.setDay(day);
-			shiftCycle.setMonth(month);
-			shiftCycle.setYear(year);
+		CycleShift cycleShift = new CycleShift();
+		cycleShift.setDoctors(DoctorTest.createValidDoctors());
+		DateTester<CycleShift> dateTester = new DateTester<>(CycleShift.class);
+		dateTester.testEntity(cycleShift, (day, month, year) -> {
+			cycleShift.setDay(day);
+			cycleShift.setMonth(month);
+			cycleShift.setYear(year);
 		});
 	}
 	
@@ -52,14 +52,14 @@ public class ShiftCycleTest {
 	@Test
 	void createAndSaveValidShiftCycle() {
 		List<Doctor> doctors = doctorRepository.saveAll(DoctorTest.createValidDoctors());
-		ShiftCycle shiftCycle = new ShiftCycle(1, 2, 2020, doctors);
+		CycleShift cycleShift = new CycleShift(1, 2, 2020, doctors);
 		
-		this.entityTester.assertValidEntity(shiftCycle);
+		this.entityTester.assertValidEntity(cycleShift);
 		
-		shiftCycle = shiftCycleRepository.save(shiftCycle);
-		assertEquals(1, shiftCycle.getDay());
-		assertEquals(2, shiftCycle.getMonth());
-		assertEquals(2020, shiftCycle.getYear());
+		cycleShift = shiftCycleRepository.save(cycleShift);
+		assertEquals(1, cycleShift.getDay());
+		assertEquals(2, cycleShift.getMonth());
+		assertEquals(2020, cycleShift.getYear());
 	}
 	
 	//////////////////////////////////////////
