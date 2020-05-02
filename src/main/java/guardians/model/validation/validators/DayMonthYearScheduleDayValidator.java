@@ -1,20 +1,21 @@
-package guardians.model.validation;
+package guardians.model.validation.validators;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
 import guardians.model.entities.ScheduleDay;
+import guardians.model.validation.annotations.ValidDayMonthYear;
 import lombok.extern.slf4j.Slf4j;
 
 /**
  * This class will apply the validation done by
- * {@link ValidDayMonthYearValidator} to a {@link ScheduleDay}
+ * {@link DayMonthYearValidator} to a {@link ScheduleDay}
  * 
  * @author miggoncan
- * @see ValidDayMonthYearValidator
+ * @see DayMonthYearValidator
  */
 @Slf4j
-public class ValidDayMonthYearScheduleDayValidator extends ValidDayMonthYearValidator
+public class DayMonthYearScheduleDayValidator extends DayMonthYearValidator
 		implements ConstraintValidator<ValidDayMonthYear, ScheduleDay> {
 	@Override
 	public boolean isValid(ScheduleDay value, ConstraintValidatorContext context) {

@@ -11,7 +11,7 @@ import javax.validation.constraints.NotEmpty;
 import org.hibernate.validator.constraints.Range;
 
 import guardians.model.entities.primarykeys.DayMonthYearPK;
-import guardians.model.validation.ValidDayMonthYear;
+import guardians.model.validation.annotations.ValidDayMonthYear;
 import lombok.Data;
 
 /**

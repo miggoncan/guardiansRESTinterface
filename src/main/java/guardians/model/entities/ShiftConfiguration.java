@@ -13,8 +13,8 @@ import javax.validation.constraints.PositiveOrZero;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
-import guardians.model.validation.ValidShiftConfiguration;
-import guardians.model.validation.ValidShiftPreferences;
+import guardians.model.validation.annotations.ValidShiftConfiguration;
+import guardians.model.validation.annotations.ValidShiftPreferences;
 import lombok.Data;
 
 /**

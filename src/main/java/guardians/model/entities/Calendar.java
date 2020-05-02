@@ -13,9 +13,9 @@ import org.hibernate.validator.constraints.Range;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import guardians.model.entities.primarykeys.CalendarPK;
+import guardians.model.validation.annotations.ValidCalendar;
 import lombok.Data;
 
-// TODO validate Calendar: all dayConfigurations have to be in order, and all days have to be supplied
 // TODO test Calendar
 
 /**
@@ -34,6 +34,7 @@ import lombok.Data;
 @Data
 @Entity
 @IdClass(CalendarPK.class)
+@ValidCalendar
 public class Calendar {
 	@Id
 	@Range(min = 1, max = 12)

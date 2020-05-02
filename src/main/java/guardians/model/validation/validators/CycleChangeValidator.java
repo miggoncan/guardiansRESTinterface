@@ -1,10 +1,11 @@
-package guardians.model.validation;
+package guardians.model.validation.validators;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
 import guardians.model.entities.CycleChange;
 import guardians.model.entities.Doctor;
+import guardians.model.validation.annotations.ValidCycleChange;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -17,7 +18,7 @@ import lombok.extern.slf4j.Slf4j;
  * @author miggoncan
  */
 @Slf4j
-public class ValidCycleChangeValidator implements ConstraintValidator<ValidCycleChange, CycleChange> {
+public class CycleChangeValidator implements ConstraintValidator<ValidCycleChange, CycleChange> {
 
 	@Override
 	public boolean isValid(CycleChange value, ConstraintValidatorContext context) {

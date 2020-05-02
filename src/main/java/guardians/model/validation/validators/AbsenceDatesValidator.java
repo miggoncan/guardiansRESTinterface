@@ -1,4 +1,4 @@
-package guardians.model.validation;
+package guardians.model.validation.validators;
 
 
 import java.time.LocalDate;
@@ -7,6 +7,7 @@ import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
 import guardians.model.entities.Absence;
+import guardians.model.validation.annotations.ValidAbsenceDates;
 
 /**
  * This class is used to validate the {@link Absence}s annotated with
@@ -17,7 +18,7 @@ import guardians.model.entities.Absence;
  * 
  * @author miggoncan
  */
-public class ValidAbsenceDatesValidator implements ConstraintValidator<ValidAbsenceDates, Absence> {
+public class AbsenceDatesValidator implements ConstraintValidator<ValidAbsenceDates, Absence> {
 	@Override
 	public boolean isValid(Absence value, ConstraintValidatorContext context) {
 		if (value == null) {

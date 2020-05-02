@@ -20,7 +20,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import guardians.model.entities.primarykeys.CalendarPK;
-import guardians.model.validation.ValidSchedule;
+import guardians.model.validation.annotations.ValidSchedule;
 import lombok.Data;
 
 /**

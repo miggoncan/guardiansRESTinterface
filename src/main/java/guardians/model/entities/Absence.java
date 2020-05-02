@@ -11,7 +11,7 @@ import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
-import guardians.model.validation.ValidAbsenceDates;
+import guardians.model.validation.annotations.ValidAbsenceDates;
 import lombok.Data;
 
 /**

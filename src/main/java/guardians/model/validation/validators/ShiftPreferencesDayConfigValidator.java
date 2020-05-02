@@ -1,23 +1,24 @@
-package guardians.model.validation;
+package guardians.model.validation.validators;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
 import guardians.model.entities.DayConfiguration;
 import guardians.model.entities.Doctor;
+import guardians.model.validation.annotations.ValidShiftPreferences;
 
 /**
  * This validator applies the algorithm in
- * {@link ValidShiftPreferencesValidator} to the shift preferences of a
+ * {@link ShiftPreferencesValidator} to the shift preferences of a
  * {@link DayConfiguration}
  * 
  * @author miggoncan
  */
-public class ValidShiftPreferencesDayConfigValidator
+public class ShiftPreferencesDayConfigValidator
 		implements ConstraintValidator<ValidShiftPreferences, DayConfiguration> {
 	@Override
 	public boolean isValid(DayConfiguration value, ConstraintValidatorContext context) {
-		ValidShiftPreferencesValidator<Doctor> validator = new ValidShiftPreferencesValidator<>();
+		ShiftPreferencesValidator<Doctor> validator = new ShiftPreferencesValidator<>();
 		return validator.isValid(value.getUnwantedShifts(), value.getUnavailableShifts(), value.getWantedShifts(),
 				value.getMandatoryShifts());
 	}

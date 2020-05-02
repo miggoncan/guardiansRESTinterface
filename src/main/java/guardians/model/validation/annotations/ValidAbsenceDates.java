@@ -1,4 +1,4 @@
-package guardians.model.validation;
+package guardians.model.validation.annotations;
 
 import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
 import static java.lang.annotation.ElementType.TYPE;
@@ -11,17 +11,21 @@ import java.lang.annotation.Target;
 import javax.validation.Constraint;
 import javax.validation.Payload;
 
+import guardians.model.validation.validators.AbsenceDatesValidator;
+
 /**
- * @see ValidScheduleValidator
+ * Uses the algorithm in {@link AbsenceDatesValidator}
+ * 
+ * @see AbsenceDatesValidator
  * 
  * @author miggoncan
  */
 @Documented
 @Retention(RUNTIME)
 @Target({ TYPE, ANNOTATION_TYPE })
-@Constraint(validatedBy = { ValidScheduleValidator.class })
-public @interface ValidSchedule {
-	String message() default "{guardians.model.entityvalidation.ValidSchedule.message}";
+@Constraint(validatedBy = { AbsenceDatesValidator.class })
+public @interface ValidAbsenceDates {
+	String message() default "{guardians.model.entityvalidation.ValidAbsenceDates.message}";
 
 	Class<?>[] groups() default {};
 

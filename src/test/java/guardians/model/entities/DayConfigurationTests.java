@@ -11,7 +11,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import guardians.model.entities.DayConfiguration;
 import guardians.model.entities.Doctor;
 import guardians.model.repositories.DoctorRepository;
-import guardians.model.validation.ValidShiftPreferences;
+import guardians.model.validation.annotations.ValidShiftPreferences;
 import lombok.extern.slf4j.Slf4j;
 
 @DataJpaTest

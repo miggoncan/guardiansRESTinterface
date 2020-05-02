@@ -1,10 +1,11 @@
-package guardians.model.validation;
+package guardians.model.validation.validators;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
 import guardians.model.entities.Doctor;
 import guardians.model.entities.ShiftConfiguration;
+import guardians.model.validation.annotations.ValidShiftConfiguration;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -18,7 +19,7 @@ import lombok.extern.slf4j.Slf4j;
  * @author miggoncan
  */
 @Slf4j
-public class ValidShiftConfigurationValidator
+public class ShiftConfigurationValidator
 		implements ConstraintValidator<ValidShiftConfiguration, ShiftConfiguration> {
 	@Override
 	public boolean isValid(ShiftConfiguration value, ConstraintValidatorContext context) {

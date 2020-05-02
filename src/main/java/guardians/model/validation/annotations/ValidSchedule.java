@@ -1,4 +1,4 @@
-package guardians.model.validation;
+package guardians.model.validation.annotations;
 
 import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
 import static java.lang.annotation.ElementType.TYPE;
@@ -11,20 +11,21 @@ import java.lang.annotation.Target;
 import javax.validation.Constraint;
 import javax.validation.Payload;
 
+import guardians.model.validation.validators.ScheduleValidator;
+
 /**
- * @see ValidShiftPreferencesValidator
- * @see ValidShiftPreferencesShiftConfigValidator
- * @see ValidShiftPreferencesDayConfigValidator
+ * Uses the algorithm in {@link ScheduleValidator}
+ * 
+ * @see ScheduleValidator
  * 
  * @author miggoncan
  */
 @Documented
 @Retention(RUNTIME)
 @Target({ TYPE, ANNOTATION_TYPE })
-@Constraint(validatedBy = { ValidShiftPreferencesShiftConfigValidator.class,
-		ValidShiftPreferencesDayConfigValidator.class })
-public @interface ValidShiftPreferences {
-	String message() default "{guardians.model.entityvalidation.ValidShiftPreferences.message}";
+@Constraint(validatedBy = { ScheduleValidator.class })
+public @interface ValidSchedule {
+	String message() default "{guardians.model.entityvalidation.ValidSchedule.message}";
 
 	Class<?>[] groups() default {};
 

@@ -21,8 +21,8 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import guardians.model.entities.primarykeys.DayMonthYearPK;
-import guardians.model.validation.ValidDayMonthYear;
-import guardians.model.validation.ValidShiftPreferences;
+import guardians.model.validation.annotations.ValidDayMonthYear;
+import guardians.model.validation.annotations.ValidShiftPreferences;
 import lombok.Data;
 
 /**
@@ -57,7 +57,7 @@ import lombok.Data;
 @IdClass(DayMonthYearPK.class)
 @ValidDayMonthYear
 @ValidShiftPreferences
-public class DayConfiguration {
+public class DayConfiguration implements DayGetterInterface {
 	@Id
 	@Range(min = 1, max = 31)
 	private Integer day;

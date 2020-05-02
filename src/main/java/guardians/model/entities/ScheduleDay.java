@@ -17,7 +17,7 @@ import org.hibernate.validator.constraints.Range;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import guardians.model.entities.primarykeys.DayMonthYearPK;
-import guardians.model.validation.ValidDayMonthYear;
+import guardians.model.validation.annotations.ValidDayMonthYear;
 import lombok.Data;
 
 /**
@@ -28,7 +28,7 @@ import lombok.Data;
 @Entity
 @IdClass(DayMonthYearPK.class)
 @ValidDayMonthYear
-public class ScheduleDay {
+public class ScheduleDay implements DayGetterInterface {
 	@Id
 	@Range(min = 1, max = 31)
 	@NotNull

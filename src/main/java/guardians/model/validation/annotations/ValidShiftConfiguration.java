@@ -1,7 +1,4 @@
-/**
- * 
- */
-package guardians.model.validation;
+package guardians.model.validation.annotations;
 
 import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
 import static java.lang.annotation.ElementType.TYPE;
@@ -14,17 +11,21 @@ import java.lang.annotation.Target;
 import javax.validation.Constraint;
 import javax.validation.Payload;
 
+import guardians.model.validation.validators.ShiftConfigurationValidator;
+
 /**
- * @see ValidAbsenceDatesValidator
+ * Uses the algorithm in {@link ShiftConfigurationValidator}
+ * 
+ * @see ShiftConfigurationValidator
  * 
  * @author miggoncan
  */
 @Documented
 @Retention(RUNTIME)
 @Target({ TYPE, ANNOTATION_TYPE })
-@Constraint(validatedBy = { ValidAbsenceDatesValidator.class })
-public @interface ValidAbsenceDates {
-	String message() default "{guardians.model.entityvalidation.ValidAbsenceDates.message}";
+@Constraint(validatedBy = { ShiftConfigurationValidator.class })
+public @interface ValidShiftConfiguration {
+	String message() default "{guardians.model.entityvalidation.ValidShiftConfiguration.message}";
 
 	Class<?>[] groups() default {};
 

@@ -1,4 +1,4 @@
-package guardians.model.validation;
+package guardians.model.validation.validators;
 
 import java.time.DateTimeException;
 import java.time.LocalDate;
@@ -12,7 +12,7 @@ import lombok.extern.slf4j.Slf4j;
  * @author miggoncan
  */
 @Slf4j
-public class ValidDayMonthYearValidator {
+public class DayMonthYearValidator {
 	public boolean isValid(Integer day, Integer month, Integer year) {
 		log.debug("Request to validate the date: " + day + "/" + month + "/" + year);
 		boolean valid = false;

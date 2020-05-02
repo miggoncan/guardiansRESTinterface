@@ -1,4 +1,4 @@
-package guardians.model.validation;
+package guardians.model.validation.validators;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -18,7 +18,7 @@ import lombok.extern.slf4j.Slf4j;
  *                    they can be {@link Doctor}s or {@link AllowedShift}s
  */
 @Slf4j
-public class ValidShiftPreferencesValidator<ShiftType> {
+public class ShiftPreferencesValidator<ShiftType> {
 	public boolean isValid(Set<ShiftType> unwantedShifts, Set<ShiftType> unavailableShifts, Set<ShiftType> wantedShifts,
 			Set<ShiftType> mandatoryShifts) {
 		log.debug("Request to validate shift preferences");
