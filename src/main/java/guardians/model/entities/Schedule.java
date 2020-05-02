@@ -1,6 +1,6 @@
 package guardians.model.entities;
 
-import java.util.Set;
+import java.util.SortedSet;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -14,6 +14,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.annotations.SortNatural;
 import org.hibernate.validator.constraints.Range;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -72,7 +73,8 @@ public class Schedule {
 
 	@OneToMany(mappedBy = "schedule", cascade = CascadeType.ALL)
 	@JsonManagedReference
-	private Set<ScheduleDay> days;
+	@SortNatural
+	private SortedSet<ScheduleDay> days;
 
 	public Schedule(ScheduleStatus status) {
 		this.status = status;

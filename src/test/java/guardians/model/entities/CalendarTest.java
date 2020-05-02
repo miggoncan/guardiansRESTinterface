@@ -2,6 +2,7 @@ package guardians.model.entities;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertIterableEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.time.YearMonth;
 import java.util.ArrayList;
@@ -9,6 +10,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +40,7 @@ public class CalendarTest {
 		YearMonth yearMonth = YearMonth.of(2020, 6);
 		Calendar calendar = new Calendar(yearMonth.getMonthValue(), yearMonth.getYear());
 		
-		Set<DayConfiguration> days = new HashSet<>();
+		SortedSet<DayConfiguration> days = new TreeSet<>();
 		for (int i = 1; i <= yearMonth.lengthOfMonth(); i++) {
 			DayConfiguration day = DayConfigurationTests.createValidDayConfiguration(i);
 			day.setCalendar(calendar);
@@ -90,9 +93,7 @@ public class CalendarTest {
 		
 		List<DayConfiguration> days = new ArrayList<>(calendar.getDayConfigurations());
 		days.set(3, null);
-		calendar.setDayConfigurations(new HashSet<>(days));
-		
-		this.entityTester.assertEntityViolatedConstraint(calendar, INVALID_CALENDAR_MESSAGE);
+		assertThrows(NullPointerException.class, () -> {calendar.setDayConfigurations(new TreeSet<>(days));});
 	}
 	
 	@Test
@@ -101,7 +102,7 @@ public class CalendarTest {
 		
 		List<DayConfiguration> days = new ArrayList<>(calendar.getDayConfigurations());
 		days.set(3, days.get(20));
-		calendar.setDayConfigurations(new HashSet<>(days));
+		calendar.setDayConfigurations(new TreeSet<>(days));
 		
 		this.entityTester.assertEntityViolatedConstraint(calendar, INVALID_CALENDAR_MESSAGE);
 	}
@@ -112,7 +113,7 @@ public class CalendarTest {
 		
 		List<DayConfiguration> days = new ArrayList<>(calendar.getDayConfigurations());
 		days.remove(5);
-		calendar.setDayConfigurations(new HashSet<>(days));
+		calendar.setDayConfigurations(new TreeSet<>(days));
 		
 		this.entityTester.assertEntityViolatedConstraint(calendar, INVALID_CALENDAR_MESSAGE);
 	}

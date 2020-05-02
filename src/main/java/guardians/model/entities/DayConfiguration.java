@@ -23,9 +23,8 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import guardians.model.entities.primarykeys.DayMonthYearPK;
 import guardians.model.validation.annotations.ValidDayMonthYear;
 import guardians.model.validation.annotations.ValidShiftPreferences;
+import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
 
 /**
  * This {@link Entity} represents a specific conditions to take into account
@@ -54,8 +53,7 @@ import lombok.Setter;
  * 
  * @author miggoncan
  */
-@Getter
-@Setter
+@Data
 //This annotations are used instead of @Data as the default hashcode() method 
 // would case an infinite loop between calendar.hashcode() and 
 // dayConfiguration.hashcode()

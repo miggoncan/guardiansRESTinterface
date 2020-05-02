@@ -15,6 +15,7 @@ import guardians.model.entities.primarykeys.DayMonthYearPK;
 import guardians.model.validation.annotations.ValidCycleChange;
 import guardians.model.validation.annotations.ValidDayMonthYear;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * The CycleChange {@link Entity} is used to represent that two {@link Doctor}
@@ -31,6 +32,7 @@ import lombok.Data;
  * @author miggoncan
  */
 @Data
+@EqualsAndHashCode(exclude = "dayConfiguration")
 @Entity
 @IdClass(DayMonthYearPK.class)
 @ValidDayMonthYear

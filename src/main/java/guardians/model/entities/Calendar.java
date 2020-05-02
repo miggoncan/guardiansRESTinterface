@@ -1,6 +1,6 @@
 package guardians.model.entities;
 
-import java.util.Set;
+import java.util.SortedSet;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -8,6 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.OneToMany;
 
+import org.hibernate.annotations.SortNatural;
 import org.hibernate.validator.constraints.Range;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -43,7 +44,8 @@ public class Calendar {
 
 	@OneToMany(mappedBy = "calendar", cascade = CascadeType.ALL)
 	@JsonManagedReference
-	private Set<DayConfiguration> dayConfigurations;
+	@SortNatural
+	private SortedSet<DayConfiguration> dayConfigurations;
 
 	public Calendar(Integer month, Integer year) {
 		this.month = month;

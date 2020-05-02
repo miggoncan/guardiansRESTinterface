@@ -2,6 +2,7 @@ package guardians.model.entities;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertIterableEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.time.YearMonth;
 import java.util.ArrayList;
@@ -9,6 +10,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +49,7 @@ public class ScheduleTest {
 
 		if (status != ScheduleStatus.NOT_CREATED) {
 			ScheduleDay scheduleDay;
-			Set<ScheduleDay> days = new HashSet<>();
+			SortedSet<ScheduleDay> days = new TreeSet<>();
 			for (int day = 1; day <= yearMonth.lengthOfMonth(); day++) {
 				scheduleDay = ScheduleDayTest.createValidScheduleDay(day, doctors);
 				scheduleDay.setSchedule(schedule);
@@ -115,9 +118,7 @@ public class ScheduleTest {
 		
 		List<ScheduleDay> days = new ArrayList<>(schedule.getDays());
 		days.set(4, null);
-		schedule.setDays(new HashSet<>(days));
-		
-		this.entityTester.assertEntityViolatedConstraint(schedule, INVALID_SCHEDULE_MESSAGE);
+		assertThrows(NullPointerException.class, () -> {schedule.setDays(new TreeSet<>(days));});
 	}
 	
 	@Test
@@ -127,7 +128,7 @@ public class ScheduleTest {
 
 		List<ScheduleDay> days = new ArrayList<>(schedule.getDays());
 		days.set(4, days.get(20));
-		schedule.setDays(new HashSet<>(days));
+		schedule.setDays(new TreeSet<>(days));
 		
 		this.entityTester.assertEntityViolatedConstraint(schedule, INVALID_SCHEDULE_MESSAGE);
 	}
@@ -139,7 +140,7 @@ public class ScheduleTest {
 		
 		List<ScheduleDay> days = new ArrayList<>(schedule.getDays());
 		days.remove(3);
-		schedule.setDays(new HashSet<>(days));
+		schedule.setDays(new TreeSet<>(days));
 		
 		this.entityTester.assertEntityViolatedConstraint(schedule, INVALID_SCHEDULE_MESSAGE);
 	}

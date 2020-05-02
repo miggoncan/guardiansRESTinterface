@@ -1,5 +1,12 @@
 package guardians.controllers;
 
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
+
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -29,7 +36,7 @@ public class MyAdviceController {
 	 */
 	@ExceptionHandler(NotFoundException.class)
 	@ResponseStatus(HttpStatus.NOT_FOUND)
-	String notFoundHandler(NotFoundException e) {
+	public String notFoundHandler(NotFoundException e) {
 		log.info("Cauth NotFoundException: " + e.getMessage());
 		return e.getMessage();
 	}
@@ -42,7 +49,7 @@ public class MyAdviceController {
 	 */
 	@ExceptionHandler(AlreadyExistsException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
-	String alreadyExistsHandler(AlreadyExistsException e) {
+	public String alreadyExistsHandler(AlreadyExistsException e) {
 		log.info("Cauth AlreadyExistsException: " + e.getMessage());
 		return e.getMessage();
 	}
@@ -55,11 +62,11 @@ public class MyAdviceController {
 	 */
 	@ExceptionHandler(InvalidEntityException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
-	String invalidEntityHandler(InvalidEntityException e) {
+	public String invalidEntityHandler(InvalidEntityException e) {
 		log.info("Cauth InvalidEntityException: " + e.getMessage());
 		return e.getMessage();
 	}
-	
+
 	/**
 	 * This method catches the exception {@link DoctorDeletedException}
 	 * 
@@ -68,8 +75,24 @@ public class MyAdviceController {
 	 */
 	@ExceptionHandler(DoctorDeletedException.class)
 	@ResponseStatus(HttpStatus.FORBIDDEN)
-	String doctorDeleterHandler(DoctorDeletedException e) {
+	public String doctorDeleterHandler(DoctorDeletedException e) {
 		log.info("Cauth DoctorDeletedException: " + e.getMessage());
 		return e.getMessage();
+	}
+
+	/**
+	 * This method catches the exceptions {@link ConstraintViolationException}
+	 * @param e The caught exception
+	 * @return A List of string representing the violated constraints
+	 */
+	@ExceptionHandler(ConstraintViolationException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	public List<String> constraintViolationHandler(ConstraintViolationException e) {
+		Set<ConstraintViolation<?>> constraintViolations = e.getConstraintViolations();
+		List<String> messages = new LinkedList<>();
+		for (ConstraintViolation<?> constraintViolation : constraintViolations) {
+			messages.add(constraintViolation.getMessage());
+		}
+		return messages;
 	}
 }

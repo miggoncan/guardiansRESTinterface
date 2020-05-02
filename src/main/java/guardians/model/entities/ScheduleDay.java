@@ -18,16 +18,14 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import guardians.model.entities.primarykeys.DayMonthYearPK;
 import guardians.model.validation.annotations.ValidDayMonthYear;
+import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
 
 /**
  * 
  * @author miggoncan
  */
-@Getter
-@Setter
+@Data
 //This annotations are used instead of @Data as the default hashcode() method 
 //would case an infinite loop between schedule.hashcode() and 
 //scheduleDay.hashcode()

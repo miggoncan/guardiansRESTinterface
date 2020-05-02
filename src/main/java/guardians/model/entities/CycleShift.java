@@ -13,6 +13,7 @@ import org.hibernate.validator.constraints.Range;
 import guardians.model.entities.primarykeys.DayMonthYearPK;
 import guardians.model.validation.annotations.ValidDayMonthYear;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * {@link Doctor}s have some periodic shifts. This is, if some {@link Doctor}s
@@ -28,10 +29,11 @@ import lombok.Data;
  * @author miggoncan
  */
 @Data
+@EqualsAndHashCode(callSuper = false)
 @Entity
 @IdClass(DayMonthYearPK.class)
 @ValidDayMonthYear
-public class CycleShift {
+public class CycleShift extends AbstractDay {
 	/**
 	 * All three field {@link #day}, {@link #month} and {@link #year} are used to 
 	 * identify from which day the cycle-shifts should be calculated

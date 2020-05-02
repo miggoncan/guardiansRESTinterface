@@ -11,8 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import lombok.extern.slf4j.Slf4j;
 
-// TODO Use the log in all classes
-
 /**
  * This controller will receive GET requests to the root URI of this application
  * and respond with links to the existing resources
@@ -24,13 +22,16 @@ import lombok.extern.slf4j.Slf4j;
 public class RootController {
 	
 	@Value("${api.links.doctors}")
-	String doctorsLink;
+	private String doctorsLink;
 	
 	@Value("${api.links.shiftconfs}")
-	String shiftConfsLink;
+	private String shiftConfsLink;
 	
 	@Value("${api.links.calendars}")
-	String calendarsLink;
+	private String calendarsLink;
+	
+	@Value("${api.links.cycleshifts}")
+	private String cycleShiftsLink;
 
 	/**
 	 * Get requests to the base URL will return links to the main resources of the
@@ -45,6 +46,7 @@ public class RootController {
 				linkTo(methodOn(RootController.class).getRootLinks()).withSelfRel(),
 				linkTo(methodOn(DoctorController.class).getDoctors()).withRel(doctorsLink),
 				linkTo(methodOn(ShiftConfigurationController.class).getShitfConfigurations()).withRel(shiftConfsLink),
+				linkTo(methodOn(CycleShiftsController.class).getCycleShifts()).withRel(cycleShiftsLink),
 				linkTo(methodOn(CalendarController.class).getCalendars()).withRel(calendarsLink));
 	}
 

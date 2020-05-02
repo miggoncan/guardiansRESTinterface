@@ -13,6 +13,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import guardians.model.validation.annotations.ValidAbsenceDates;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * This {@link Entity} represents the Absence of a {@link Doctor} during a
@@ -28,6 +29,7 @@ import lombok.Data;
  * @author miggoncan
  */
 @Data
+@EqualsAndHashCode(exclude = "doctor")
 @Entity
 @ValidAbsenceDates
 public class Absence {

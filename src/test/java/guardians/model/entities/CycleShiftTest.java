@@ -10,12 +10,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import guardians.model.repositories.DoctorRepository;
-import guardians.model.repositories.ShiftCycleRepository;
+import guardians.model.repositories.CycleShiftRepository;
 
 @DataJpaTest
 public class CycleShiftTest {
 	@Autowired
-	ShiftCycleRepository shiftCycleRepository;
+	CycleShiftRepository cycleShiftRepository;
 	
 	@Autowired
 	DoctorRepository doctorRepository;
@@ -56,7 +56,7 @@ public class CycleShiftTest {
 		
 		this.entityTester.assertValidEntity(cycleShift);
 		
-		cycleShift = shiftCycleRepository.save(cycleShift);
+		cycleShift = cycleShiftRepository.save(cycleShift);
 		assertEquals(1, cycleShift.getDay());
 		assertEquals(2, cycleShift.getMonth());
 		assertEquals(2020, cycleShift.getYear());

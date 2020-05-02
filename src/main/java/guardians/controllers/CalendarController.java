@@ -31,6 +31,7 @@ public class CalendarController {
 	@GetMapping("")
 	public List<Calendar> getCalendars() {
 		log.info("Request received: returning all available calendars");
-		return calendarRepository.findAll();
+		List<Calendar> calendars = calendarRepository.findAll();
+		return calendars;
 	}
 }

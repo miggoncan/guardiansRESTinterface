@@ -5,6 +5,7 @@ import javax.persistence.Entity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import guardians.model.entities.CycleShift;
+import guardians.model.entities.primarykeys.DayMonthYearPK;
 
 /**
  * This interface will be used by Jpa to auto-generate a class having all the
@@ -14,6 +15,6 @@ import guardians.model.entities.CycleShift;
  * 
  * @author miggoncan
  */
-public interface ShiftCycleRepository extends JpaRepository<CycleShift, Integer> {
+public interface CycleShiftRepository extends JpaRepository<CycleShift, DayMonthYearPK> {
 
 }
