@@ -21,11 +21,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import guardians.controllers.assemblers.DoctorAssembler;
 import guardians.controllers.exceptions.DoctorAlreadyExistsException;
 import guardians.controllers.exceptions.DoctorDeletedException;
 import guardians.controllers.exceptions.DoctorNotFoundException;
 import guardians.controllers.exceptions.InvalidAbsenceException;
-import guardians.model.assembler.DoctorAssembler;
 import guardians.model.entities.Absence;
 import guardians.model.entities.Doctor;
 import guardians.model.entities.ShiftConfiguration;

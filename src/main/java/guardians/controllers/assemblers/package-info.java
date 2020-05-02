@@ -3,4 +3,4 @@
  * 
  * @author miggoncans
  */
-package guardians.model.assembler;
+package guardians.controllers.assemblers;

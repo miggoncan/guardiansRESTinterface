@@ -17,13 +17,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import guardians.controllers.assemblers.ShiftConfigurationAssembler;
 import guardians.controllers.exceptions.AllowedShiftNotFoundException;
 import guardians.controllers.exceptions.DoctorDeletedException;
 import guardians.controllers.exceptions.DoctorNotFoundException;
 import guardians.controllers.exceptions.InvalidEntityException;
 import guardians.controllers.exceptions.ShiftConfigurationAlreadyExistsException;
 import guardians.controllers.exceptions.ShiftConfigurationNotFoundException;
-import guardians.model.assembler.ShiftConfigurationAssembler;
 import guardians.model.entities.AllowedShift;
 import guardians.model.entities.Doctor;
 import guardians.model.entities.ShiftConfiguration;

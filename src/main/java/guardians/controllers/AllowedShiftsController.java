@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import guardians.controllers.assemblers.AllowedShiftAssembler;
 import guardians.controllers.exceptions.AllowedShiftNotFoundException;
-import guardians.model.assembler.AllowedShiftAssembler;
 import guardians.model.entities.AllowedShift;
 import guardians.model.repositories.AllowedShiftRepository;
 import lombok.extern.slf4j.Slf4j;

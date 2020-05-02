@@ -1,4 +1,4 @@
-package guardians.model.assembler;
+package guardians.controllers.assemblers;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
