@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
@@ -24,6 +25,9 @@ import guardians.model.entities.CycleShift;
 @Component
 public class CycleShiftAssembler implements RepresentationModelAssembler<CycleShift, EntityModel<CycleShift>> {
 
+	@Autowired
+	private DoctorAssembler doctorAssembler;
+	
 	@Value("${api.links.cycleshifts}")
 	private String cycleShiftsLink;
 
@@ -32,7 +36,8 @@ public class CycleShiftAssembler implements RepresentationModelAssembler<CycleSh
 		Integer day = entity.getDay();
 		Integer month = entity.getMonth();
 		Integer year = entity.getYear();
-		// TODO this does not create the entity model of the contained doctors
+		// Add the embedded Doctors to the entity
+		entity.setDoctorEntities(doctorAssembler.toCollectionModel(entity.getDoctors()));
 		return new EntityModel<CycleShift>(entity,
 				linkTo(methodOn(CycleShiftsController.class).getCycleShift(LocalDate.of(year, month, day)))
 						.withSelfRel(),

@@ -24,22 +24,22 @@ import guardians.model.entities.Doctor;
  */
 @Component
 public class DoctorAssembler implements RepresentationModelAssembler<Doctor, EntityModel<Doctor>> {
-	
+
 	@Value("${api.links.root}")
 	private String rootLink;
-	
+
 	@Value("${api.links.doctors}")
 	private String doctorsLink;
-	
+
 	@Value("${api.links.shiftconf}")
 	private String shiftConfLink;
 
 	@Override
-	public EntityModel<Doctor> toModel(Doctor enitity) {
-		return new EntityModel<Doctor>(enitity,
-				linkTo(methodOn(DoctorController.class).getDoctor(enitity.getId())).withSelfRel(),
+	public EntityModel<Doctor> toModel(Doctor entity) {
+		return new EntityModel<Doctor>(entity,
+				linkTo(methodOn(DoctorController.class).getDoctor(entity.getId())).withSelfRel(),
 				linkTo(methodOn(DoctorController.class).getDoctors()).withRel(doctorsLink),
-				linkTo(methodOn(ShiftConfigurationController.class).getShitfConfiguration(enitity.getId()))
+				linkTo(methodOn(ShiftConfigurationController.class).getShitfConfiguration(entity.getId()))
 						.withRel(shiftConfLink));
 	}
 
@@ -49,7 +49,8 @@ public class DoctorAssembler implements RepresentationModelAssembler<Doctor, Ent
 		for (Doctor entity : entities) {
 			doctors.add(this.toModel(entity));
 		}
-		return new CollectionModel<>(doctors, linkTo(methodOn(DoctorController.class).getDoctors()).withSelfRel(),
+		return new CollectionModel<>(doctors, 
+				linkTo(methodOn(DoctorController.class).getDoctors()).withSelfRel(),
 				linkTo(methodOn(RootController.class).getRootLinks()).withRel(rootLink));
 	}
 }

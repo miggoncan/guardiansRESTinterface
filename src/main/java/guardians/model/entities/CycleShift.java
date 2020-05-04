@@ -6,9 +6,17 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.ManyToMany;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotEmpty;
 
 import org.hibernate.validator.constraints.Range;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.server.core.Relation;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
 
 import guardians.model.entities.primarykeys.DayMonthYearPK;
 import guardians.model.validation.annotations.ValidDayMonthYear;
@@ -33,6 +41,9 @@ import lombok.EqualsAndHashCode;
 @Entity
 @IdClass(DayMonthYearPK.class)
 @ValidDayMonthYear
+// This is the name shown when a collection of cycleShifts is __embedded in a 
+// JSON document
+@Relation(collectionRelation = "cycleShifts")
 public class CycleShift extends AbstractDay {
 	/**
 	 * All three field {@link #day}, {@link #month} and {@link #year} are used to 
@@ -62,7 +73,17 @@ public class CycleShift extends AbstractDay {
 	 */
 	@ManyToMany
 	@NotEmpty
+	// WRITE_ONLY prevent this attribute from being serialized, but allow it to be DEserialized
+	@JsonProperty(access = Access.WRITE_ONLY)
 	private List<Doctor> doctors;
+	// When serializing to JSON, we want the doctors to be serialized as their
+	// corresponding EntityModels (this is, including their links). Moreover, as we
+	// don't want the doctors to be serialized twice, the actual persisted list of
+	// Doctors is ignored
+	// TODO Do put requests have to include the __embedded or doctors property?
+	@Transient
+	@JsonUnwrapped
+	private CollectionModel<EntityModel<Doctor>> doctorEntities;
 
 	public CycleShift(Integer referenceDay, Integer referenceMonth, Integer referenceYear, 
 			List<Doctor> doctors) {

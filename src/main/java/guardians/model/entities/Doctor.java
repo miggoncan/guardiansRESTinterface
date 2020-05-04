@@ -13,6 +13,8 @@ import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
+import org.springframework.hateoas.server.core.Relation;
+
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import lombok.Data;
@@ -30,6 +32,9 @@ import lombok.Data;
 	uniqueConstraints = 
 		@UniqueConstraint(columnNames = {"first_name", "last_names"})
 )
+// This is the name of the property used to describe an __embedded 
+// collection of Doctors
+@Relation(collectionRelation = "doctors")
 public class Doctor {
 
 	public enum DoctorStatus {

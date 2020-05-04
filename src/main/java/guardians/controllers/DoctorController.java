@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -123,7 +124,10 @@ public class DoctorController {
 	@GetMapping("/{doctorId}")
 	public EntityModel<Doctor> getDoctor(@PathVariable Long doctorId) {
 		log.info("Request received: looking for Doctor with id " + doctorId);
-		Doctor doctor = doctorRepository.findById(doctorId).orElseThrow(() -> new DoctorNotFoundException(doctorId));
+		Doctor doctor = doctorRepository.findById(doctorId).orElseThrow(() -> {
+			log.info("The requested doctor could not be found. Throwing DoctorNotFoundException");
+			return new DoctorNotFoundException(doctorId);
+		});
 		return doctorAssembler.toModel(doctor);
 	}
 
@@ -195,7 +199,7 @@ public class DoctorController {
 	 */
 	@DeleteMapping("/{doctorId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	void deleteDoctor(@PathVariable Long doctorId) {
+	public ResponseEntity<Doctor> deleteDoctor(@PathVariable Long doctorId) {
 		log.info("Request received: delete doctor with id " + doctorId);
 		Optional<Doctor> doctor = doctorRepository.findById(doctorId); 
 		if (!doctor.isPresent()) {
@@ -205,5 +209,6 @@ public class DoctorController {
 		doctor.get().setStatus(DoctorStatus.DELETED);
 		doctorRepository.save(doctor.get());
 		log.info("The doctor was successfully marked as deleted");
+		return ResponseEntity.noContent().build();
 	}
 }

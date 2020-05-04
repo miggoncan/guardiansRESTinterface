@@ -74,6 +74,7 @@ public class CycleChange {
 	 */
 	@ManyToOne
 	private Doctor cycleReceiver;
+	// TODO this doctors have to be represented as Entities
 	
 	
 	public CycleChange(Doctor cycleGiver, Doctor cycleReceiver) {

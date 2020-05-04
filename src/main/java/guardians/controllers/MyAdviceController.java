@@ -91,7 +91,7 @@ public class MyAdviceController {
 		Set<ConstraintViolation<?>> constraintViolations = e.getConstraintViolations();
 		List<String> messages = new LinkedList<>();
 		for (ConstraintViolation<?> constraintViolation : constraintViolations) {
-			messages.add(constraintViolation.getMessage());
+			messages.add(constraintViolation.getPropertyPath() + " " + constraintViolation.getMessage());
 		}
 		return messages;
 	}

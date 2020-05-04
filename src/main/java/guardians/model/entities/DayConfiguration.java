@@ -135,6 +135,7 @@ public class DayConfiguration extends AbstractDay {
 	 */
 	@ManyToMany
 	private Set<Doctor> mandatoryShifts;
+	// TODO this doctors have to be represented as entities
 
 	/**
 	 * cycleChanges indicates a change that should be done to the cycle-shifts of

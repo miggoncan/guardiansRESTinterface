@@ -58,4 +58,7 @@ public class ScheduleController {
 		
 		return schedule;
 	}
+	
+	// TODO map all requests
+	// TODO assemble calendar resource
 }
