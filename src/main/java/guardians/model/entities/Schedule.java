@@ -88,6 +88,17 @@ public class Schedule {
 		if (calendar != null) {
 			this.month = calendar.getMonth();
 			this.year = calendar.getYear();
+			// If not updated yet, this will update the references in days
+			this.setDays(this.getDays());
+		}
+	}
+	
+	public void setDays(SortedSet<ScheduleDay> days) {
+		this.days = days;
+		if (days != null) {
+			for (ScheduleDay scheduleDay : days) {
+				scheduleDay.setSchedule(this);
+			}
 		}
 	}
 }

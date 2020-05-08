@@ -192,8 +192,9 @@ public class DoctorController {
 		}
 		// The email cannot already be registered
 		String email = newDoctor.getEmail();
-		if (doctorRepository.findByEmail(email).isPresent()) {
-			log.info("The provided Doctor already exists. Throwing DoctorAlreadyExistsException");
+		Optional<Doctor> existantDoctor = doctorRepository.findByEmail(email); 
+		if (existantDoctor.isPresent() && existantDoctor.get().getId() != doctorId) {
+			log.info("A doctor already has the provided email. Throwing DoctorAlreadyExistsException");
 			throw new DoctorAlreadyExistsException(email);
 		}
 		newDoctor.setId(doctorId);

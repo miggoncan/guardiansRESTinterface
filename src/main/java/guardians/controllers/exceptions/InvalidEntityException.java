@@ -10,7 +10,7 @@ import javax.persistence.Entity;
  */
 public class InvalidEntityException extends RuntimeException {
 	private static final long serialVersionUID = 1011155650323241517L;
-
+	
 	public InvalidEntityException(String message) {
 		super(message);
 	}

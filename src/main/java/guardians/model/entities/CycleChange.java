@@ -70,7 +70,7 @@ public class CycleChange {
 	 */
 	@ManyToOne
 	private Doctor cycleReceiver;
-	// TODO this doctors have to be represented as Entities
+	// TODO Should these doctors have to be represented as embedded resources when serializing?
 	
 	
 	public CycleChange(Doctor cycleGiver, Doctor cycleReceiver) {

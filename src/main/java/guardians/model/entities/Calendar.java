@@ -54,4 +54,13 @@ public class Calendar {
 
 	public Calendar() {
 	}
+	
+	public void setDayConfiguration(SortedSet<DayConfiguration> dayConfigurations) {
+		this.dayConfigurations = dayConfigurations;
+		if (dayConfigurations != null) {
+			for (DayConfiguration dayConfiguration : dayConfigurations) {
+				dayConfiguration.setCalendar(this);
+			}
+		}
+	}
 }

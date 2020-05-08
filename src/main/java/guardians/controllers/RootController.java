@@ -31,9 +31,6 @@ public class RootController {
 	
 	@Value("${api.links.calendars}")
 	private String calendarsLink;
-	
-	@Value("${api.links.cycleshifts}")
-	private String cycleShiftsLink;
 
 	/**
 	 * Get requests to the base URL will return links to the main resources of the

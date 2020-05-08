@@ -1,8 +1,11 @@
 package guardians.controllers;
 
 import java.time.YearMonth;
+import java.util.Set;
 
+import javax.validation.ConstraintViolation;
 import javax.validation.Valid;
+import javax.validation.Validator;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
@@ -18,7 +21,9 @@ import org.springframework.web.bind.annotation.RestController;
 import guardians.controllers.assemblers.CalendarAssembler;
 import guardians.controllers.exceptions.CalendarAlreadyExistsException;
 import guardians.controllers.exceptions.CalendarNotFoundException;
+import guardians.controllers.exceptions.InvalidDayConfigurationException;
 import guardians.model.entities.Calendar;
+import guardians.model.entities.DayConfiguration;
 import guardians.model.entities.primarykeys.CalendarPK;
 import guardians.model.repositories.CalendarRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -37,6 +42,9 @@ public class CalendarController {
 
 	@Autowired
 	private CalendarAssembler calendarAssembler;
+	
+	@Autowired
+	private Validator validator;
 
 	/**
 	 * This method will handle requests for the whole {@link Calendar} list
@@ -66,7 +74,14 @@ public class CalendarController {
 			throw new CalendarAlreadyExistsException(newCalendar.getMonth(), newCalendar.getYear());
 		}
 
-		// TODO validate calendar days
+		Set<ConstraintViolation<DayConfiguration>> constraintViolations;
+		for (DayConfiguration day : newCalendar.getDayConfigurations()) {
+			constraintViolations = this.validator.validate(day);
+			if (!constraintViolations.isEmpty()) {
+				log.info("One of the given day configurations is not valid. Throwing InvalidDayConfigurationException");
+				throw new InvalidDayConfigurationException(constraintViolations);
+			}
+		}
 
 		log.info("Validation complete. Attempting to persist the calendar");
 		Calendar savedCalendar = calendarRepository.save(newCalendar);

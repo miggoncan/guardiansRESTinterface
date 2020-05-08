@@ -133,7 +133,7 @@ public class DayConfiguration extends AbstractDay {
 	 */
 	@ManyToMany
 	private Set<Doctor> mandatoryShifts;
-	// TODO this doctors have to be represented as entities
+	// TODO Should these doctors have to be represented as embedded resources when serializing?
 
 	/**
 	 * cycleChanges indicates a change that should be done to the cycle-shifts of
@@ -158,6 +158,17 @@ public class DayConfiguration extends AbstractDay {
 		if (calendar != null) {
 			this.month = calendar.getMonth();
 			this.year = calendar.getYear();
+			// If not updated yet, this will update the references in cycleChanges
+			this.setCycleChanges(this.getCycleChanges());
+		}
+	}
+	
+	public void setCycleChanges(List<CycleChange> cycleChanges) {
+		this.cycleChanges = cycleChanges;
+		if (cycleChanges != null) {
+			for (CycleChange cycleChange : cycleChanges) {
+				cycleChange.setDayConfiguration(this);
+			}
 		}
 	}
 

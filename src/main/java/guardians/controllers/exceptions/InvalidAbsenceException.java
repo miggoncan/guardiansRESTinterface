@@ -28,7 +28,7 @@ public class InvalidAbsenceException extends InvalidEntityException {
 	}
 	
 	@Override
-		public String getMessage() {
-			return this.message;
-		}
+	public String getMessage() {
+		return this.message;
+	}
 }

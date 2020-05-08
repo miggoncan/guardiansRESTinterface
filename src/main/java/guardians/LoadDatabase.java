@@ -2,10 +2,8 @@ package guardians;
 
 import java.time.LocalDate;
 import java.time.YearMonth;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -48,7 +46,7 @@ public class LoadDatabase {
 
 	// Currently, the database is already preloaded. The Bean annotation is
 	// commented to not load it every time the service is launched
-//	@Bean
+	@Bean
 	CommandLineRunner initDatabase() {
 		return args -> {
 			AllowedShift allowedShiftMonday = allowedShiftRepository.save(new AllowedShift("Monday"));
