@@ -15,7 +15,6 @@ import javax.validation.Payload;
 import guardians.model.validation.validators.DayMonthYearCycleChangeValidator;
 import guardians.model.validation.validators.DayMonthYearDayConfigurationValidator;
 import guardians.model.validation.validators.DayMonthYearScheduleDayValidator;
-import guardians.model.validation.validators.DayMonthYearShiftCycleValidator;
 import guardians.model.validation.validators.DayMonthYearValidator;
 
 /**
@@ -24,7 +23,6 @@ import guardians.model.validation.validators.DayMonthYearValidator;
  * {@link DayMonthYearValidator}
  * 
  * @see DayMonthYearValidator
- * @see DayMonthYearShiftCycleValidator
  * @see DayMonthYearDayConfigurationValidator
  * @see DayMonthYearScheduleDayValidator
  * @see DayMonthYearCycleChangeValidator
@@ -34,8 +32,8 @@ import guardians.model.validation.validators.DayMonthYearValidator;
 @Documented
 @Retention(RUNTIME)
 @Target({ TYPE, ANNOTATION_TYPE })
-@Constraint(validatedBy = { DayMonthYearShiftCycleValidator.class, DayMonthYearScheduleDayValidator.class,
-		DayMonthYearCycleChangeValidator.class, DayMonthYearDayConfigurationValidator.class })
+@Constraint(validatedBy = { DayMonthYearScheduleDayValidator.class, DayMonthYearCycleChangeValidator.class,
+		DayMonthYearDayConfigurationValidator.class })
 public @interface ValidDayMonthYear {
 	String message() default "{guardians.model.entityvalidation.ValidDayMonthYear.message}";
 

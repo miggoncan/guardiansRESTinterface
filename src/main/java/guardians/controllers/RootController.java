@@ -7,6 +7,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +20,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @RestController
 @Slf4j
+@RequestMapping("/guardians")
 public class RootController {
 	
 	@Value("${api.links.doctors}")
@@ -44,9 +46,8 @@ public class RootController {
 		log.info("Request received: get root");
 		return new CollectionModel<Object>(Collections.emptyList(),
 				linkTo(methodOn(RootController.class).getRootLinks()).withSelfRel(),
-				linkTo(methodOn(DoctorController.class).getDoctors()).withRel(doctorsLink),
+				linkTo(methodOn(DoctorController.class).getDoctors(null)).withRel(doctorsLink),
 				linkTo(methodOn(ShiftConfigurationController.class).getShitfConfigurations()).withRel(shiftConfsLink),
-				linkTo(methodOn(CycleShiftsController.class).getCycleShifts()).withRel(cycleShiftsLink),
 				linkTo(methodOn(CalendarController.class).getCalendars()).withRel(calendarsLink));
 	}
 

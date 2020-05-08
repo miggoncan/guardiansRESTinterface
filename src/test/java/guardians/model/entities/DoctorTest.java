@@ -2,6 +2,7 @@ package guardians.model.entities;
 
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,7 +10,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-import guardians.model.entities.Doctor;
 import guardians.model.repositories.DoctorRepository;
 
 @DataJpaTest
@@ -28,7 +28,7 @@ public class DoctorTest {
 	 * @return a new Doctor object that has not been persisted
 	 */
 	public static Doctor createValidDoctor() {
-		return new Doctor("Bilbo", "Baggins", "bilbo@mordor.com");
+		return new Doctor("Bilbo", "Baggins", "bilbo@mordor.com", LocalDate.of(2020, 6, 26));
 	}
 	
 	/**
@@ -40,12 +40,12 @@ public class DoctorTest {
 	 */
 	public static List<Doctor> createValidDoctors() {
 		List<Doctor> doctors = new ArrayList<>(6);
-		doctors.add(new Doctor("Frodo", "Baggins", "frodo@mordor.com"));
-		doctors.add(new Doctor("Gollumn", "aka Smeagol", "gollumn@mordor.com"));
-		doctors.add(new Doctor("Gandalf", "The Gray", "gandalf@lonelymountain.com"));
-		doctors.add(new Doctor("Samwise", "Gamgee", "samg@mordor.com"));
-		doctors.add(new Doctor("Galadriel", "the Lady", "lady@lothlorien.com"));
-		doctors.add(new Doctor("Gimli", "son of Gloin", "gimli@glittetingcaves.com"));
+		doctors.add(new Doctor("Frodo", "Baggins", "frodo@mordor.com", LocalDate.of(2020, 6, 19)));
+		doctors.add(new Doctor("Gollumn", "aka Smeagol", "gollumn@mordor.com", LocalDate.of(2020, 6, 20)));
+		doctors.add(new Doctor("Gandalf", "The Gray", "gandalf@lonelymountain.com", LocalDate.of(2020, 6, 21)));
+		doctors.add(new Doctor("Samwise", "Gamgee", "samg@mordor.com", LocalDate.of(2020, 6, 22)));
+		doctors.add(new Doctor("Galadriel", "the Lady", "lady@lothlorien.com", LocalDate.of(2020, 6, 23)));
+		doctors.add(new Doctor("Gimli", "son of Gloin", "gimli@glittetingcaves.com", LocalDate.of(2020, 6, 24)));
 		return doctors;
 	}
 	
@@ -81,7 +81,7 @@ public class DoctorTest {
 	
 	@Test
 	void createAndSaveValidDoctor() {
-		Doctor doctor = new Doctor("Bilbo", "Baggins", "bilbo@mordos.com");
+		Doctor doctor = createValidDoctor();
 		
 		this.entityTester.assertValidEntity(doctor);
 		

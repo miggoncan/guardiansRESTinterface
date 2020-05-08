@@ -91,8 +91,6 @@ public class DayConfiguration extends AbstractDay {
 	 * numShifts indicates the number of non-cycle-shifts that will be scheduled for
 	 * this {@link #day} Note {@link DayConfiguration#numConsultations} is counted
 	 * separetly
-	 * 
-	 * @see CycleShift
 	 */
 	@Column(nullable = false)
 	@PositiveOrZero
@@ -140,8 +138,6 @@ public class DayConfiguration extends AbstractDay {
 	/**
 	 * cycleChanges indicates a change that should be done to the cycle-shifts of
 	 * this {@link #day} when creating its schedule
-	 * 
-	 * @see CycleShift
 	 */
 	@OneToMany(mappedBy = "dayConfiguration", cascade = CascadeType.ALL)
 	@JsonManagedReference

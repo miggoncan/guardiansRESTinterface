@@ -21,11 +21,10 @@ public interface DoctorRepository extends JpaRepository<Doctor, Long> {
 
 	/**
 	 * Retrieve a {@link Doctor} from the database if it exists, provided its
-	 * firstName and lastNames
+	 * email
 	 * 
-	 * @param firstName The first name of the {@link Doctor}
-	 * @param lastNames The lastNames of the {@link Doctor}
+	 * @param email The email of the {@link Doctor}
 	 * @return The {@link Doctor}, if found
 	 */
-	public Optional<Doctor> findByFirstNameAndLastNames(String firstName, String lastNames);
+	public Optional<Doctor> findByEmail(String email);
 }

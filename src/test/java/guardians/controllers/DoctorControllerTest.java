@@ -7,6 +7,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.time.LocalDate;
+
 import javax.transaction.Transactional;
 
 import org.json.JSONException;
@@ -30,6 +32,8 @@ import guardians.model.repositories.DoctorRepository;
 @SpringBootTest
 @Transactional
 class DoctorControllerTest {
+	
+	private static final String DOCTORS_PATH = "/guardians/doctors/";
 
 	@Autowired
 	private WebApplicationContext wac;
@@ -77,13 +81,13 @@ class DoctorControllerTest {
 
 	@Test
 	void getDoctors() throws Exception {
-		mockMvc.perform(get("/doctors")).andExpect(status().isOk());
+		mockMvc.perform(get(DOCTORS_PATH)).andExpect(status().isOk());
 	}
 	
 	@Test
 	void getDoctor() throws Exception {
 		Doctor savedDoctor = doctorRepository.save(DoctorTest.createValidDoctor());
-		mockMvc.perform(get("/doctors/" + savedDoctor.getId()))
+		mockMvc.perform(get(DOCTORS_PATH + savedDoctor.getId()))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.firstName", is(savedDoctor.getFirstName())))
 			.andExpect(jsonPath("$.lastNames", is(savedDoctor.getLastNames())))
@@ -99,7 +103,9 @@ class DoctorControllerTest {
 	@Test
 	void postDoctorWithoutAbsence() throws Exception {
 		JSONObject doctor = getJSONDoctor();
-		mockMvc.perform(post("/doctors").content(doctor.toString()).contentType(MediaType.APPLICATION_JSON))
+		mockMvc.perform(post(DOCTORS_PATH)
+						.queryParam("startDate", LocalDate.of(2020, 6, 25).toString())
+						.content(doctor.toString()).contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andExpect(content().json(doctor.toString(), false));
 	}
@@ -107,7 +113,10 @@ class DoctorControllerTest {
 	@Test
 	void postDoctorWithAbsence() throws Exception {
 		JSONObject doctor = getJSONDoctorWithAbsence();
-		mockMvc.perform(post("/doctors").content(doctor.toString()).contentType(MediaType.APPLICATION_JSON))
+		mockMvc.perform(post(DOCTORS_PATH)
+						.content(doctor.toString())
+						.queryParam("startDate", LocalDate.of(2020, 6, 25).toString())
+						.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andExpect(content().json(doctor.toString(), false));
 	}
@@ -118,7 +127,10 @@ class DoctorControllerTest {
 		doctor.put("firstName", "Legolas");
 		// lastnames is ommitted
 		doctor.put("email", "legolas@mirkwood.com");
-		mockMvc.perform(post("/doctors").content(doctor.toString()).contentType(MediaType.APPLICATION_JSON))
+		mockMvc.perform(post(DOCTORS_PATH)
+						.content(doctor.toString())
+						.queryParam("startDate", LocalDate.of(2020, 6, 25).toString())
+						.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isBadRequest());
 	}
 	
@@ -130,25 +142,29 @@ class DoctorControllerTest {
 		absence.put("start", "2020-04-10");
 		absence.put("end", "2020-02-20");
 		doctor.put("absence", absence);
-		mockMvc.perform(post("/doctors").content(doctor.toString()).contentType(MediaType.APPLICATION_JSON))
+		mockMvc.perform(post(DOCTORS_PATH)
+						.content(doctor.toString())
+						.queryParam("startDate", LocalDate.of(2020, 6, 25).toString())
+						.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isBadRequest())
 				.andExpect(content().string("Invalid Absence: \"The start date of the Absence must be before its end date\" "));
 	}
 	
 	@Test
-	void postDoctorAlreadyExists() throws Exception {
+	void postDoctorDuplicateEmail() throws Exception {
 		// Persist first doctor
 		Doctor savedDoctor = doctorRepository.save(DoctorTest.createValidDoctor());
-		String firstName = savedDoctor.getFirstName();
-		String lastNames = savedDoctor.getLastNames();
+		String email = savedDoctor.getEmail();
 		JSONObject doctor = new JSONObject();
-		doctor.put("firstName", firstName);
-		doctor.put("lastNames", lastNames);
-		doctor.put("email", "example@example.com");
-		mockMvc.perform(post("/doctors")
-					.content(doctor.toString()).contentType(MediaType.APPLICATION_JSON))
+		doctor.put("firstName", "Galdanf");
+		doctor.put("lastNames", "The Grey");
+		doctor.put("email", email);
+		mockMvc.perform(post(DOCTORS_PATH)
+						.content(doctor.toString())
+						.queryParam("startDate", LocalDate.of(2020, 6, 25).toString())
+						.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isBadRequest())
-				.andExpect(content().string("The Doctor " + firstName + " " + lastNames + " already exists"));
+				.andExpect(content().string("A Doctor already has the email " + email));
 	}
 	
 	/////////////////////////////////////
@@ -161,8 +177,9 @@ class DoctorControllerTest {
 	void putValidDoctor() throws Exception {
 		Doctor savedDoctor = doctorRepository.save(DoctorTest.createValidDoctor());
 		JSONObject doctor = getJSONDoctor();
-		mockMvc.perform(put("/doctors/" + savedDoctor.getId())
-					.content(doctor.toString()).contentType(MediaType.APPLICATION_JSON))
+		mockMvc.perform(put(DOCTORS_PATH + savedDoctor.getId())
+						.content(doctor.toString())
+						.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andExpect(content().json(doctor.toString(), false));
 	}
@@ -171,8 +188,9 @@ class DoctorControllerTest {
 	void putValidDoctorWithAbsence() throws Exception {
 		Doctor savedDoctor = doctorRepository.save(DoctorTest.createValidDoctor());
 		JSONObject doctor = getJSONDoctorWithAbsence();
-		mockMvc.perform(put("/doctors/" + savedDoctor.getId())
-					.content(doctor.toString()).contentType(MediaType.APPLICATION_JSON))
+		mockMvc.perform(put(DOCTORS_PATH + savedDoctor.getId())
+						.content(doctor.toString())
+						.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andExpect(content().json(doctor.toString(), false));
 	}
@@ -186,8 +204,9 @@ class DoctorControllerTest {
 		absence.put("start", "2020-04-10");
 		absence.put("end", "2020-02-20");
 		doctor.put("absence", absence);
-		mockMvc.perform(put("/doctors/" + savedDoctor.getId())
-					.content(doctor.toString()).contentType(MediaType.APPLICATION_JSON))
+		mockMvc.perform(put(DOCTORS_PATH + savedDoctor.getId())
+						.content(doctor.toString())
+						.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isBadRequest())
 				.andExpect(content().string("Invalid Absence: \"The start date of the Absence must be before its end date\" "));
 		}
@@ -199,39 +218,42 @@ class DoctorControllerTest {
 		absence.setDoctor(savedDoctor);
 		absence = absenceRepository.save(absence);
 		JSONObject doctor = getJSONDoctor();
-		mockMvc.perform(put("/doctors/" + savedDoctor.getId())
-					.content(doctor.toString()).contentType(MediaType.APPLICATION_JSON))
+		mockMvc.perform(put(DOCTORS_PATH + savedDoctor.getId())
+						.content(doctor.toString())
+						.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andExpect(content().json(doctor.toString(), false));
 	}
 	
 	@Test
-	void putDoctorAlreadyExists() throws Exception {
+	void putDoctorDuplicateEmail() throws Exception {
 		// Persist first doctor
 		Doctor savedDoctor = doctorRepository.save(DoctorTest.createValidDoctor());
-		String firstName = savedDoctor.getFirstName();
-		String lastNames = savedDoctor.getLastNames();
+		String email = savedDoctor.getEmail();
 		// Persist second doctor
 		Doctor validDoctor = DoctorTest.createValidDoctor();
 		validDoctor.setFirstName("Gandalf");
 		validDoctor.setLastNames("The White");
+		validDoctor.setEmail("example@example.com");
 		validDoctor = doctorRepository.save(validDoctor);
 		// The doctor sent will have the name of the first doctor
 		JSONObject doctor = new JSONObject();
-		doctor.put("firstName", firstName);
-		doctor.put("lastNames", lastNames);
-		doctor.put("email", "example@example.com");
-		mockMvc.perform(put("/doctors/" + validDoctor.getId())
-					.content(doctor.toString()).contentType(MediaType.APPLICATION_JSON))
+		doctor.put("firstName", "Gandald");
+		doctor.put("lastNames", "The White");
+		doctor.put("email", email);
+		mockMvc.perform(put(DOCTORS_PATH + validDoctor.getId())
+						.content(doctor.toString())
+						.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isBadRequest())
-				.andExpect(content().string("The Doctor " + firstName + " " + lastNames + " already exists"));
+				.andExpect(content().string("A Doctor already has the email " + email));
 	}
 	
 	@Test
 	void putDoctorDoesntExist() throws Exception {
 		JSONObject doctor = getJSONDoctor();
-		mockMvc.perform(put("/doctors/" + 1515)
-					.content(doctor.toString()).contentType(MediaType.APPLICATION_JSON))
+		mockMvc.perform(put(DOCTORS_PATH + 1515)
+						.content(doctor.toString())
+						.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isNotFound())
 				.andExpect(content().string("Could not find the doctor 1515"));
 	}

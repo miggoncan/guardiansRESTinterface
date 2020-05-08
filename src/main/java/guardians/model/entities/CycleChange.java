@@ -19,7 +19,7 @@ import lombok.EqualsAndHashCode;
 
 /**
  * The CycleChange {@link Entity} is used to represent that two {@link Doctor}
- * have changed their {@link CycleShift} a certain day of a certain
+ * have changed their cycle shift a certain day of a certain
  * {@link Calendar}
  * 
  * Note the primary key used for this {@link Entity} is composite. Hence, the
@@ -56,21 +56,17 @@ public class CycleChange {
 	private DayConfiguration dayConfiguration;
 
 	/**
-	 * The cycle giver is the {@link Doctor} that gives their {@link CycleShift} to
+	 * The cycle giver is the {@link Doctor} that gives their cycle shift to
 	 * another {@link Doctor}. Hence, the cycle giver will not have a cycle-shift
 	 * this {@link CycleChange#day}
-	 * 
-	 * @see CycleShift
 	 */
 	@ManyToOne
 	private Doctor cycleGiver;
 
 	/**
 	 * The cycle receiver is the {@link Doctor} that will take the
-	 * {@link CycleShift}. Hence, although the cycleReceiver would not have had a
+	 * cycle shift. Hence, although the cycleReceiver would not have had a
 	 * cycle-shift this {@link CycleChange#day}, they will have it.
-	 * 
-	 * @see CycleShift
 	 */
 	@ManyToOne
 	private Doctor cycleReceiver;

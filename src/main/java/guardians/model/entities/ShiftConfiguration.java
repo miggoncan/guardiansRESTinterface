@@ -52,8 +52,6 @@ public class ShiftConfiguration {
 	 * 
 	 * This number does not take into account the number of cycle-shifts the
 	 * associated {@link Doctor} has to have
-	 * 
-	 * @see CycleShift
 	 */
 	@Column(nullable = false)
 	@PositiveOrZero
@@ -66,8 +64,6 @@ public class ShiftConfiguration {
 	 * 
 	 * This number does not take into account the number of cycle-shifts the
 	 * associated {@link Doctor} has to have
-	 * 
-	 * @see CycleShift
 	 */
 	@Column(nullable = false)
 	@PositiveOrZero

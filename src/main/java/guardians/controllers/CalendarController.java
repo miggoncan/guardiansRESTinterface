@@ -29,7 +29,7 @@ import lombok.extern.slf4j.Slf4j;
  * @author miggoncan
  */
 @RestController
-@RequestMapping("/calendars")
+@RequestMapping("/guardians/calendars")
 @Slf4j
 public class CalendarController {
 	@Autowired
@@ -46,7 +46,6 @@ public class CalendarController {
 	@GetMapping("")
 	public CollectionModel<EntityModel<Calendar>> getCalendars() {
 		log.info("Request received: returning all available calendars");
-		// TODO use pagination
 		return calendarAssembler.toCollectionModel(calendarRepository.findAll());
 	}
 
@@ -120,6 +119,4 @@ public class CalendarController {
 		Calendar savedCalendar = calendarRepository.save(calendar);
 		return calendarAssembler.toModel(savedCalendar);
 	}
-	
-	// TODO should calendars be deleted?
 }

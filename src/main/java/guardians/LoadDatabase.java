@@ -24,14 +24,12 @@ import guardians.model.entities.Doctor;
 import guardians.model.entities.Schedule;
 import guardians.model.entities.ScheduleDay;
 import guardians.model.entities.ShiftConfiguration;
-import guardians.model.entities.CycleShift;
 import guardians.model.entities.Schedule.ScheduleStatus;
 import guardians.model.repositories.AllowedShiftRepository;
 import guardians.model.repositories.CalendarRepository;
 import guardians.model.repositories.DoctorRepository;
 import guardians.model.repositories.ScheduleRepository;
 import guardians.model.repositories.ShiftConfigurationRepository;
-import guardians.model.repositories.CycleShiftRepository;
 import lombok.extern.slf4j.Slf4j;
 
 @Configuration
@@ -44,15 +42,13 @@ public class LoadDatabase {
 	@Autowired
 	AllowedShiftRepository allowedShiftRepository;
 	@Autowired
-	CycleShiftRepository cycleShiftRepository;
-	@Autowired
 	CalendarRepository calendarRepository;
 	@Autowired
 	ScheduleRepository scheduleRepository;
 
 	// Currently, the database is already preloaded. The Bean annotation is
 	// commented to not load it every time the service is launched
-	@Bean
+//	@Bean
 	CommandLineRunner initDatabase() {
 		return args -> {
 			AllowedShift allowedShiftMonday = allowedShiftRepository.save(new AllowedShift("Monday"));
@@ -67,7 +63,7 @@ public class LoadDatabase {
 			log.info("Preloading " + allowedShiftFriday);
 
 			// This will be a regular doctor
-			Doctor doctor1 = doctorRepository.save(new Doctor("Bilbo", "Baggins", "bilbo@mordor.com"));
+			Doctor doctor1 = doctorRepository.save(new Doctor("Bilbo", "Baggins", "bilbo@mordor.com", LocalDate.of(2020, 6, 26)));
 			Set<AllowedShift> doctor1UnwantedShifts = new HashSet<>();
 			ShiftConfiguration doctor1ShiftConf = new ShiftConfiguration(3, 2, true);
 			doctor1ShiftConf.setDoctor(doctor1);
@@ -85,11 +81,11 @@ public class LoadDatabase {
 			log.info("Preloading " + doctor1 + " with shitf configuration " + doctor1ShiftConf);
 
 			// This doctor will not do non-cycle shifts
-			Doctor doctor2 = doctorRepository.save(new Doctor("Frodo", "Baggins", "frodo@mordor.com"));
+			Doctor doctor2 = doctorRepository.save(new Doctor("Frodo", "Baggins", "frodo@mordor.com", LocalDate.of(2020, 6, 25)));
 			log.info("Preloading " + doctor2);
 
 			// This doctor will be absent for 7 days from now
-			Doctor sickDoctor = new Doctor("Gollumn", "aka Smeagol", "gollumn@mordor.com");
+			Doctor sickDoctor = new Doctor("Gollumn", "aka Smeagol", "gollumn@mordor.com", LocalDate.of(2020, 6, 25));
 			Absence sickDoctorAbsence = new Absence(LocalDate.of(2020, 5, 25), LocalDate.of(2020, 7, 30));
 			sickDoctorAbsence.setDoctor(sickDoctor);
 			sickDoctor.setAbsence(sickDoctorAbsence);
@@ -104,7 +100,7 @@ public class LoadDatabase {
 			log.info("Preloading " + sickDoctor + " with shift configuration " + sickDoctorShiftConf);
 
 			// This will be another regular doctor
-			Doctor doctor4 = doctorRepository.save(new Doctor("Gandalf", "The Gray", "gandalf@lonelymountain.com"));
+			Doctor doctor4 = doctorRepository.save(new Doctor("Gandalf", "The Gray", "gandalf@lonelymountain.com", LocalDate.of(2020, 6, 26)));
 			ShiftConfiguration doctor4ShiftConf = new ShiftConfiguration(3, 3, false);
 			doctor4ShiftConf.setDoctor(doctor4);
 			Set<AllowedShift> doctor4UnwantedShifts = new HashSet<>();
@@ -117,19 +113,6 @@ public class LoadDatabase {
 			doctor4ShiftConf.setUnavailableShifts(doctor4UnavailableShifts);
 			doctor4ShiftConf = shiftConfigurationRepository.save(doctor4ShiftConf);
 			log.info("Preloading " + doctor4 + " with shift configuration " + doctor4ShiftConf);
-
-			// First day in the shift cycle
-			List<Doctor> shiftCycle1Doctors = new ArrayList<>();
-			shiftCycle1Doctors.add(doctor1);
-			shiftCycle1Doctors.add(doctor2);
-			CycleShift cycleShift1 = new CycleShift(1, 2, 2020, shiftCycle1Doctors);
-			log.info("Preloading " + cycleShiftRepository.save(cycleShift1));
-			// Second day in the shift cycle
-			List<Doctor> shiftCycle2Doctors = new ArrayList<>();
-			shiftCycle2Doctors.add(sickDoctor);
-			shiftCycle2Doctors.add(doctor4);
-			CycleShift cycleShift2 = new CycleShift(2, 2, 2020, shiftCycle2Doctors);
-			log.info("Preloading " + cycleShiftRepository.save(cycleShift2));
 
 			// First Calendar
 			YearMonth april = YearMonth.of(2020, 4);

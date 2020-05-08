@@ -38,7 +38,7 @@ public class DoctorAssembler implements RepresentationModelAssembler<Doctor, Ent
 	public EntityModel<Doctor> toModel(Doctor entity) {
 		return new EntityModel<Doctor>(entity,
 				linkTo(methodOn(DoctorController.class).getDoctor(entity.getId())).withSelfRel(),
-				linkTo(methodOn(DoctorController.class).getDoctors()).withRel(doctorsLink),
+				linkTo(methodOn(DoctorController.class).getDoctors(null)).withRel(doctorsLink),
 				linkTo(methodOn(ShiftConfigurationController.class).getShitfConfiguration(entity.getId()))
 						.withRel(shiftConfLink));
 	}
@@ -50,7 +50,7 @@ public class DoctorAssembler implements RepresentationModelAssembler<Doctor, Ent
 			doctors.add(this.toModel(entity));
 		}
 		return new CollectionModel<>(doctors, 
-				linkTo(methodOn(DoctorController.class).getDoctors()).withSelfRel(),
+				linkTo(methodOn(DoctorController.class).getDoctors(null)).withSelfRel(),
 				linkTo(methodOn(RootController.class).getRootLinks()).withRel(rootLink));
 	}
 }

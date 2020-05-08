@@ -37,7 +37,7 @@ public class MyAdviceController {
 	@ExceptionHandler(NotFoundException.class)
 	@ResponseStatus(HttpStatus.NOT_FOUND)
 	public String notFoundHandler(NotFoundException e) {
-		log.info("Cauth NotFoundException: " + e.getMessage());
+		log.info("Caught NotFoundException: " + e.getMessage());
 		return e.getMessage();
 	}
 
@@ -50,7 +50,7 @@ public class MyAdviceController {
 	@ExceptionHandler(AlreadyExistsException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	public String alreadyExistsHandler(AlreadyExistsException e) {
-		log.info("Cauth AlreadyExistsException: " + e.getMessage());
+		log.info("Caught AlreadyExistsException: " + e.getMessage());
 		return e.getMessage();
 	}
 
@@ -63,7 +63,7 @@ public class MyAdviceController {
 	@ExceptionHandler(InvalidEntityException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	public String invalidEntityHandler(InvalidEntityException e) {
-		log.info("Cauth InvalidEntityException: " + e.getMessage());
+		log.info("Caught InvalidEntityException: " + e.getMessage());
 		return e.getMessage();
 	}
 
@@ -76,7 +76,7 @@ public class MyAdviceController {
 	@ExceptionHandler(DoctorDeletedException.class)
 	@ResponseStatus(HttpStatus.FORBIDDEN)
 	public String doctorDeleterHandler(DoctorDeletedException e) {
-		log.info("Cauth DoctorDeletedException: " + e.getMessage());
+		log.info("Caught DoctorDeletedException: " + e.getMessage());
 		return e.getMessage();
 	}
 
@@ -88,6 +88,7 @@ public class MyAdviceController {
 	@ExceptionHandler(ConstraintViolationException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	public List<String> constraintViolationHandler(ConstraintViolationException e) {
+		log.info("Caught ConstraintViolationExceptions: " + e.getMessage());
 		Set<ConstraintViolation<?>> constraintViolations = e.getConstraintViolations();
 		List<String> messages = new LinkedList<>();
 		for (ConstraintViolation<?> constraintViolation : constraintViolations) {

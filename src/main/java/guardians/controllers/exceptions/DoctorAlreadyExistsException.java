@@ -11,7 +11,7 @@ import guardians.model.entities.Doctor;
 public class DoctorAlreadyExistsException extends AlreadyExistsException {
 	private static final long serialVersionUID = -6150817314131506857L;
 
-	public DoctorAlreadyExistsException(String firstName, String lastNames) {
-		super("The Doctor " + firstName + " " + lastNames + " already exists");
+	public DoctorAlreadyExistsException(String email) {
+		super("A Doctor already has the email " + email);
 	}
 }

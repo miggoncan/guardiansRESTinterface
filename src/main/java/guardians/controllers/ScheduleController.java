@@ -24,7 +24,7 @@ import lombok.extern.slf4j.Slf4j;
  * @author miggoncan
  */
 @RestController
-@RequestMapping("/calendars")
+@RequestMapping("/guardians/calendars")
 @Slf4j
 public class ScheduleController {
 
