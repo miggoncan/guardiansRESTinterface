@@ -28,6 +28,8 @@ import guardians.model.entities.primarykeys.CalendarPK;
 import guardians.model.repositories.CalendarRepository;
 import lombok.extern.slf4j.Slf4j;
 
+// TODO Create integration test for CalendarController
+
 /**
  * The CalendarController will handle all requests related to {@link Calendar}
  * 
@@ -129,7 +131,15 @@ public class CalendarController {
 			log.info("Could not find the requested calendar. Throwing CalendarNotFoundException");
 			throw new CalendarNotFoundException(yearMonth.getMonthValue(), yearMonth.getYear());
 		}
-		// TODO validate calendar days
+		
+		Set<ConstraintViolation<DayConfiguration>> constraintViolations;
+		for (DayConfiguration day : calendar.getDayConfigurations()) {
+			constraintViolations = this.validator.validate(day);
+			if (!constraintViolations.isEmpty()) {
+				log.info("One of the given day configurations is not valid. Throwing InvalidDayConfigurationException");
+				throw new InvalidDayConfigurationException(constraintViolations);
+			}
+		}
 
 		Calendar savedCalendar = calendarRepository.save(calendar);
 		return calendarAssembler.toModel(savedCalendar);

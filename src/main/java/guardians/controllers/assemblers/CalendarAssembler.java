@@ -42,7 +42,7 @@ public class CalendarAssembler implements RepresentationModelAssembler<Calendar,
 		return new EntityModel<Calendar>(entity, 
 				linkTo(methodOn(CalendarController.class).getCalendar(yearMonth)).withSelfRel(),
 				linkTo(methodOn(CalendarController.class).getCalendars()).withRel(calendarsLink),
-				linkTo(methodOn(ScheduleController.class).getSchedule(yearMonth)).withRel(scheduleLink));
+				linkTo(methodOn(ScheduleController.class).getScheduleRequest(yearMonth)).withRel(scheduleLink));
 	}
 
 	@Override

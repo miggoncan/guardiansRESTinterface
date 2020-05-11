@@ -23,13 +23,17 @@ public class ScheduleDayTest {
 	 * Note that, for it to be completely valid, a month and a year have to be
 	 * assigned.
 	 * 
-	 * @param day The day of the month of this {@link ScheduleDay} [1, 31]
+	 * @param day [1, 31] The day of the month of this {@link ScheduleDay}. If day
+	 *            is even, the day will be a working day. Otherwise, it won't
 	 * @return The created {@link ScheduleDay}
 	 */
 	public static ScheduleDay createValidScheduleDay(int day, Set<Doctor> doctors) {
-		ScheduleDay scheduleDay = new ScheduleDay(day, true);
+		boolean isWorkingDay = day % 2 == 0;
+		ScheduleDay scheduleDay = new ScheduleDay(day, isWorkingDay);
 		scheduleDay.setCycle(doctors);
-		scheduleDay.setShifts(doctors);
+		if (isWorkingDay) {
+			scheduleDay.setShifts(doctors);
+		}
 		return scheduleDay;
 	}
 
@@ -98,17 +102,17 @@ public class ScheduleDayTest {
 	// Test for invalid values
 	//
 	////////////////////////////////////
-	
+
 	@Test
 	void dayCannotBeNull() {
 		this.entityTester.assertAttributeCannotBeNull("day");
 	}
-	
+
 	@Test
 	void monthCannotBeNull() {
 		this.entityTester.assertAttributeCannotBeNull("month");
 	}
-	
+
 	@Test
 	void yearCannotBeNull() {
 		this.entityTester.assertAttributeCannotBeNull("year");

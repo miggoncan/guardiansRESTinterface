@@ -43,6 +43,7 @@ public class Schedule {
 	
 	public enum ScheduleStatus {
 		NOT_CREATED,
+		BEING_GENERATED,
 		PENDING_CONFIRMATION,
 		CONFIRMED
 	}

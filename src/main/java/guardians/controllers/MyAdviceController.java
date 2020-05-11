@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import guardians.controllers.exceptions.AlreadyExistsException;
 import guardians.controllers.exceptions.DoctorDeletedException;
 import guardians.controllers.exceptions.InvalidEntityException;
+import guardians.controllers.exceptions.InvalidScheduleStatusException;
+import guardians.controllers.exceptions.InvalidScheduleStatusTransitionException;
 import guardians.controllers.exceptions.NotFoundException;
 import lombok.extern.slf4j.Slf4j;
 
@@ -95,5 +97,31 @@ public class MyAdviceController {
 			messages.add(constraintViolation.getPropertyPath() + " " + constraintViolation.getMessage());
 		}
 		return messages;
+	}
+	
+	/**
+	 * This method catches the exceptions {@link InvalidScheduleStatusException}
+	 * 
+	 * @param e The caught exception
+	 * @return A String that should be returned in the HTTP response body
+	 */
+	@ExceptionHandler(InvalidScheduleStatusException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	public String invalidScheduleStatusHandler(InvalidScheduleStatusException e) {
+		log.info("Caught InvalidScheduleStatusException: " + e.getMessage());
+		return e.getMessage();
+	}
+	
+	/**
+	 * This method catches the exceptions {@link InvalidScheduleStatusTransitionException}
+	 * 
+	 * @param e The caught exception
+	 * @return A String that should be returned in the HTTP response body
+	 */
+	@ExceptionHandler(InvalidScheduleStatusTransitionException.class)
+	@ResponseStatus(HttpStatus.CONFLICT)
+	public String invalidScheduleStatusTransitionHandler(InvalidScheduleStatusTransitionException e) {
+		log.info("Caught InvalidScheduleStatusTransitionException: " + e.getMessage());
+		return e.getMessage();
 	}
 }

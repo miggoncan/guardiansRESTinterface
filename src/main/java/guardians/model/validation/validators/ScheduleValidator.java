@@ -57,9 +57,9 @@ public class ScheduleValidator implements ConstraintValidator<ValidSchedule, Sch
 		Set<ScheduleDay> days = value.getDays();
 		// If the schedule has not yet been created, it is allowed to have a null or
 		// empty list of ScheduleDays
-		if (status == ScheduleStatus.NOT_CREATED) {
+		if (status == ScheduleStatus.NOT_CREATED || status == ScheduleStatus.BEING_GENERATED) {
 			if (days == null || days.size() == 0) {
-				log.debug("The schedule has not yet been created. It is valid");
+				log.debug("The schedule has not yet been created or is being generated. It is valid");
 				scheduleIsValid = true;
 			} else {
 				log.debug("The schedule is marked as not created, but it has some schedule days. It is invalid");
