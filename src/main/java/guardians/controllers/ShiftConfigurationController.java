@@ -159,7 +159,8 @@ public class ShiftConfigurationController {
 	 * This method handles requests to create a {@link ShiftConfiguration} for an
 	 * already existent {@link Doctor}
 	 * 
-	 * @param newShiftConf the new {@link ShiftConfiguration} that will be persisted
+	 * @param newShiftConfDTO the new {@link ShiftConfiguration} that will be
+	 *                        persisted
 	 * @return The persisted {@link ShiftConfiguration}
 	 * @throws DoctorNotFoundException                  if the
 	 *                                                  {@link ShiftConfiguration#getDoctorId()}
@@ -228,16 +229,16 @@ public class ShiftConfigurationController {
 	 * This method handles requests to update the existing
 	 * {@link ShiftConfiguration} of an existing {@link Doctor}
 	 * 
-	 * @param doctorId    The id of the {@link Doctor} whose
-	 *                    {@link ShiftConfiguration} wants to be updated
-	 * @param shiftConfig The desired value of the {@link ShiftConfiguration}
+	 * @param doctorId       The id of the {@link Doctor} whose
+	 *                       {@link ShiftConfiguration} wants to be updated
+	 * @param shiftConfigDTO The desired value of the {@link ShiftConfiguration}
 	 * @return the saved {@link ShiftConfiguration}
 	 * @throws DoctorNotFoundException
 	 * @throws ShiftConfigurationNotFoundException if the {@link Doctor} with
 	 *                                             doctorId does not already have a
 	 *                                             {@link ShiftConfiguration}. In
 	 *                                             this case, the request
-	 *                                             {@link ShiftConfigurationController#newShiftConfiguration(ShiftConfiguration)}
+	 *                                             {@link ShiftConfigurationController#newShiftConfiguration(ShiftConfigurationPublicDTO)}
 	 *                                             should be used
 	 * @throws AllowedShiftNotFoundException       if one of the
 	 *                                             {@link AllowedShift} in the shift

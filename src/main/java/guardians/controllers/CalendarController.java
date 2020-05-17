@@ -95,7 +95,7 @@ public class CalendarController {
 	/**
 	 * This method will handle requests to create a new {@link Calendar}
 	 * 
-	 * @param newCalendar the calendar to be created
+	 * @param newCalendarDTO the calendar to be created
 	 * @return The created {@link Calendar}
 	 * @throws CalendarAlreadyExistsException if a calendar already exists for the
 	 *                                        given month and year
@@ -152,7 +152,7 @@ public class CalendarController {
 	 * This method will handle requests to update an existing {@link Calendar}
 	 * 
 	 * @param yearMonth the year and month of the calendar to be updated
-	 * @param calendar  The {@link Calendar} used to replace the previous one
+	 * @param calendarDTO  The {@link Calendar} used to replace the previous one
 	 * @return The persisted {@link Calendar}
 	 * @throws CalendarNotFoundException if the {@link Calendar} doesn't already
 	 *                                   exist

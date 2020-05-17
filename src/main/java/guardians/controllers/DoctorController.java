@@ -133,7 +133,7 @@ public class DoctorController {
 	 * The {@link Doctor} cannot already exist. Moreover this {@link Doctor} might
 	 * have an {@link Absence}, and both have to be valid
 	 * 
-	 * @param newDoctor    The {@link Doctor} that will be persisted
+	 * @param newDoctorDTO    The {@link Doctor} that will be persisted
 	 * @param startDateStr The date this {@link Doctor} will have their first
 	 *                     cycle-shift. E.g. 2020-06-26
 	 * 
@@ -219,7 +219,7 @@ public class DoctorController {
 	 * exists)
 	 * 
 	 * @param doctorId  The id of the {@link Doctor} to update
-	 * @param newDoctor The values of newDoctor will be used to change the current
+	 * @param newDoctorDTO The values of newDoctor will be used to change the current
 	 *                  {@link Doctor}
 	 * 
 	 * @return The {@link Doctor} that has been persisted

@@ -19,7 +19,7 @@ import guardians.model.entities.Schedule.ScheduleStatus;
 /**
  * This class is responsible of converting a {@link SchedulePublicDTO} into its
  * {@link EntityModel} representation. This is, adding links to the
- * {@link Schedule}
+ * {@link SchedulePublicDTO}
  * 
  * @author miggoncan
  */

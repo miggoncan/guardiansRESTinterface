@@ -195,7 +195,7 @@ public class ScheduleController {
 	 * 
 	 * @param yearMonth the year and month for which the {@link Schedule} should be
 	 *                  updated
-	 * @param schedule  The new value to use for the {@link Schedule}
+	 * @param scheduleDTO  The new value to use for the {@link Schedule}
 	 * @return The persisted {@link Schedule}
 	 * @throws ScheduleNotFoundException
 	 * @throws ConstraintViolationException if any of the {@link ScheduleDay}s is
