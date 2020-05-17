@@ -13,35 +13,37 @@ import org.springframework.stereotype.Component;
 
 import guardians.controllers.AllowedShiftsController;
 import guardians.controllers.ShiftConfigurationController;
-import guardians.model.entities.AllowedShift;
+import guardians.model.dtos.AllowedShiftPublicDTO;
 
 /**
- * AllowedShiftAssembler is responsible for converting {@link AllowedShift}s
- * into their {@link EntityModel} representation. This is, adding the necessary
- * links to them.
+ * AllowedShiftAssembler is responsible for converting
+ * {@link AllowedShiftPublicDTO}s into their {@link EntityModel} representation.
+ * This is, adding the necessary links to them.
  * 
  * @author miggoncan
  */
 @Component
-public class AllowedShiftAssembler implements RepresentationModelAssembler<AllowedShift, EntityModel<AllowedShift>> {
+public class AllowedShiftAssembler
+		implements RepresentationModelAssembler<AllowedShiftPublicDTO, EntityModel<AllowedShiftPublicDTO>> {
 
 	@Value("${api.links.allowedshifts}")
 	private String allowedShiftsLink;
-	
+
 	@Value("${api.links.shiftconfs}")
 	private String shiftConfsLink;
 
 	@Override
-	public EntityModel<AllowedShift> toModel(AllowedShift entity) {
-		return new EntityModel<AllowedShift>(entity, 
+	public EntityModel<AllowedShiftPublicDTO> toModel(AllowedShiftPublicDTO entity) {
+		return new EntityModel<AllowedShiftPublicDTO>(entity,
 				linkTo(methodOn(AllowedShiftsController.class).getAllowedShift(entity.getId())).withSelfRel(),
 				linkTo(methodOn(AllowedShiftsController.class).getAllowedShifts()).withRel(allowedShiftsLink));
 	}
 
 	@Override
-	public CollectionModel<EntityModel<AllowedShift>> toCollectionModel(Iterable<? extends AllowedShift> entities) {
-		List<EntityModel<AllowedShift>> allowedShifts = new LinkedList<>();
-		for (AllowedShift entity : entities) {
+	public CollectionModel<EntityModel<AllowedShiftPublicDTO>> toCollectionModel(
+			Iterable<? extends AllowedShiftPublicDTO> entities) {
+		List<EntityModel<AllowedShiftPublicDTO>> allowedShifts = new LinkedList<>();
+		for (AllowedShiftPublicDTO entity : entities) {
 			allowedShifts.add(this.toModel(entity));
 		}
 		return new CollectionModel<>(allowedShifts,

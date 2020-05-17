@@ -7,8 +7,6 @@ import javax.persistence.Id;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-import org.springframework.hateoas.server.core.Relation;
-
 import lombok.Data;
 
 /**
@@ -20,7 +18,6 @@ import lombok.Data;
  */
 @Data
 @Entity
-@Relation(value = "allowedShift", collectionRelation = "allowedShifts")
 public class AllowedShift {
 	@Id
 	@GeneratedValue

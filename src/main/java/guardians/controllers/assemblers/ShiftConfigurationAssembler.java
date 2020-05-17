@@ -15,35 +15,35 @@ import guardians.controllers.AllowedShiftsController;
 import guardians.controllers.DoctorController;
 import guardians.controllers.RootController;
 import guardians.controllers.ShiftConfigurationController;
-import guardians.model.entities.ShiftConfiguration;
+import guardians.model.dtos.ShiftConfigurationPublicDTO;
 
 /**
- * DoctorAssembler is responsible for converting a {@link ShiftConfiguration}
- * object to its {@link EntityModel} representation. This is, adding links to
- * it.
+ * DoctorAssembler is responsible for converting a
+ * {@link ShiftConfigurationPublicDTO} object to its {@link EntityModel}
+ * representation. This is, adding links to it.
  * 
  * @author miggoncan
  *
  */
 @Component
 public class ShiftConfigurationAssembler
-		implements RepresentationModelAssembler<ShiftConfiguration, EntityModel<ShiftConfiguration>> {
-	
+		implements RepresentationModelAssembler<ShiftConfigurationPublicDTO, EntityModel<ShiftConfigurationPublicDTO>> {
+
 	@Value("${api.links.root}")
 	private String rootLink;
-	
+
 	@Value("${api.links.shiftconfs}")
 	private String shiftConfsLink;
-	
+
 	@Value("${api.links.doctor}")
 	private String doctorLink;
-	
+
 	@Value("${api.links.allowedshifts}")
 	private String allowedShiftsLink;
 
 	@Override
-	public EntityModel<ShiftConfiguration> toModel(ShiftConfiguration entity) {
-		return new EntityModel<ShiftConfiguration>(entity,
+	public EntityModel<ShiftConfigurationPublicDTO> toModel(ShiftConfigurationPublicDTO entity) {
+		return new EntityModel<ShiftConfigurationPublicDTO>(entity,
 				linkTo(methodOn(ShiftConfigurationController.class).getShitfConfiguration(entity.getDoctorId()))
 						.withSelfRel(),
 				linkTo(methodOn(ShiftConfigurationController.class).getShitfConfigurations()).withRel(shiftConfsLink),
@@ -52,10 +52,10 @@ public class ShiftConfigurationAssembler
 	}
 
 	@Override
-	public CollectionModel<EntityModel<ShiftConfiguration>> toCollectionModel(
-			Iterable<? extends ShiftConfiguration> entities) {
-		List<EntityModel<ShiftConfiguration>> shiftConfs = new LinkedList<>();
-		for (ShiftConfiguration entity : entities) {
+	public CollectionModel<EntityModel<ShiftConfigurationPublicDTO>> toCollectionModel(
+			Iterable<? extends ShiftConfigurationPublicDTO> entities) {
+		List<EntityModel<ShiftConfigurationPublicDTO>> shiftConfs = new LinkedList<>();
+		for (ShiftConfigurationPublicDTO entity : entities) {
 			shiftConfs.add(this.toModel(entity));
 		}
 		return new CollectionModel<>(shiftConfs,

@@ -1,10 +1,14 @@
 package guardians.controllers;
 
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
-import javax.validation.Valid;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validator;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
@@ -22,8 +26,10 @@ import guardians.controllers.exceptions.AllowedShiftNotFoundException;
 import guardians.controllers.exceptions.DoctorDeletedException;
 import guardians.controllers.exceptions.DoctorNotFoundException;
 import guardians.controllers.exceptions.InvalidEntityException;
+import guardians.controllers.exceptions.InvalidShiftConfigurationException;
 import guardians.controllers.exceptions.ShiftConfigurationAlreadyExistsException;
 import guardians.controllers.exceptions.ShiftConfigurationNotFoundException;
+import guardians.model.dtos.ShiftConfigurationPublicDTO;
 import guardians.model.entities.AllowedShift;
 import guardians.model.entities.Doctor;
 import guardians.model.entities.ShiftConfiguration;
@@ -57,6 +63,9 @@ public class ShiftConfigurationController {
 	@Autowired
 	private ShiftConfigurationAssembler shiftConfigurationAssembler;
 
+	@Autowired
+	private Validator validator;
+
 	/**
 	 * This method checks that the given {@link AllowedShift} in the
 	 * {@link ShiftConfiguration} are valid. This is, they all exist in the
@@ -68,8 +77,8 @@ public class ShiftConfigurationController {
 	 * @throws InvalidEntityException        if one of the {@link AllowedShift}'s id
 	 *                                       does not correspond with its shift
 	 */
-	private void checkValidShiftPreferences(@Valid ShiftConfiguration shiftConf) {
-		log.info("Checking shift preferenecs for: " + shiftConf);
+	private void checkValidShiftPreferences(ShiftConfiguration shiftConf) {
+		log.info("Checking shift preferences for: " + shiftConf);
 		Set<AllowedShift> shiftPreferences = new HashSet<>();
 		Set<AllowedShift> tempShifts = shiftConf.getUnwantedShifts();
 		if (tempShifts != null) {
@@ -94,7 +103,7 @@ public class ShiftConfigurationController {
 				log.info("The received allowed shift with id: " + allowedShift.getId()
 						+ " was not found. Throwing AllowedShiftNotFound");
 				throw new AllowedShiftNotFoundException(allowedShift.getId());
-			} else if (foundShift.get().getShift() != allowedShift.getShift()) {
+			} else if (!foundShift.get().getShift().equals(allowedShift.getShift())) {
 				String message = "The allowed shift with id " + allowedShift.getId() + " should have the shift "
 						+ foundShift.get().getShift() + " instead of " + allowedShift.getShift();
 				log.info("The received allowed shift's id does not match its shift: " + message
@@ -106,6 +115,29 @@ public class ShiftConfigurationController {
 	}
 
 	/**
+	 * This method will convert a {@link ShiftConfigurationPublicDTO} to a valid
+	 * {@link ShiftConfiguration}
+	 * 
+	 * @param shiftConfDTO
+	 * 
+	 * @return
+	 * 
+	 * @throws InvalidShiftConfigurationException if the
+	 *                                            {@link ShiftConfigurationPublicDTO}
+	 *                                            canont be converted to a valid
+	 *                                            {@link ShiftConfiguration}
+	 */
+	private ShiftConfiguration getValidShiftConfiguration(ShiftConfigurationPublicDTO shiftConfDTO) {
+		ShiftConfiguration shiftConf = shiftConfDTO.toShiftConfiguration();
+		Set<ConstraintViolation<ShiftConfiguration>> violations = validator.validate(shiftConf);
+		if (!violations.isEmpty()) {
+			log.info("The given ShiftConfiguration is invalid. Throwing InvalidShiftConfigurationException");
+			throw new InvalidShiftConfigurationException(violations);
+		}
+		return shiftConf;
+	}
+
+	/**
 	 * This method handles GET requests for the complete list of
 	 * {@link ShiftConfiguration}
 	 * 
@@ -113,9 +145,14 @@ public class ShiftConfigurationController {
 	 *         database
 	 */
 	@GetMapping("")
-	public CollectionModel<EntityModel<ShiftConfiguration>> getShitfConfigurations() {
+	public CollectionModel<EntityModel<ShiftConfigurationPublicDTO>> getShitfConfigurations() {
 		log.info("Request received: returning all available shift configuratoins");
-		return shiftConfigurationAssembler.toCollectionModel(shiftConfigurationRepository.findAll());
+		List<ShiftConfiguration> shiftConfigurations = shiftConfigurationRepository.findAll();
+		List<ShiftConfigurationPublicDTO> shiftConfigurationsDTO = shiftConfigurations.stream()
+				.map((shiftConfiguration) -> {
+					return new ShiftConfigurationPublicDTO(shiftConfiguration);
+				}).collect(Collectors.toCollection(() -> new LinkedList<>()));
+		return shiftConfigurationAssembler.toCollectionModel(shiftConfigurationsDTO);
 	}
 
 	/**
@@ -134,8 +171,11 @@ public class ShiftConfigurationController {
 	 *                                                  {@link ShiftConfiguration}
 	 */
 	@PostMapping("")
-	public EntityModel<ShiftConfiguration> newShiftConfiguration(@RequestBody @Valid ShiftConfiguration newShiftConf) {
-		log.info("Request received: create new shift configuration: " + newShiftConf);
+	public EntityModel<ShiftConfigurationPublicDTO> newShiftConfiguration(
+			@RequestBody ShiftConfigurationPublicDTO newShiftConfDTO) {
+		log.info("Request received: create new shift configuration: " + newShiftConfDTO);
+
+		ShiftConfiguration newShiftConf = this.getValidShiftConfiguration(newShiftConfDTO);
 
 		Long doctorId = newShiftConf.getDoctorId();
 		Optional<Doctor> doctor = doctorRepository.findById(doctorId);
@@ -143,9 +183,9 @@ public class ShiftConfigurationController {
 			log.info("The provided doctor id \"" + doctorId
 					+ "\"does not match any existing doctor. Throwing DoctorNotFoundException");
 			throw new DoctorNotFoundException(doctorId);
-		}		
+		}
 		log.info("The doctor that will receive a shift configuration is " + doctor.get());
-		
+
 		if (doctor.get().getStatus() == DoctorStatus.DELETED) {
 			log.info("The doctor is marked as deleted. Throwing DoctorDeletedException");
 			throw new DoctorDeletedException(doctorId);
@@ -165,7 +205,7 @@ public class ShiftConfigurationController {
 		ShiftConfiguration savedShiftConf = shiftConfigurationRepository.save(newShiftConf);
 		log.info("Persisted shift configuration: " + savedShiftConf);
 
-		return shiftConfigurationAssembler.toModel(savedShiftConf);
+		return shiftConfigurationAssembler.toModel(new ShiftConfigurationPublicDTO(savedShiftConf));
 	}
 
 	/**
@@ -177,11 +217,11 @@ public class ShiftConfigurationController {
 	 * @throws ShiftConfigurationNotFoundException
 	 */
 	@GetMapping("/{doctorId}")
-	public EntityModel<ShiftConfiguration> getShitfConfiguration(@PathVariable Long doctorId) {
+	public EntityModel<ShiftConfigurationPublicDTO> getShitfConfiguration(@PathVariable Long doctorId) {
 		log.info("Request received: returning shift configuration for doctor " + doctorId);
 		ShiftConfiguration shiftConfig = shiftConfigurationRepository.findById(doctorId)
 				.orElseThrow(() -> new ShiftConfigurationNotFoundException(doctorId));
-		return shiftConfigurationAssembler.toModel(shiftConfig);
+		return shiftConfigurationAssembler.toModel(new ShiftConfigurationPublicDTO(shiftConfig));
 	}
 
 	/**
@@ -208,16 +248,18 @@ public class ShiftConfigurationController {
 	 *                                             shift preferences do not match
 	 */
 	@PutMapping("/{doctorId}")
-	public EntityModel<ShiftConfiguration> updateShiftConfiguration(@PathVariable Long doctorId,
-			@RequestBody @Valid ShiftConfiguration shiftConfig) {
-		log.info("Request received: update shift configuration for doctor " + doctorId + " with " + shiftConfig);
+	public EntityModel<ShiftConfigurationPublicDTO> updateShiftConfiguration(@PathVariable Long doctorId,
+			@RequestBody ShiftConfigurationPublicDTO shiftConfigDTO) {
+		log.info("Request received: update shift configuration for doctor " + doctorId + " with " + shiftConfigDTO);
+
+		ShiftConfiguration shiftConfig = this.getValidShiftConfiguration(shiftConfigDTO);
 
 		Optional<Doctor> doctor = doctorRepository.findById(doctorId);
 		if (!doctor.isPresent()) {
 			log.info("The requested doctor id \"" + doctorId + "\" was not found. Throwing DoctorNotFoundException");
 			throw new DoctorNotFoundException(doctorId);
 		}
-		
+
 		if (doctor.get().getStatus() == DoctorStatus.DELETED) {
 			log.info("The doctor is marked as deleted. Throwing DoctorDeletedException");
 			throw new DoctorDeletedException(doctorId);
@@ -238,6 +280,6 @@ public class ShiftConfigurationController {
 		ShiftConfiguration savedShiftConf = shiftConfigurationRepository.save(shiftConfig);
 		log.info("The persisted shift configuration is: " + savedShiftConf);
 
-		return shiftConfigurationAssembler.toModel(savedShiftConf);
+		return shiftConfigurationAssembler.toModel(new ShiftConfigurationPublicDTO(savedShiftConf));
 	}
 }

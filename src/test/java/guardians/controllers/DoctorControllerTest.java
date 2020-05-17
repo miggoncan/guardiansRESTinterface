@@ -147,7 +147,7 @@ class DoctorControllerTest {
 						.queryParam("startDate", LocalDate.of(2020, 6, 25).toString())
 						.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isBadRequest())
-				.andExpect(content().string("Invalid Absence: \"The start date of the Absence must be before its end date\" "));
+				.andExpect(content().string("Invalid Absence:  \"The start date of the Absence must be before its end date\","));
 	}
 	
 	@Test
@@ -208,7 +208,7 @@ class DoctorControllerTest {
 						.content(doctor.toString())
 						.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isBadRequest())
-				.andExpect(content().string("Invalid Absence: \"The start date of the Absence must be before its end date\" "));
+				.andExpect(content().string("Invalid Absence:  \"The start date of the Absence must be before its end date\","));
 		}
 	
 	@Test

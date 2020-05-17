@@ -33,3 +33,4 @@ build/
 .vscode/
 
 /.attach_pid22598
+/guardians.log

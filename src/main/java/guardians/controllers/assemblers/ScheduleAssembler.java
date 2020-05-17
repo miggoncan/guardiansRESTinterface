@@ -13,18 +13,19 @@ import org.springframework.stereotype.Component;
 import guardians.controllers.CalendarController;
 import guardians.controllers.ScheduleController;
 import guardians.controllers.exceptions.InvalidEntityException;
-import guardians.model.entities.Schedule;
+import guardians.model.dtos.SchedulePublicDTO;
 import guardians.model.entities.Schedule.ScheduleStatus;
 
 /**
- * This class is responsible of converting a {@link Schedule} into its
+ * This class is responsible of converting a {@link SchedulePublicDTO} into its
  * {@link EntityModel} representation. This is, adding links to the
  * {@link Schedule}
  * 
  * @author miggoncan
  */
 @Component
-public class ScheduleAssembler implements RepresentationModelAssembler<Schedule, EntityModel<Schedule>> {
+public class ScheduleAssembler
+		implements RepresentationModelAssembler<SchedulePublicDTO, EntityModel<SchedulePublicDTO>> {
 
 	@Value("${api.links.calendar}")
 	private String calendarLink;
@@ -36,7 +37,7 @@ public class ScheduleAssembler implements RepresentationModelAssembler<Schedule,
 	private String confirmSchedulLink;
 
 	@Override
-	public EntityModel<Schedule> toModel(Schedule entity) {
+	public EntityModel<SchedulePublicDTO> toModel(SchedulePublicDTO entity) {
 		YearMonth yearMonth = null;
 		try {
 			yearMonth = YearMonth.of(entity.getYear(), entity.getMonth());
@@ -44,7 +45,7 @@ public class ScheduleAssembler implements RepresentationModelAssembler<Schedule,
 			throw new InvalidEntityException("Trying to map to an EntityModel an invalid Schedule. "
 					+ "Its month and year are: " + entity.getMonth() + "/" + entity.getYear());
 		}
-		EntityModel<Schedule> schedule = new EntityModel<>(entity,
+		EntityModel<SchedulePublicDTO> schedule = new EntityModel<>(entity,
 				linkTo(methodOn(ScheduleController.class).getScheduleRequest(yearMonth)).withSelfRel(),
 				linkTo(methodOn(CalendarController.class).getCalendar(yearMonth)).withRel(calendarLink));
 
@@ -52,7 +53,7 @@ public class ScheduleAssembler implements RepresentationModelAssembler<Schedule,
 			schedule.add(linkTo(methodOn(ScheduleController.class).changeStatus(yearMonth,
 					ScheduleStatus.CONFIRMED.toString().toLowerCase())).withRel(confirmSchedulLink));
 		}
-		
+
 		return schedule;
 	}
 

@@ -9,8 +9,6 @@ import javax.persistence.MapsId;
 
 import org.hibernate.validator.constraints.Range;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-
 import guardians.model.entities.primarykeys.DayMonthYearPK;
 import guardians.model.validation.annotations.ValidCycleChange;
 import guardians.model.validation.annotations.ValidDayMonthYear;
@@ -52,7 +50,6 @@ public class CycleChange {
 	private Integer year;
 	@ManyToOne
 	@MapsId
-	@JsonBackReference
 	private DayConfiguration dayConfiguration;
 
 	/**
@@ -70,8 +67,6 @@ public class CycleChange {
 	 */
 	@ManyToOne
 	private Doctor cycleReceiver;
-	// TODO Should these doctors have to be represented as embedded resources when serializing?
-	
 	
 	public CycleChange(Doctor cycleGiver, Doctor cycleReceiver) {
 		this.cycleGiver = cycleGiver;

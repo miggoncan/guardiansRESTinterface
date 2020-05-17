@@ -13,11 +13,6 @@ import javax.persistence.OneToOne;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
-import org.springframework.hateoas.server.core.Relation;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-
 import lombok.Data;
 
 /**
@@ -35,16 +30,12 @@ import lombok.Data;
  */
 @Data
 @Entity
-// This is the name of the property used to describe an __embedded 
-// collection of Doctors
-@Relation(collectionRelation = "doctors")
 public class Doctor {
 
 	public enum DoctorStatus {
 		AVAILABLE,
 		DELETED
 	}
-	
 	@Id
 	@GeneratedValue
 	@Column(name = "id")
@@ -68,12 +59,10 @@ public class Doctor {
 	private DoctorStatus status = DoctorStatus.AVAILABLE;
 
 	@OneToOne(optional = true, mappedBy = "doctor", cascade = {CascadeType.ALL})
-	@JsonManagedReference
 	private Absence absence;
 	
 	// Start date will be the date this doctor's reference date to calculate their
 	// shift cycle
-	@JsonIgnore
 	@Column(nullable = false)
 	private LocalDate startDate;
 
@@ -100,5 +89,12 @@ public class Doctor {
 					+ "status=" + this.status + ", "
 					+ "absence=" + this.absence
 				+ ")";
+	}
+	
+	public void setAbsence(Absence absence) {
+		this.absence = absence;
+		if (absence != null) {
+			this.absence.setDoctor(this);
+		}
 	}
 }

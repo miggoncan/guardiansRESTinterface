@@ -1,10 +1,12 @@
 package guardians.controllers;
 
 import java.time.YearMonth;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.validation.ConstraintViolation;
-import javax.validation.Valid;
 import javax.validation.Validator;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +23,9 @@ import org.springframework.web.bind.annotation.RestController;
 import guardians.controllers.assemblers.CalendarAssembler;
 import guardians.controllers.exceptions.CalendarAlreadyExistsException;
 import guardians.controllers.exceptions.CalendarNotFoundException;
+import guardians.controllers.exceptions.InvalidCalendarException;
 import guardians.controllers.exceptions.InvalidDayConfigurationException;
+import guardians.model.dtos.CalendarPublicDTO;
 import guardians.model.entities.Calendar;
 import guardians.model.entities.DayConfiguration;
 import guardians.model.entities.primarykeys.CalendarPK;
@@ -44,9 +48,32 @@ public class CalendarController {
 
 	@Autowired
 	private CalendarAssembler calendarAssembler;
-	
+
 	@Autowired
 	private Validator validator;
+
+	/**
+	 * This method will return a valid {@link Calendar} from the given
+	 * {@link CalendarPublicDTO}
+	 * 
+	 * @param calendarDTO
+	 * 
+	 * @return The valid {@link Calendar}
+	 * 
+	 * @throws InvalidCalendarException if the {@link CalendarPublicDTO} cannot be
+	 *                                  converted into a valid {@link Calendar}
+	 */
+	private Calendar getValidCalendar(CalendarPublicDTO calendarDTO) {
+		log.info("Request to map CalendarPublicDTO to Calendar: " + calendarDTO);
+		Calendar calendar = calendarDTO.toCalendar();
+		log.info("The mapped calendar is: " + calendar);
+		Set<ConstraintViolation<Calendar>> violations = validator.validate(calendar);
+		if (!violations.isEmpty()) {
+			log.info("The provided calendar is not valid. Throwing InvalidCalendarException");
+			throw new InvalidCalendarException(violations);
+		}
+		return calendar;
+	}
 
 	/**
 	 * This method will handle requests for the whole {@link Calendar} list
@@ -54,9 +81,15 @@ public class CalendarController {
 	 * @return The calendars found in the database
 	 */
 	@GetMapping("")
-	public CollectionModel<EntityModel<Calendar>> getCalendars() {
+	public CollectionModel<EntityModel<CalendarPublicDTO>> getCalendars() {
 		log.info("Request received: returning all available calendars");
-		return calendarAssembler.toCollectionModel(calendarRepository.findAll());
+		List<Calendar> calendars = calendarRepository.findAll();
+		log.debug("Found calendars are: " + calendars);
+		List<CalendarPublicDTO> calendarsDTO = calendars.stream().map((calendar) -> {
+			return new CalendarPublicDTO(calendar);
+		}).collect(Collectors.toCollection(() -> new LinkedList<>()));
+		log.debug("Calendars mapped to CalendarPublicDTOs are: " + calendarsDTO);
+		return calendarAssembler.toCollectionModel(calendarsDTO);
 	}
 
 	/**
@@ -68,8 +101,11 @@ public class CalendarController {
 	 *                                        given month and year
 	 */
 	@PostMapping("")
-	public EntityModel<Calendar> newCalendar(@RequestBody @Valid Calendar newCalendar) {
-		log.info("Request received: create a new calendar: " + newCalendar);
+	public EntityModel<CalendarPublicDTO> newCalendar(@RequestBody CalendarPublicDTO newCalendarDTO) {
+		log.info("Request received: create a new calendar: " + newCalendarDTO);
+
+		Calendar newCalendar = this.getValidCalendar(newCalendarDTO);
+
 		CalendarPK pk = new CalendarPK(newCalendar.getMonth(), newCalendar.getYear());
 		if (calendarRepository.findById(pk).isPresent()) {
 			log.info("The calendar already exists. Throwing CalendarAlreadyExistsException");
@@ -89,7 +125,7 @@ public class CalendarController {
 		Calendar savedCalendar = calendarRepository.save(newCalendar);
 		log.info("The persisted calendar is: " + savedCalendar);
 
-		return calendarAssembler.toModel(savedCalendar);
+		return calendarAssembler.toModel(new CalendarPublicDTO(savedCalendar));
 	}
 
 	/**
@@ -100,7 +136,7 @@ public class CalendarController {
 	 * @throws CalendarNotFoundException if the {@link Calendar} was not found
 	 */
 	@GetMapping("/{yearMonth}")
-	public EntityModel<Calendar> getCalendar(@PathVariable YearMonth yearMonth) {
+	public EntityModel<CalendarPublicDTO> getCalendar(@PathVariable YearMonth yearMonth) {
 		log.info("Request received: get calendar of " + yearMonth);
 		CalendarPK pk = new CalendarPK(yearMonth.getMonthValue(), yearMonth.getYear());
 
@@ -109,7 +145,7 @@ public class CalendarController {
 			return new CalendarNotFoundException(yearMonth.getMonthValue(), yearMonth.getYear());
 		});
 
-		return calendarAssembler.toModel(calendar);
+		return calendarAssembler.toModel(new CalendarPublicDTO(calendar));
 	}
 
 	/**
@@ -122,16 +158,18 @@ public class CalendarController {
 	 *                                   exist
 	 */
 	@PutMapping("/{yearMonth}")
-	public EntityModel<Calendar> updateCalendar(@PathVariable YearMonth yearMonth,
-			@RequestBody @Valid Calendar calendar) {
-		log.info("Request received: update the calendar of " + yearMonth + " with :" + calendar);
+	public EntityModel<CalendarPublicDTO> updateCalendar(@PathVariable YearMonth yearMonth,
+			@RequestBody CalendarPublicDTO calendarDTO) {
+		log.info("Request received: update the calendar of " + yearMonth + " with :" + calendarDTO);
+
+		Calendar calendar = this.getValidCalendar(calendarDTO);
 
 		CalendarPK pk = new CalendarPK(yearMonth.getMonthValue(), yearMonth.getYear());
 		if (!calendarRepository.findById(pk).isPresent()) {
 			log.info("Could not find the requested calendar. Throwing CalendarNotFoundException");
 			throw new CalendarNotFoundException(yearMonth.getMonthValue(), yearMonth.getYear());
 		}
-		
+
 		Set<ConstraintViolation<DayConfiguration>> constraintViolations;
 		for (DayConfiguration day : calendar.getDayConfigurations()) {
 			constraintViolations = this.validator.validate(day);
@@ -142,6 +180,6 @@ public class CalendarController {
 		}
 
 		Calendar savedCalendar = calendarRepository.save(calendar);
-		return calendarAssembler.toModel(savedCalendar);
+		return calendarAssembler.toModel(new CalendarPublicDTO(savedCalendar));
 	}
 }

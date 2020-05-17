@@ -11,8 +11,6 @@ import javax.persistence.OneToMany;
 import org.hibernate.annotations.SortNatural;
 import org.hibernate.validator.constraints.Range;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-
 import guardians.model.entities.primarykeys.CalendarPK;
 import guardians.model.validation.annotations.ValidCalendar;
 import lombok.Data;
@@ -43,7 +41,6 @@ public class Calendar {
 	private Integer year;
 
 	@OneToMany(mappedBy = "calendar", cascade = CascadeType.ALL)
-	@JsonManagedReference
 	@SortNatural
 	private SortedSet<DayConfiguration> dayConfigurations;
 
@@ -55,7 +52,7 @@ public class Calendar {
 	public Calendar() {
 	}
 	
-	public void setDayConfiguration(SortedSet<DayConfiguration> dayConfigurations) {
+	public void setDayConfigurations(SortedSet<DayConfiguration> dayConfigurations) {
 		this.dayConfigurations = dayConfigurations;
 		if (dayConfigurations != null) {
 			for (DayConfiguration dayConfiguration : dayConfigurations) {

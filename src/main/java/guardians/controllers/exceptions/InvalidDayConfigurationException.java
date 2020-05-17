@@ -21,7 +21,7 @@ public class InvalidDayConfigurationException extends InvalidEntityException {
 		super("Invalid DayConfiguration");
 		this.message = "Invalid day configuration: ";
 		for (ConstraintViolation<DayConfiguration> constraintViolation : violations) {
-			message += "\"" + constraintViolation.getMessage() + "\" ";
+			message += constraintViolation.getPropertyPath() + " \"" + constraintViolation.getMessage() + "\" , ";
 		}
 	}
 

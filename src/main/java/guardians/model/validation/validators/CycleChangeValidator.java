@@ -38,7 +38,7 @@ public class CycleChangeValidator implements ConstraintValidator<ValidCycleChang
 
 		Long idGiver = giver.getId();
 		Long idReceiver = receiver.getId();
-		boolean isValid = idGiver != null && idReceiver != null && idGiver != idReceiver;
+		boolean isValid = idGiver != null && idReceiver != null && !idGiver.equals(idReceiver);
 		log.debug("After comparing the ids, the CycleChange is valid: " + isValid);
 		return isValid;
 	}

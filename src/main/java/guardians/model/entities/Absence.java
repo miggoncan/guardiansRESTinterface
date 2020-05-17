@@ -9,8 +9,6 @@ import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-
 import guardians.model.validation.annotations.ValidAbsenceDates;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -40,49 +38,44 @@ public class Absence {
 	private Long doctorId;
 	@MapsId
 	@OneToOne(optional = false)
-	@JsonBackReference
 	private Doctor doctor;
-	
+
 	/**
-	 * start is the day in which the Absence will begin 
+	 * start is the day in which the Absence will begin
 	 */
 	@Column(nullable = false)
 	@NotNull
 	private LocalDate start;
-	
+
 	/**
 	 * end is the day in which the Absence will finish
 	 */
 	@Column(nullable = false)
 	@NotNull
 	private LocalDate end;
-	
-	
+
 	public Absence(LocalDate start, LocalDate end) {
 		this.start = start;
 		this.end = end;
 	}
-	
-	public Absence() {}
-	
+
+	public Absence() {
+	}
+
 	public void setDoctor(Doctor doctor) {
 		this.doctor = doctor;
 		if (doctor != null) {
 			this.doctorId = doctor.getId();
-		} else  {
+		} else {
 			this.doctorId = null;
 		}
 	}
-	
+
 	// The toString method from @Data is not used as it can create an infinite loop
 	// between Doctor#toString and this method
 	@Override
 	public String toString() {
-		return Absence.class.getSimpleName() 
-				+ "("
-					+ "doctorId=" + this.doctorId + ", "
-					+ "start=" + this.start + ", "
-					+ "end=" + this.end
-				+ ")";
+		return Absence.class.getSimpleName() + "(" + "doctorId=" + this.doctorId + ", " + "start=" + this.start + ", "
+				+ "end=" + this.end + ")";
 	}
 }

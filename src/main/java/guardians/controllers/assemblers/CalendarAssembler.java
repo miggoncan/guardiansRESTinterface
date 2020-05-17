@@ -15,17 +15,18 @@ import org.springframework.stereotype.Component;
 import guardians.controllers.CalendarController;
 import guardians.controllers.RootController;
 import guardians.controllers.ScheduleController;
-import guardians.model.entities.Calendar;
+import guardians.model.dtos.CalendarPublicDTO;
 
 /**
- * CalendarAssembler is reponsible for converting {@link Calendar} instances
- * into their {@link EntityModel} representation. This is, adding to
+ * CalendarAssembler is reponsible for converting {@link CalendarPublicDTO}
+ * instances into their {@link EntityModel} representation. This is, adding to
  * corresponding links to it
  * 
  * @author miggoncan
  */
 @Component
-public class CalendarAssembler implements RepresentationModelAssembler<Calendar, EntityModel<Calendar>> {
+public class CalendarAssembler
+		implements RepresentationModelAssembler<CalendarPublicDTO, EntityModel<CalendarPublicDTO>> {
 
 	@Value("${api.links.root}")
 	private String rootLink;
@@ -37,22 +38,22 @@ public class CalendarAssembler implements RepresentationModelAssembler<Calendar,
 	private String scheduleLink;
 
 	@Override
-	public EntityModel<Calendar> toModel(Calendar entity) {
+	public EntityModel<CalendarPublicDTO> toModel(CalendarPublicDTO entity) {
 		YearMonth yearMonth = YearMonth.of(entity.getYear(), entity.getMonth());
-		return new EntityModel<Calendar>(entity, 
+		return new EntityModel<CalendarPublicDTO>(entity,
 				linkTo(methodOn(CalendarController.class).getCalendar(yearMonth)).withSelfRel(),
 				linkTo(methodOn(CalendarController.class).getCalendars()).withRel(calendarsLink),
 				linkTo(methodOn(ScheduleController.class).getScheduleRequest(yearMonth)).withRel(scheduleLink));
 	}
 
 	@Override
-	public CollectionModel<EntityModel<Calendar>> toCollectionModel(Iterable<? extends Calendar> entities) {
-		List<EntityModel<Calendar>> calendars = new LinkedList<>();
-		for (Calendar entity : entities) {
+	public CollectionModel<EntityModel<CalendarPublicDTO>> toCollectionModel(
+			Iterable<? extends CalendarPublicDTO> entities) {
+		List<EntityModel<CalendarPublicDTO>> calendars = new LinkedList<>();
+		for (CalendarPublicDTO entity : entities) {
 			calendars.add(this.toModel(entity));
 		}
-		return new CollectionModel<>(calendars, 
-				linkTo(methodOn(CalendarController.class).getCalendars()).withSelfRel(),
+		return new CollectionModel<>(calendars, linkTo(methodOn(CalendarController.class).getCalendars()).withSelfRel(),
 				linkTo(methodOn(RootController.class).getRootLinks()).withRel(rootLink));
 	}
 }

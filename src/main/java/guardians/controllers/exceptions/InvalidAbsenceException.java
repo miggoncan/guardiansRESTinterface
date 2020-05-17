@@ -18,15 +18,15 @@ public class InvalidAbsenceException extends InvalidEntityException {
 	private static final long serialVersionUID = -1741747343694240379L;
 
 	private String message;
-	
+
 	public InvalidAbsenceException(Set<ConstraintViolation<Absence>> violations) {
 		super("Invalid Absence");
 		this.message = "Invalid Absence: ";
 		for (ConstraintViolation<Absence> constraintViolation : violations) {
-			message += "\"" + constraintViolation.getMessage() + "\" ";
+			message += constraintViolation.getPropertyPath() + " \"" + constraintViolation.getMessage() + "\" , ";
 		}
 	}
-	
+
 	@Override
 	public String getMessage() {
 		return this.message;

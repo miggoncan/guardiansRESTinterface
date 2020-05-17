@@ -17,9 +17,6 @@ import javax.validation.constraints.PositiveOrZero;
 
 import org.hibernate.validator.constraints.Range;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-
 import guardians.model.entities.primarykeys.DayMonthYearPK;
 import guardians.model.validation.annotations.ValidDayMonthYear;
 import guardians.model.validation.annotations.ValidShiftPreferences;
@@ -76,7 +73,6 @@ public class DayConfiguration extends AbstractDay {
 	private Integer year;
 	@MapsId
 	@ManyToOne
-	@JsonBackReference
 	private Calendar calendar;
 
 	/**
@@ -133,14 +129,12 @@ public class DayConfiguration extends AbstractDay {
 	 */
 	@ManyToMany
 	private Set<Doctor> mandatoryShifts;
-	// TODO Should these doctors have to be represented as embedded resources when serializing?
 
 	/**
 	 * cycleChanges indicates a change that should be done to the cycle-shifts of
 	 * this {@link #day} when creating its schedule
 	 */
 	@OneToMany(mappedBy = "dayConfiguration", cascade = CascadeType.ALL)
-	@JsonManagedReference
 	private List<CycleChange> cycleChanges;
 
 	public DayConfiguration(Integer day, Boolean isWorkingDay, Integer numShifts, Integer numConsultations) {

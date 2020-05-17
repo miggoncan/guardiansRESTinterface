@@ -1,12 +1,16 @@
 package guardians.controllers;
 
+import java.io.File;
+import java.io.IOException;
 import java.time.YearMonth;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
-import javax.validation.Valid;
 import javax.validation.Validator;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,19 +27,30 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import guardians.controllers.assemblers.ScheduleAssembler;
 import guardians.controllers.exceptions.CalendarNotFoundException;
+import guardians.controllers.exceptions.InvalidScheduleException;
 import guardians.controllers.exceptions.InvalidScheduleStatusException;
 import guardians.controllers.exceptions.InvalidScheduleStatusTransitionException;
 import guardians.controllers.exceptions.ScheduleAlreadyExistsException;
 import guardians.controllers.exceptions.ScheduleNotFoundException;
+import guardians.model.dtos.CalendarSchedulerDTO;
+import guardians.model.dtos.DoctorSchedulerDTO;
+import guardians.model.dtos.SchedulePublicDTO;
+import guardians.model.dtos.ShiftConfigurationSchedulerDTO;
 import guardians.model.entities.Calendar;
+import guardians.model.entities.Doctor;
 import guardians.model.entities.Schedule;
 import guardians.model.entities.Schedule.ScheduleStatus;
 import guardians.model.entities.ScheduleDay;
+import guardians.model.entities.ShiftConfiguration;
 import guardians.model.entities.primarykeys.CalendarPK;
 import guardians.model.repositories.CalendarRepository;
+import guardians.model.repositories.DoctorRepository;
 import guardians.model.repositories.ScheduleRepository;
+import guardians.model.repositories.ShiftConfigurationRepository;
 import lombok.extern.slf4j.Slf4j;
 
 // TODO Create integration test for ScheduleController
@@ -47,7 +62,7 @@ import lombok.extern.slf4j.Slf4j;
  * @author miggoncan
  */
 @RestController
-@RequestMapping("/guardians/calendars")
+@RequestMapping("/guardians/calendars/{yearMonth}/schedule")
 @Slf4j
 public class ScheduleController {
 
@@ -56,6 +71,12 @@ public class ScheduleController {
 
 	@Autowired
 	private CalendarRepository calendarRepository;
+
+	@Autowired
+	private DoctorRepository doctorRepository;
+
+	@Autowired
+	private ShiftConfigurationRepository shiftConfRepository;
 
 	@Autowired
 	private ScheduleAssembler scheduleAssembler;
@@ -79,7 +100,7 @@ public class ScheduleController {
 		CalendarPK pk = new CalendarPK(yearMonth.getMonthValue(), yearMonth.getYear());
 
 		Optional<Calendar> calendar = calendarRepository.findById(pk);
-		
+
 		if (!calendar.isPresent()) {
 			log.info("The calendar of the given month was not found. Throwing ScheduleNotFoundException");
 			throw new ScheduleNotFoundException(yearMonth.getMonthValue(), yearMonth.getYear());
@@ -96,7 +117,7 @@ public class ScheduleController {
 			schedule.setYear(yearMonth.getYear());
 			schedule.setMonth(yearMonth.getMonthValue());
 		}
-		
+
 		schedule.setCalendar(calendar.get());
 
 		return schedule;
@@ -110,11 +131,11 @@ public class ScheduleController {
 	 * @throws ScheduleNotFoundException if the {@link Schedule} has not been
 	 *                                   generated yet
 	 */
-	@GetMapping("/{yearMonth}/schedule")
-	public EntityModel<Schedule> getScheduleRequest(@PathVariable YearMonth yearMonth) {
+	@GetMapping("")
+	public EntityModel<SchedulePublicDTO> getScheduleRequest(@PathVariable YearMonth yearMonth) {
 		log.info("Request received: get schedule of " + yearMonth);
 		Schedule schedule = this.getSchedule(yearMonth);
-		return scheduleAssembler.toModel(schedule);
+		return scheduleAssembler.toModel(new SchedulePublicDTO(schedule));
 	}
 
 	/**
@@ -127,8 +148,8 @@ public class ScheduleController {
 	 * @throws ScheduleAlreadyExistsException if the {@link Schedule} of this
 	 *                                        yearMonth has already being generated
 	 */
-	@PostMapping("/{yearMonth}/schedule")
-	@ResponseStatus(HttpStatus.NO_CONTENT)
+	@PostMapping("")
+	@ResponseStatus(HttpStatus.ACCEPTED)
 	public void generateSchedule(@PathVariable YearMonth yearMonth) {
 		log.info("Request received to generate schedule for: " + yearMonth);
 		CalendarPK pk = new CalendarPK(yearMonth.getMonthValue(), yearMonth.getYear());
@@ -149,6 +170,23 @@ public class ScheduleController {
 		schedule.setCalendar(calendar.get());
 		scheduleRepository.save(schedule);
 
+		List<Doctor> doctors = doctorRepository.findAll();
+		List<ShiftConfiguration> shiftConfs = shiftConfRepository.findAll();
+
+		ObjectMapper objectMapper = new ObjectMapper();
+		try {
+			objectMapper.writeValue(new File("/tmp/doctors.json"), doctors.stream().map((doctor) -> {
+				return new DoctorSchedulerDTO(doctor);
+			}).collect(Collectors.toCollection(() -> new LinkedList<>())));
+			objectMapper.writeValue(new File("/tmp/shiftConfs.json"), shiftConfs.stream().map((shiftConf) -> {
+				return new ShiftConfigurationSchedulerDTO(shiftConf);
+			}).collect(Collectors.toCollection(() -> new LinkedList<>())));
+			objectMapper.writeValue(new File("/tmp/calendar.json"), new CalendarSchedulerDTO(calendar.get()));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			log.error(e.getStackTrace().toString());
+		}
+
 		log.warn("TODO Generate schedule");
 	}
 
@@ -163,10 +201,17 @@ public class ScheduleController {
 	 * @throws ConstraintViolationException if any of the {@link ScheduleDay}s is
 	 *                                      not valid
 	 */
-	@PutMapping("/{yearMonth}/schedule")
-	public ResponseEntity<EntityModel<Schedule>> updateSchedule(@PathVariable YearMonth yearMonth,
-			@RequestBody @Valid Schedule schedule) {
-		log.info("Request received: update the schedule of " + yearMonth + " with " + schedule);
+	@PutMapping("")
+	public EntityModel<SchedulePublicDTO> updateSchedule(@PathVariable YearMonth yearMonth,
+			@RequestBody SchedulePublicDTO scheduleDTO) {
+		log.info("Request received: update the schedule of " + yearMonth + " with " + scheduleDTO);
+
+		Schedule schedule = scheduleDTO.toSchedule();
+		Set<ConstraintViolation<Schedule>> scheduleViolations = validator.validate(schedule);
+		if (!scheduleViolations.isEmpty()) {
+			log.info("The given schedule is not valid. Throwing InvalidScheduleException");
+			throw new InvalidScheduleException(scheduleViolations);
+		}
 
 		// This will throw a ScheduleNotFoundException if the there is no Calendar for
 		// the given yearMonth
@@ -181,28 +226,27 @@ public class ScheduleController {
 				throw new ConstraintViolationException(violations);
 			}
 		}
-		
-		ResponseEntity<EntityModel<Schedule>> responseEntity;
-		
+
 		// TODO what if the schedule is currently being generated?
-		
+		Schedule savedSchedule = null;
 		if (currSchedule.getStatus() == ScheduleStatus.CONFIRMED) {
-			log.info("The current schedule has already been CONFIRMED, so attemting to update is FORBIDDEN");
-			responseEntity = ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+			log.info("The current schedule has already been CONFIRMED, so attemting to update is not allowed. "
+					+ "Throwing InvalidScheduleStatusTransitionException");
+			throw new InvalidScheduleStatusTransitionException(ScheduleStatus.CONFIRMED, schedule.getStatus());
 		} else if (schedule.getStatus() != ScheduleStatus.PENDING_CONFIRMATION) {
-			log.info("The new schedule is not in the state PENDING_CONFIRMATION, so attemting to update is FORBIDDEN");
-			responseEntity = ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+			log.info(
+					"The new schedule is not in the state PENDING_CONFIRMATION, so attemting to update is not allowed. "
+							+ "Throwing InvalidScheduleStatusTransitionException");
+			throw new InvalidScheduleStatusTransitionException(currSchedule.getStatus(), schedule.getStatus());
 		} else {
 			schedule.setMonth(yearMonth.getMonthValue());
 			schedule.setYear(yearMonth.getYear());
 			log.info("Attempting to persist the schedule");
-			Schedule savedSchedule = scheduleRepository.save(schedule);
+			savedSchedule = scheduleRepository.save(schedule);
 			log.info("The persisted schedule is: " + savedSchedule);
-			
-			responseEntity = ResponseEntity.ok(scheduleAssembler.toModel(savedSchedule));
 		}
 
-		return responseEntity;
+		return scheduleAssembler.toModel(new SchedulePublicDTO(savedSchedule));
 	}
 
 	/**
@@ -223,8 +267,8 @@ public class ScheduleController {
 	 *                                        change from its current status to the
 	 *                                        given one
 	 */
-	@PutMapping("/{yearMonth}/schedule/{status}")
-	public EntityModel<Schedule> changeStatus(@PathVariable YearMonth yearMonth, @PathVariable String status) {
+	@PutMapping("/{status}")
+	public EntityModel<SchedulePublicDTO> changeStatus(@PathVariable YearMonth yearMonth, @PathVariable String status) {
 		log.info("Request received: change status of the schedule of " + yearMonth + " to " + status);
 
 		// This can throw a ScheduleNotFoundException
@@ -252,7 +296,7 @@ public class ScheduleController {
 		Schedule savedSchedule = scheduleRepository.save(schedule);
 		log.info("The persited schedule is: " + savedSchedule);
 
-		return scheduleAssembler.toModel(savedSchedule);
+		return scheduleAssembler.toModel(new SchedulePublicDTO(savedSchedule));
 	}
 
 	/**
@@ -266,15 +310,15 @@ public class ScheduleController {
 	 *                  deleted
 	 * @throws ScheduleNotFoundException
 	 */
-	@DeleteMapping("/{yearMonth}/schedule")
+	@DeleteMapping("")
 	public ResponseEntity<?> deleteSchedule(@PathVariable YearMonth yearMonth) {
 		log.info("Request received: delete schedule for " + yearMonth);
 
 		// Note this can throw a ScheduleNotFoundException
 		Schedule schedule = this.getSchedule(yearMonth);
-		
+
 		ResponseEntity<?> responseEntity;
-		
+
 		if (schedule.getStatus() != ScheduleStatus.NOT_CREATED) {
 			if (schedule.getStatus() == ScheduleStatus.CONFIRMED) {
 				log.info("Attemting to delete a CONFIRMED schedule. The operation is forbidden");
@@ -288,7 +332,7 @@ public class ScheduleController {
 			log.info("The requested schedule has not yet been created");
 			responseEntity = ResponseEntity.noContent().build();
 		}
-		
+
 		return responseEntity;
 	}
 }

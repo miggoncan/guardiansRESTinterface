@@ -11,8 +11,6 @@ import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-
 import guardians.model.validation.annotations.ValidShiftConfiguration;
 import guardians.model.validation.annotations.ValidShiftPreferences;
 import lombok.Data;
@@ -43,7 +41,6 @@ public class ShiftConfiguration {
 	private Long doctorId;
 	@MapsId
 	@OneToOne
-	@JsonBackReference
 	private Doctor doctor;
 
 	/**

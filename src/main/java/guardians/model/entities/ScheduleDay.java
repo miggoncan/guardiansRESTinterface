@@ -14,8 +14,6 @@ import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.Range;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-
 import guardians.model.entities.primarykeys.DayMonthYearPK;
 import guardians.model.validation.annotations.ValidDayMonthYear;
 import lombok.Data;
@@ -50,7 +48,6 @@ public class ScheduleDay extends AbstractDay {
 	private Integer year;
 	@MapsId
 	@ManyToOne
-	@JsonBackReference
 	private Schedule schedule;
 	
 	@NotNull
@@ -62,6 +59,7 @@ public class ScheduleDay extends AbstractDay {
 	
 	@ManyToMany
 	@NotEmpty
+	// FIXME if isWorkingDay is false, this should be empty; otherwise, it cannot be empty
 	private Set<Doctor> shifts;
 	
 	@ManyToMany

@@ -3,12 +3,14 @@ package guardians.controllers;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.validation.ConstraintViolation;
-import javax.validation.Valid;
+import javax.validation.ConstraintViolationException;
 import javax.validation.Validator;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +34,9 @@ import guardians.controllers.exceptions.DoctorAlreadyExistsException;
 import guardians.controllers.exceptions.DoctorDeletedException;
 import guardians.controllers.exceptions.DoctorNotFoundException;
 import guardians.controllers.exceptions.InvalidAbsenceException;
+import guardians.controllers.exceptions.InvalidDoctorException;
 import guardians.controllers.exceptions.InvalidEntityException;
+import guardians.model.dtos.DoctorPublicDTO;
 import guardians.model.entities.Absence;
 import guardians.model.entities.Doctor;
 import guardians.model.entities.ShiftConfiguration;
@@ -64,6 +68,26 @@ public class DoctorController {
 	private Validator validator;
 
 	/**
+	 * This method will return a valid {@link Doctor} given its
+	 * {@link DoctorPublicDTO}
+	 * 
+	 * @param doctorDTO The DTO used to create the {@link Doctor}
+	 * @return A valid {@link Doctor}
+	 * @throws ConstraintViolationException if a valid {@link Doctor} cannot be
+	 *                                      created from the given
+	 *                                      {@link DoctorPublicDTO}
+	 */
+	private Doctor getValidDoctor(DoctorPublicDTO doctorDTO) {
+		Doctor doctor = doctorDTO.toDoctor();
+		Set<ConstraintViolation<Doctor>> doctorViolations = validator.validate(doctor);
+		if (!doctorViolations.isEmpty()) {
+			log.info("The provided Doctor is not valid. Throwing ConstraintViolationException");
+			throw new InvalidDoctorException(doctorViolations);
+		}
+		return doctor;
+	}
+
+	/**
 	 * Handle requests for all the existing {@link Doctor} in the database. Only the
 	 * {@link Doctor} entities themselves will be returned. To get their shift
 	 * configuration
@@ -73,9 +97,13 @@ public class DoctorController {
 	 * @see ShiftConfigurationController#getShitfConfigurations()
 	 * 
 	 * @return The existing doctors
+	 * 
+	 * @throws DoctorNotFoundException if the given email is not used by any
+	 *                                 {@link Doctor}
 	 */
 	@GetMapping("")
-	public CollectionModel<EntityModel<Doctor>> getDoctors(@RequestParam(required = false) Optional<String> email) {
+	public CollectionModel<EntityModel<DoctorPublicDTO>> getDoctors(
+			@RequestParam(required = false) Optional<String> email) {
 		// TODO validate email?
 		List<Doctor> doctors;
 		if (email.isPresent()) {
@@ -91,7 +119,12 @@ public class DoctorController {
 			doctors = doctorRepository.findAll();
 		}
 
-		return doctorAssembler.toCollectionModel(doctors);
+		List<DoctorPublicDTO> doctorsDTO = doctors.stream()
+				.map((doctor) -> {
+					return new DoctorPublicDTO(doctor);
+				}).collect(Collectors.toCollection(() -> new LinkedList<>()));
+
+		return doctorAssembler.toCollectionModel(doctorsDTO);
 	}
 
 	/**
@@ -100,17 +133,28 @@ public class DoctorController {
 	 * The {@link Doctor} cannot already exist. Moreover this {@link Doctor} might
 	 * have an {@link Absence}, and both have to be valid
 	 * 
-	 * @param newDoctor The {@link Doctor} that will be persisted
+	 * @param newDoctor    The {@link Doctor} that will be persisted
 	 * @param startDateStr The date this {@link Doctor} will have their first
-	 *                  cycle-shift. E.g. 2020-06-26
+	 *                     cycle-shift. E.g. 2020-06-26
+	 * 
 	 * @return The created {@link Doctor} (including the assigned id)
-	 * @throws {@link DoctorAlreadyExistsException}
-	 * @throws {@link InvalidAbsenceException}
+	 * 
+	 * @throws InvalidDoctorException       if the given {@link DoctorPublicDTO}
+	 *                                      cannot be converted into a valid
+	 *                                      {@link Doctor}
+	 * @throws DoctorAlreadyExistsException if the given email is already being used
+	 *                                      by another {@link Doctor}
+	 * @throws InvalidAbsenceException      if the given {@link Absence} (if any) is
+	 *                                      not valid
 	 */
 	@PostMapping("")
-	public EntityModel<Doctor> newDoctor(@RequestBody @Valid Doctor newDoctor, @RequestParam(name = "startDate") String startDateStr) {
-		log.info("Request received: trying to create a new Doctor: " + newDoctor + " to start on " + startDateStr);
-		
+	public EntityModel<DoctorPublicDTO> newDoctor(@RequestBody DoctorPublicDTO newDoctorDTO,
+			@RequestParam(name = "startDate") String startDateStr) {
+		log.info("Request received: trying to create a new Doctor: " + newDoctorDTO + " to start on " + startDateStr);
+
+		Doctor newDoctor = this.getValidDoctor(newDoctorDTO);
+		newDoctor.setStatus(DoctorStatus.AVAILABLE);
+
 		LocalDate startDate;
 		try {
 			startDate = LocalDate.parse(startDateStr);
@@ -118,7 +162,7 @@ public class DoctorController {
 			log.info("The provided startDate is not in a valid format. Throwing InvalidEntityException");
 			throw new InvalidEntityException("The startDate has to be in a valid format. E.g. 2020-06-26");
 		}
-		
+
 		// The email cannot already be registered
 		String email = newDoctor.getEmail();
 		if (doctorRepository.findByEmail(email).isPresent()) {
@@ -129,10 +173,10 @@ public class DoctorController {
 		// The Absence has to be valid
 		Absence newAbsence = newDoctor.getAbsence();
 		if (newAbsence != null) {
-			Set<ConstraintViolation<Absence>> violations = validator.validate(newAbsence);
-			if (!violations.isEmpty()) {
+			Set<ConstraintViolation<Absence>> absenceViolations = validator.validate(newAbsence);
+			if (!absenceViolations.isEmpty()) {
 				log.info("The Doctor has an invalid Absence. Throwing InvalidAbsenceException");
-				throw new InvalidAbsenceException(violations);
+				throw new InvalidAbsenceException(absenceViolations);
 			}
 		}
 
@@ -143,7 +187,7 @@ public class DoctorController {
 		Doctor savedDoctor = doctorRepository.save(newDoctor);
 		log.info("Doctor saved: " + savedDoctor);
 
-		return doctorAssembler.toModel(savedDoctor);
+		return doctorAssembler.toModel(new DoctorPublicDTO(savedDoctor));
 	}
 
 	/**
@@ -151,18 +195,20 @@ public class DoctorController {
 	 * provided their id
 	 * 
 	 * @param doctorId The unique identifier used to search for the {@link Doctor}
+	 * 
 	 * @return The {@link Doctor} found
+	 * 
 	 * @throws DoctorNotFoundException if the {@link Doctor} was not found in the
 	 *                                 database
 	 */
 	@GetMapping("/{doctorId}")
-	public EntityModel<Doctor> getDoctor(@PathVariable Long doctorId) {
+	public EntityModel<DoctorPublicDTO> getDoctor(@PathVariable Long doctorId) {
 		log.info("Request received: looking for Doctor with id " + doctorId);
 		Doctor doctor = doctorRepository.findById(doctorId).orElseThrow(() -> {
 			log.info("The requested doctor could not be found. Throwing DoctorNotFoundException");
 			return new DoctorNotFoundException(doctorId);
 		});
-		return doctorAssembler.toModel(doctor);
+		return doctorAssembler.toModel(new DoctorPublicDTO(doctor));
 	}
 
 	/**
@@ -175,11 +221,26 @@ public class DoctorController {
 	 * @param doctorId  The id of the {@link Doctor} to update
 	 * @param newDoctor The values of newDoctor will be used to change the current
 	 *                  {@link Doctor}
+	 * 
 	 * @return The {@link Doctor} that has been persisted
+	 * 
+	 * @throws InvalidDoctorException       if the given {@link DoctorPublicDTO}
+	 *                                      cannot be converted into a valid
+	 *                                      {@link Doctor}
+	 * @throws DoctorDeletedException       if the {@link Doctor} has been DELETED
+	 * @throws DoctorAlreadyExistsException if the given email is already being used
+	 *                                      by another {@link Doctor}
+	 * @throws InvalidAbsenceException      if the given {@link Absence} (if any) is
+	 *                                      not valid
 	 */
 	@PutMapping("/{doctorId}")
-	public EntityModel<Doctor> updateDoctor(@PathVariable Long doctorId, @RequestBody @Valid Doctor newDoctor) {
-		log.info("Request received: update Doctor with id: " + doctorId + " to be: " + newDoctor);
+	public EntityModel<DoctorPublicDTO> updateDoctor(@PathVariable Long doctorId,
+			@RequestBody DoctorPublicDTO newDoctorDTO) {
+		log.info("Request received: update Doctor with id: " + doctorId + " to be: " + newDoctorDTO);
+
+		Doctor newDoctor = this.getValidDoctor(newDoctorDTO);
+		newDoctor.setStatus(DoctorStatus.AVAILABLE);
+
 		Optional<Doctor> doctor = doctorRepository.findById(doctorId);
 		if (!doctor.isPresent()) {
 			log.info("The selected doctorId was not found. Throwing DoctorNotFoundException");
@@ -190,14 +251,18 @@ public class DoctorController {
 			log.info("The selected Doctor is deleted, so it cannot be modified. Throwing DoctorDeletedException");
 			throw new DoctorDeletedException(doctorId);
 		}
+
 		// The email cannot already be registered
 		String email = newDoctor.getEmail();
-		Optional<Doctor> existantDoctor = doctorRepository.findByEmail(email); 
-		if (existantDoctor.isPresent() && existantDoctor.get().getId() != doctorId) {
+		Optional<Doctor> existantDoctor = doctorRepository.findByEmail(email);
+		if (existantDoctor.isPresent() && !existantDoctor.get().getId().equals(doctorId)) {
 			log.info("A doctor already has the provided email. Throwing DoctorAlreadyExistsException");
 			throw new DoctorAlreadyExistsException(email);
 		}
 		newDoctor.setId(doctorId);
+
+		// The start date does not change
+		newDoctor.setStartDate(doctor.get().getStartDate());
 
 		// The Absence has to be valid
 		Absence newAbsence = newDoctor.getAbsence();
@@ -221,14 +286,16 @@ public class DoctorController {
 		Doctor savedDoctor = doctorRepository.save(newDoctor);
 		log.info("Doctor persisted: " + savedDoctor);
 
-		return doctorAssembler.toModel(savedDoctor);
+		return doctorAssembler.toModel(new DoctorPublicDTO(savedDoctor));
 	}
 
 	/**
 	 * Handle the request to delete a {@link Doctor}, provided its id
 	 * 
 	 * @param doctorId The unique identifier used to search for the {@link Doctor}
-	 * @throws DoctorNotFoundException
+	 * 
+	 * @throws DoctorNotFoundException if the given id does not correspond to any
+	 *                                 {@link Doctor}
 	 */
 	@DeleteMapping("/{doctorId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
