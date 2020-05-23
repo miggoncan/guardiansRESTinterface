@@ -19,7 +19,9 @@ public class ShiftConfigurationSchedulerDTO {
 	private Long doctorId;
 	private Integer maxShifts;
 	private Integer minShifts;
-	private Boolean doesConsultations;
+	private Integer numConsultations;
+	private Boolean doesCycleShifts;
+	private Boolean hasShiftsOnlyWhenCycleShifts;
 	private Set<AllowedShiftSchedulerDTO> unwantedShifts;
 	private Set<AllowedShiftSchedulerDTO> unavailableShifts;
 	private Set<AllowedShiftSchedulerDTO> wantedShifts;
@@ -31,7 +33,9 @@ public class ShiftConfigurationSchedulerDTO {
 			this.doctorId = shiftConf.getDoctorId();
 			this.maxShifts = shiftConf.getMaxShifts();
 			this.minShifts = shiftConf.getMinShifts();
-			this.doesConsultations = shiftConf.getDoesConsultations();
+			this.numConsultations = shiftConf.getNumConsultations();
+			this.doesCycleShifts = shiftConf.getDoesCycleShifts();
+			this.hasShiftsOnlyWhenCycleShifts = shiftConf.getHasShiftsOnlyWhenCycleShifts();
 			this.unwantedShifts = this.toSetAllowedShiftDTOs(shiftConf.getUnwantedShifts());
 			this.unavailableShifts = this.toSetAllowedShiftDTOs(shiftConf.getUnavailableShifts());
 			this.wantedShifts = this.toSetAllowedShiftDTOs(shiftConf.getWantedShifts());

@@ -9,9 +9,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-import guardians.model.entities.AllowedShift;
-import guardians.model.entities.Doctor;
-import guardians.model.entities.ShiftConfiguration;
 import guardians.model.repositories.AllowedShiftRepository;
 import guardians.model.repositories.DoctorRepository;
 import guardians.model.repositories.ShiftConfigurationRepository;
@@ -40,7 +37,7 @@ public class ShiftConfigurationTest {
 	 * @return The created {@link ShiftConfiguration}
 	 */
 	public static ShiftConfiguration createValidShiftConfiguration(Doctor doctor) {
-		ShiftConfiguration shiftConfiguration = new ShiftConfiguration(3, 2, false);
+		ShiftConfiguration shiftConfiguration = new ShiftConfiguration(3, 2, 0, true, false);
 		shiftConfiguration.setDoctor(doctor);
 		return shiftConfiguration;
 	}
@@ -156,13 +153,33 @@ public class ShiftConfigurationTest {
 	}
 
 	@Test
-	void doesConsultationCanBeTrue() {
-		this.entityTester.assertValidValue("doesConsultations", true);
+	void numConsultationCanBeZero() {
+		this.entityTester.assertValidValue("numConsultations", 0);
 	}
 
 	@Test
-	void doesConsultationCanBeFalse() {
-		this.entityTester.assertValidValue("doesConsultations", false);
+	void numConsultationCanBePositive() {
+		this.entityTester.assertValidValue("numConsultations", 2);
+	}
+	
+	@Test
+	void doesCycleShiftsCanBeTrue() {
+		this.entityTester.assertValidValue("doesCycleShifts", true);
+	}
+	
+	@Test
+	void doesCycleShiftsCanBeFalse() {
+		this.entityTester.assertValidValue("doesCycleShifts", false);
+	}
+	
+	@Test
+	void hasShiftsOnlyWhenCycleShiftsCanBeTrue() {
+		this.entityTester.assertValidValue("hasShiftsOnlyWhenCycleShifts", true);
+	}
+	
+	@Test
+	void hasShiftsOnlyWhenCycleShiftsCanBeFalse() {
+		this.entityTester.assertValidValue("hasShiftsOnlyWhenCycleShifts", false);
 	}
 
 	//
@@ -363,7 +380,7 @@ public class ShiftConfigurationTest {
 	}
 
 	//
-	// Tests for maxShifts, minShifts and doesConsultations
+	// Tests for maxShifts, minShifts and numConsultations
 	//
 
 	@Test
@@ -387,8 +404,23 @@ public class ShiftConfigurationTest {
 	}
 
 	@Test
-	void doesConsultationsCannotBeNull() {
-		this.entityTester.assertAttributeCannotBeNull("doesConsultations");
+	void numConsultationsCannotBeNull() {
+		this.entityTester.assertAttributeCannotBeNull("numConsultations");
+	}
+	
+	@Test
+	void numConsultationsCannotBeNegative() {
+		this.entityTester.assertInvalidValue("numConsultations", -1, "must be greater than or equal to 0");
+	}
+	
+	@Test
+	void doesCycleShiftsCannotBeNull() {
+		this.entityTester.assertAttributeCannotBeNull("doesCycleShifts");
+	}
+	
+	@Test
+	void hasShiftsOnlyWhenCycleShiftsCannotBeNull() {
+		this.entityTester.assertAttributeCannotBeNull("hasShiftsOnlyWhenCycleShifts");
 	}
 
 	@Test

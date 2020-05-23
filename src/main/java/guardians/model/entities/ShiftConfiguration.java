@@ -68,12 +68,30 @@ public class ShiftConfiguration {
 	private Integer minShifts;
 
 	/**
-	 * This Boolean will be true if some/all shifts assigned to the associated
-	 * {@link Doctor} could be consultations, or just regular shifts
+	 * This Integer will be 0 if this {@link Doctor} does no have consultations, or
+	 * a number greater than zero if the {@link Doctor} has to have a certain number
+	 * of consultations per month
 	 */
 	@Column(nullable = false)
 	@NotNull
-	private Boolean doesConsultations;
+	@PositiveOrZero
+	private Integer numConsultations;
+
+	/**
+	 * This Boolean will be false if this {@link Doctor} only does non-cycle-shifts
+	 */
+	@Column(nullable = false)
+	@NotNull
+	private Boolean doesCycleShifts;
+
+	/**
+	 * If this Boolean is set to true, the fields minShifts and maxShifts will be
+	 * ignored. In this case, this {@link Doctor} will only have non-cycle-shifts
+	 * the same days they have cycle-shifts
+	 */
+	@Column(nullable = false)
+	@NotNull
+	private Boolean hasShiftsOnlyWhenCycleShifts;
 
 	/**
 	 * unwantedShifts indicates the shifts the associated {@link Doctor} would
@@ -103,10 +121,12 @@ public class ShiftConfiguration {
 	@ManyToMany
 	private Set<AllowedShift> mandatoryShifts;
 
-	public ShiftConfiguration(Integer maxShifts, Integer minShifts, Boolean doesConsultation) {
+	public ShiftConfiguration(Integer maxShifts, Integer minShifts, Integer numConsultations, Boolean doesCycleShifts, Boolean hasShiftsOnlyWhenCycleShifts) {
 		this.maxShifts = maxShifts;
 		this.minShifts = minShifts;
-		this.doesConsultations = doesConsultation;
+		this.numConsultations = numConsultations;
+		this.doesCycleShifts = doesCycleShifts;
+		this.hasShiftsOnlyWhenCycleShifts = hasShiftsOnlyWhenCycleShifts;
 	}
 
 	public ShiftConfiguration() {

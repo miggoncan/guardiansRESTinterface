@@ -127,9 +127,4 @@ public class ScheduleDayTest {
 	void cycleCannotBeEmpty() {
 		this.entityTester.assertAttributeCannotBeEmpty("cycle");
 	}
-
-	@Test
-	void shiftsCannotBeEmpty() {
-		this.entityTester.assertAttributeCannotBeEmpty("shifts");
-	}
 }

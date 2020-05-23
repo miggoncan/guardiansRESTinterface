@@ -23,7 +23,9 @@ public class ShiftConfigurationPublicDTO {
 	private Long doctorId;
 	private Integer maxShifts;
 	private Integer minShifts;
-	private Boolean doesConsultations;
+	private Integer numConsultations;
+	private Boolean doesCycleShifts;
+	private Boolean hasShiftsOnlyWhenCycleShifts;
 	private Set<AllowedShiftPublicDTO> unwantedShifts;
 	private Set<AllowedShiftPublicDTO> unavailableShifts;
 	private Set<AllowedShiftPublicDTO> wantedShifts;
@@ -35,7 +37,9 @@ public class ShiftConfigurationPublicDTO {
 			this.doctorId = shiftConfiguration.getDoctorId();
 			this.maxShifts = shiftConfiguration.getMaxShifts();
 			this.minShifts = shiftConfiguration.getMinShifts();
-			this.doesConsultations = shiftConfiguration.getDoesConsultations();
+			this.numConsultations = shiftConfiguration.getNumConsultations();
+			this.doesCycleShifts = shiftConfiguration.getDoesCycleShifts();
+			this.hasShiftsOnlyWhenCycleShifts = shiftConfiguration.getHasShiftsOnlyWhenCycleShifts();
 			this.unwantedShifts = this.toSetAllowedShiftDTOs(shiftConfiguration.getUnwantedShifts());
 			this.unavailableShifts = this.toSetAllowedShiftDTOs(shiftConfiguration.getUnavailableShifts());
 			this.wantedShifts = this.toSetAllowedShiftDTOs(shiftConfiguration.getWantedShifts());
@@ -53,7 +57,9 @@ public class ShiftConfigurationPublicDTO {
 		shiftConf.setDoctorId(this.doctorId);
 		shiftConf.setMaxShifts(this.maxShifts);
 		shiftConf.setMinShifts(this.minShifts);
-		shiftConf.setDoesConsultations(this.doesConsultations);
+		shiftConf.setNumConsultations(this.numConsultations);
+		shiftConf.setDoesCycleShifts(this.doesCycleShifts);
+		shiftConf.setHasShiftsOnlyWhenCycleShifts(this.hasShiftsOnlyWhenCycleShifts);
 		shiftConf.setUnwantedShifts(this.toSetAllowedShifts(this.unwantedShifts));
 		log.info("The created ShiftConfigurations is: " + shiftConf);
 		return shiftConf;

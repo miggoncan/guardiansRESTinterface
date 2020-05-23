@@ -63,7 +63,7 @@ public class LoadDatabase {
 			// This will be a regular doctor
 			Doctor doctor1 = doctorRepository.save(new Doctor("Bilbo", "Baggins", "bilbo@mordor.com", LocalDate.of(2020, 6, 26)));
 			Set<AllowedShift> doctor1UnwantedShifts = new HashSet<>();
-			ShiftConfiguration doctor1ShiftConf = new ShiftConfiguration(3, 2, true);
+			ShiftConfiguration doctor1ShiftConf = new ShiftConfiguration(3, 2, 2, true, false);
 			doctor1ShiftConf.setDoctor(doctor1);
 			doctor1UnwantedShifts.add(allowedShiftFriday);
 			doctor1UnwantedShifts.add(allowedShiftWednesday);
@@ -88,7 +88,7 @@ public class LoadDatabase {
 			sickDoctorAbsence.setDoctor(sickDoctor);
 			sickDoctor.setAbsence(sickDoctorAbsence);
 			sickDoctor = doctorRepository.save(sickDoctor);
-			ShiftConfiguration sickDoctorShiftConf = new ShiftConfiguration(2, 2, true);
+			ShiftConfiguration sickDoctorShiftConf = new ShiftConfiguration(2, 2, 2, true, false);
 			sickDoctorShiftConf.setDoctor(sickDoctor);
 			Set<AllowedShift> sickDoctorMandatoryShifts = new HashSet<>();
 			sickDoctorMandatoryShifts.add(allowedShiftThursday);
@@ -99,7 +99,7 @@ public class LoadDatabase {
 
 			// This will be another regular doctor
 			Doctor doctor4 = doctorRepository.save(new Doctor("Gandalf", "The Gray", "gandalf@lonelymountain.com", LocalDate.of(2020, 6, 26)));
-			ShiftConfiguration doctor4ShiftConf = new ShiftConfiguration(3, 3, false);
+			ShiftConfiguration doctor4ShiftConf = new ShiftConfiguration(3, 3, 0, true, false);
 			doctor4ShiftConf.setDoctor(doctor4);
 			Set<AllowedShift> doctor4UnwantedShifts = new HashSet<>();
 			doctor4UnwantedShifts.add(allowedShiftThursday);
