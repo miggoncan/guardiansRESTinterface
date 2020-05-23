@@ -1,4 +1,4 @@
-package guardians.model.dtos;
+package guardians.model.dtos.general;
 
 import org.springframework.hateoas.server.core.Relation;
 

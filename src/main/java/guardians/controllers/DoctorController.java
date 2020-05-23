@@ -36,7 +36,7 @@ import guardians.controllers.exceptions.DoctorNotFoundException;
 import guardians.controllers.exceptions.InvalidAbsenceException;
 import guardians.controllers.exceptions.InvalidDoctorException;
 import guardians.controllers.exceptions.InvalidEntityException;
-import guardians.model.dtos.DoctorPublicDTO;
+import guardians.model.dtos.general.DoctorPublicDTO;
 import guardians.model.entities.Absence;
 import guardians.model.entities.Doctor;
 import guardians.model.entities.ShiftConfiguration;

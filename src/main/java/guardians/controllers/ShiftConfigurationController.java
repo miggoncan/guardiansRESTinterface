@@ -29,7 +29,7 @@ import guardians.controllers.exceptions.InvalidEntityException;
 import guardians.controllers.exceptions.InvalidShiftConfigurationException;
 import guardians.controllers.exceptions.ShiftConfigurationAlreadyExistsException;
 import guardians.controllers.exceptions.ShiftConfigurationNotFoundException;
-import guardians.model.dtos.ShiftConfigurationPublicDTO;
+import guardians.model.dtos.general.ShiftConfigurationPublicDTO;
 import guardians.model.entities.AllowedShift;
 import guardians.model.entities.Doctor;
 import guardians.model.entities.ShiftConfiguration;

@@ -1,4 +1,4 @@
-package guardians.model.dtos;
+package guardians.model.dtos.scheduler;
 
 import guardians.model.entities.AllowedShift;
 import lombok.Data;

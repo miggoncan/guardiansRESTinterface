@@ -15,7 +15,7 @@ import guardians.controllers.AllowedShiftsController;
 import guardians.controllers.DoctorController;
 import guardians.controllers.RootController;
 import guardians.controllers.ShiftConfigurationController;
-import guardians.model.dtos.ShiftConfigurationPublicDTO;
+import guardians.model.dtos.general.ShiftConfigurationPublicDTO;
 
 /**
  * DoctorAssembler is responsible for converting a

@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 import guardians.controllers.CalendarController;
 import guardians.controllers.ScheduleController;
 import guardians.controllers.exceptions.InvalidEntityException;
-import guardians.model.dtos.SchedulePublicDTO;
+import guardians.model.dtos.general.SchedulePublicDTO;
 import guardians.model.entities.Schedule.ScheduleStatus;
 
 /**

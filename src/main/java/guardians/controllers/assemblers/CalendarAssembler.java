@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 import guardians.controllers.CalendarController;
 import guardians.controllers.RootController;
 import guardians.controllers.ScheduleController;
-import guardians.model.dtos.CalendarPublicDTO;
+import guardians.model.dtos.general.CalendarPublicDTO;
 
 /**
  * CalendarAssembler is reponsible for converting {@link CalendarPublicDTO}

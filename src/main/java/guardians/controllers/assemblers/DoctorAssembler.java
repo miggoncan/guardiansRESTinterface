@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 import guardians.controllers.DoctorController;
 import guardians.controllers.RootController;
 import guardians.controllers.ShiftConfigurationController;
-import guardians.model.dtos.DoctorPublicDTO;
+import guardians.model.dtos.general.DoctorPublicDTO;
 
 /**
  * DoctorAssembler is responsible for converting a {@link DoctorPublicDTO} object to its

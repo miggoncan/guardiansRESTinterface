@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 
 import guardians.controllers.AllowedShiftsController;
 import guardians.controllers.ShiftConfigurationController;
-import guardians.model.dtos.AllowedShiftPublicDTO;
+import guardians.model.dtos.general.AllowedShiftPublicDTO;
 
 /**
  * AllowedShiftAssembler is responsible for converting

@@ -1,4 +1,4 @@
-package guardians.model.dtos;
+package guardians.model.dtos.scheduler;
 
 import java.time.LocalDate;
 

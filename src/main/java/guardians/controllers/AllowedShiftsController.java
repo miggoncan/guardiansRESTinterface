@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import guardians.controllers.assemblers.AllowedShiftAssembler;
 import guardians.controllers.exceptions.AllowedShiftNotFoundException;
-import guardians.model.dtos.AllowedShiftPublicDTO;
+import guardians.model.dtos.general.AllowedShiftPublicDTO;
 import guardians.model.entities.AllowedShift;
 import guardians.model.repositories.AllowedShiftRepository;
 import lombok.extern.slf4j.Slf4j;

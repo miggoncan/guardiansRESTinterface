@@ -25,7 +25,7 @@ import guardians.controllers.exceptions.CalendarAlreadyExistsException;
 import guardians.controllers.exceptions.CalendarNotFoundException;
 import guardians.controllers.exceptions.InvalidCalendarException;
 import guardians.controllers.exceptions.InvalidDayConfigurationException;
-import guardians.model.dtos.CalendarPublicDTO;
+import guardians.model.dtos.general.CalendarPublicDTO;
 import guardians.model.entities.Calendar;
 import guardians.model.entities.DayConfiguration;
 import guardians.model.entities.primarykeys.CalendarPK;

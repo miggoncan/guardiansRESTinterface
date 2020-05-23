@@ -1,4 +1,4 @@
-package guardians.model.dtos;
+package guardians.model.dtos.general;
 
 import java.util.SortedSet;
 import java.util.TreeSet;
