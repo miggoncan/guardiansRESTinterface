@@ -26,6 +26,7 @@ public class ShiftConfigurationSchedulerDTO {
 	private Set<AllowedShiftSchedulerDTO> unavailableShifts;
 	private Set<AllowedShiftSchedulerDTO> wantedShifts;
 	private Set<AllowedShiftSchedulerDTO> mandatoryShifts;
+	private Set<AllowedShiftSchedulerDTO> wantedConsultations;
 	
 	public ShiftConfigurationSchedulerDTO(ShiftConfiguration shiftConf) {
 		log.info("Creating a ShiftConfigurationSchedulerDTO from the ShiftConfiguration: " + shiftConf);
@@ -40,6 +41,7 @@ public class ShiftConfigurationSchedulerDTO {
 			this.unavailableShifts = this.toSetAllowedShiftDTOs(shiftConf.getUnavailableShifts());
 			this.wantedShifts = this.toSetAllowedShiftDTOs(shiftConf.getWantedShifts());
 			this.mandatoryShifts = this.toSetAllowedShiftDTOs(shiftConf.getMandatoryShifts());
+			this.wantedConsultations = this.toSetAllowedShiftDTOs(shiftConf.getWantedConsultations());
 		}
 		log.info("The created ShiftConfigurationSchedulerDTO is: " + this);
 	}

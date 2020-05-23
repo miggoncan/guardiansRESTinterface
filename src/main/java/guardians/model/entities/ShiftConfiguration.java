@@ -120,6 +120,9 @@ public class ShiftConfiguration {
 	 */
 	@ManyToMany
 	private Set<AllowedShift> mandatoryShifts;
+	
+	@ManyToMany
+	private Set<AllowedShift> wantedConsultations;
 
 	public ShiftConfiguration(Integer maxShifts, Integer minShifts, Integer numConsultations, Boolean doesCycleShifts, Boolean hasShiftsOnlyWhenCycleShifts) {
 		this.maxShifts = maxShifts;

@@ -30,6 +30,7 @@ public class ShiftConfigurationPublicDTO {
 	private Set<AllowedShiftPublicDTO> unavailableShifts;
 	private Set<AllowedShiftPublicDTO> wantedShifts;
 	private Set<AllowedShiftPublicDTO> mandatoryShifts;
+	private Set<AllowedShiftPublicDTO> wantedConsultations;
 
 	public ShiftConfigurationPublicDTO(ShiftConfiguration shiftConfiguration) {
 		log.info("Creating a ShictConfigurationPublicDTO from the ShiftConfiguration: " + shiftConfiguration);
@@ -44,6 +45,7 @@ public class ShiftConfigurationPublicDTO {
 			this.unavailableShifts = this.toSetAllowedShiftDTOs(shiftConfiguration.getUnavailableShifts());
 			this.wantedShifts = this.toSetAllowedShiftDTOs(shiftConfiguration.getWantedShifts());
 			this.mandatoryShifts = this.toSetAllowedShiftDTOs(shiftConfiguration.getMandatoryShifts());
+			this.wantedConsultations = this.toSetAllowedShiftDTOs(shiftConfiguration.getWantedConsultations());
 		}
 		log.info("The created ShictConfigurationPublicDTO is: " + this);
 	}
@@ -61,6 +63,7 @@ public class ShiftConfigurationPublicDTO {
 		shiftConf.setDoesCycleShifts(this.doesCycleShifts);
 		shiftConf.setHasShiftsOnlyWhenCycleShifts(this.hasShiftsOnlyWhenCycleShifts);
 		shiftConf.setUnwantedShifts(this.toSetAllowedShifts(this.unwantedShifts));
+		shiftConf.setWantedConsultations(this.toSetAllowedShifts(this.wantedConsultations));
 		log.info("The created ShiftConfigurations is: " + shiftConf);
 		return shiftConf;
 	}
