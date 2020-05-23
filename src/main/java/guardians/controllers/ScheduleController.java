@@ -8,6 +8,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import javax.validation.ConstraintViolation;
@@ -15,9 +16,11 @@ import javax.validation.ConstraintViolationException;
 import javax.validation.Validator;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -40,6 +43,7 @@ import guardians.controllers.exceptions.ScheduleNotFoundException;
 import guardians.model.dtos.CalendarSchedulerDTO;
 import guardians.model.dtos.DoctorSchedulerDTO;
 import guardians.model.dtos.SchedulePublicDTO;
+import guardians.model.dtos.ScheduleSchedulerDTO;
 import guardians.model.dtos.ShiftConfigurationSchedulerDTO;
 import guardians.model.entities.Calendar;
 import guardians.model.entities.Doctor;
@@ -69,21 +73,30 @@ public class ScheduleController {
 
 	@Autowired
 	private ScheduleRepository scheduleRepository;
-
 	@Autowired
 	private CalendarRepository calendarRepository;
-
 	@Autowired
 	private DoctorRepository doctorRepository;
-
 	@Autowired
 	private ShiftConfigurationRepository shiftConfRepository;
 
 	@Autowired
 	private ScheduleAssembler scheduleAssembler;
-
 	@Autowired
 	private Validator validator;
+
+	@Value("${scheduler.command}")
+	private String schedulerCommand;
+	@Value("${scheduler.entryPoint}")
+	private String schedulerEntryPoint;
+	@Value("${scheduler.file.doctors}")
+	private String doctorsFilePath;
+	@Value("${scheduler.file.shiftConfs}")
+	private String shiftConfsFilePath;
+	@Value("${scheduler.file.calendar}")
+	private String calendarFilePath;
+	@Value("${scheduler.file.schedule}")
+	private String scheduleFilePath;
 
 	/**
 	 * This method will return a {@link Schedule} for the given {@link YearMonth} if
@@ -171,37 +184,135 @@ public class ScheduleController {
 		schedule.setCalendar(calendar.get());
 		scheduleRepository.save(schedule);
 
+		// Retrieve information needed to start the schedule generation
 		List<Doctor> doctors = doctorRepository.findAll();
 		List<ShiftConfiguration> shiftConfs = shiftConfRepository.findAll();
+		// Map the information to the needed DTOs
+		List<DoctorSchedulerDTO> doctorDTOs = doctors.stream().map((doctor) -> {
+			return new DoctorSchedulerDTO(doctor);
+		}).collect(Collectors.toCollection(() -> new LinkedList<>()));
+		List<ShiftConfigurationSchedulerDTO> shiftConfDTOs = shiftConfs.stream().map((shiftConf) -> {
+			return new ShiftConfigurationSchedulerDTO(shiftConf);
+		}).collect(Collectors.toCollection(() -> new LinkedList<>()));
+		CalendarSchedulerDTO calendarDTO = new CalendarSchedulerDTO(calendar.get());
+		// TODO this should be run on a background thread
+		this.startScheduleGeneration(doctorDTOs, shiftConfDTOs, calendarDTO);
+	}
 
-		ObjectMapper objectMapper = new ObjectMapper();
+	/**
+	 * This method is responsible for starting the generation of the schedule
+	 * 
+	 * Note this method is BLOCKING. It will start the process to generate the
+	 * schedule and will wait for it to finish.
+	 * 
+	 * @param calendar The calendar whose schedule is to be generated. It is
+	 *                 supposed to be valid
+	 */
+	@Transactional
+	private void startScheduleGeneration(List<DoctorSchedulerDTO> doctors,
+			List<ShiftConfigurationSchedulerDTO> shiftConfs, CalendarSchedulerDTO calendar) {
+		log.info("Request to start the schedule generation");
+
+		boolean errorOcurred = false;
+
+		File doctorsFile = new File(doctorsFilePath);
+		File shiftConfsFile = new File(shiftConfsFilePath);
+		File calendarFile = new File(calendarFilePath);
+		File scheduleFile = new File(scheduleFilePath);
+
+		log.debug("Writing the information needed by the scheduler to files");
 		try {
-			objectMapper.writeValue(new File("/tmp/doctors.json"), doctors.stream().map((doctor) -> {
-				return new DoctorSchedulerDTO(doctor);
-			}).collect(Collectors.toCollection(() -> new LinkedList<>())));
-			objectMapper.writeValue(new File("/tmp/shiftConfs.json"), shiftConfs.stream().map((shiftConf) -> {
-				return new ShiftConfigurationSchedulerDTO(shiftConf);
-			}).collect(Collectors.toCollection(() -> new LinkedList<>())));
-			objectMapper.writeValue(new File("/tmp/calendar.json"), new CalendarSchedulerDTO(calendar.get()));
+			ObjectMapper objectMapper = new ObjectMapper();
+			objectMapper.writeValue(doctorsFile, doctors);
+			objectMapper.writeValue(shiftConfsFile, shiftConfs);
+			objectMapper.writeValue(calendarFile, calendar);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			log.error(e.getStackTrace().toString());
+			log.error("An error ocurred when trying to serialize the DTOs and write the to files: " + e.getMessage());
+			errorOcurred = true;
 		}
 
-		log.warn("TODO Generate schedule");
+		Process schedulerProcess = null;
+		if (!errorOcurred) {
+			log.debug("Starting the scheduler process");
+			try {
+				schedulerProcess = new ProcessBuilder(schedulerCommand, schedulerEntryPoint, doctorsFilePath,
+						shiftConfsFilePath, calendarFilePath, scheduleFilePath).start();
+			} catch (IOException e) {
+				log.error("An error ocurred when trying to start the scheduler process: " + e.getMessage());
+				errorOcurred = true;
+			}
+		}
+
+		boolean schedulerFinishedCorrectly = false;
+
+		if (!errorOcurred) {
+			log.debug("Waiting for the scheduler to finish");
+			try {
+				schedulerFinishedCorrectly = schedulerProcess.waitFor(5, TimeUnit.MINUTES);
+			} catch (InterruptedException e) {
+				log.error("The schedule generator thread has been interrupted");
+				errorOcurred = true;
+			}
+		}
+
+		if (!errorOcurred) {
+			if (!schedulerFinishedCorrectly) {
+				log.error("The scheduler process is taking too long to finish. Ending the process");
+				schedulerProcess.destroy();
+				errorOcurred = true;
+			} else {
+				try {
+					log.info("The scheduler finished correctly. Attempting to read the output file");
+					ObjectMapper objectMapper = new ObjectMapper();
+					ScheduleSchedulerDTO scheduleDTO = objectMapper.readValue(scheduleFile, ScheduleSchedulerDTO.class);
+					if (scheduleDTO == null) {
+						log.info("The created schedule is null. An error should have occurred");
+						errorOcurred = true;
+					} else {
+						log.info("Schedule generated correctly. Attempting to persist it");
+						scheduleRepository.save(scheduleDTO.toSchedule());
+					}
+				} catch (IOException e) {
+					log.error("Could not read the generated schedule file: " + e.getMessage());
+					errorOcurred = true;
+				}
+			}
+		}
+
+		if (errorOcurred) {
+			log.info("As the schedule could not be generated, persisting a schedule with status GENERATION_ERROR");
+			Schedule currSchedule = this.getSchedule(YearMonth.of(calendar.getYear(), calendar.getMonth()));
+			currSchedule.setStatus(ScheduleStatus.GENERATION_ERROR);
+			scheduleRepository.save(currSchedule);
+		}
+
+		// After the schedule has been generated, or if any error has occurred, these
+		// files are no longer needed. They are deleted
+		if (doctorsFile.exists()) {
+			doctorsFile.delete();
+		}
+		if (shiftConfsFile.exists()) {
+			shiftConfsFile.delete();
+		}
+		if (calendarFile.exists()) {
+			calendarFile.delete();
+		}
+		if (scheduleFile.exists()) {
+			scheduleFile.delete();
+		}
 	}
 
 	/**
 	 * This method will handle requests to update a {@link Schedule}
 	 * 
-	 * @param yearMonth the year and month for which the {@link Schedule} should be
-	 *                  updated
-	 * @param scheduleDTO  The new value to use for the {@link Schedule}
+	 * @param yearMonth   the year and month for which the {@link Schedule} should
+	 *                    be updated
+	 * @param scheduleDTO The new value to use for the {@link Schedule}
 	 * @return The persisted {@link Schedule}
 	 * @throws ScheduleNotFoundException
 	 * @throws ConstraintViolationException if any of the {@link ScheduleDay}s is
 	 *                                      not valid
-	 * @throws DateTimeException if any of the given dates is not valid
+	 * @throws DateTimeException            if any of the given dates is not valid
 	 */
 	@PutMapping("")
 	public EntityModel<SchedulePublicDTO> updateSchedule(@PathVariable YearMonth yearMonth,

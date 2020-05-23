@@ -48,4 +48,16 @@ public class DoctorSchedulerDTO {
 	
 	public DoctorSchedulerDTO() {
 	}
+
+	public Doctor toDoctor() {
+		log.info("Converting this DoctorSchedulerDTO to a Doctor: " + this);
+		Doctor doctor = new Doctor();
+		doctor.setId(this.id);
+		doctor.setStatus(this.status);
+		if (this.absence != null) {
+			doctor.setAbsence(this.absence.toAbsence());
+		}
+		log.info("The converted Doctor is: " + doctor);
+		return doctor;
+	}
 }

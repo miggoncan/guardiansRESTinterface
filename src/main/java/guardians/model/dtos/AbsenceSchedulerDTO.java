@@ -44,4 +44,11 @@ public class AbsenceSchedulerDTO {
 	
 	public AbsenceSchedulerDTO() {
 	}
+
+	public Absence toAbsence() {
+		log.info("Creating an Absence from this AbsenceSchedulerDTO: " + this);
+		Absence absence = new Absence(this.start, this.end);
+		log.info("The created Absence is: " + absence);
+		return absence;
+	}
 }
