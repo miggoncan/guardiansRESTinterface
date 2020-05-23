@@ -1,5 +1,6 @@
 package guardians.controllers;
 
+import java.time.DateTimeException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -122,6 +123,13 @@ public class MyAdviceController {
 	@ResponseStatus(HttpStatus.CONFLICT)
 	public String invalidScheduleStatusTransitionHandler(InvalidScheduleStatusTransitionException e) {
 		log.info("Caught InvalidScheduleStatusTransitionException: " + e.getMessage());
+		return e.getMessage();
+	}
+	
+	@ExceptionHandler(DateTimeException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	public String dateTimeExceptionHandler(DateTimeException e) {
+		log.info("Caught DateTimeException: " + e.getMessage());
 		return e.getMessage();
 	}
 }

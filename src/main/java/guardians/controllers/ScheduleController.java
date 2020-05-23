@@ -2,6 +2,7 @@ package guardians.controllers;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.DateTimeException;
 import java.time.YearMonth;
 import java.util.LinkedList;
 import java.util.List;
@@ -200,6 +201,7 @@ public class ScheduleController {
 	 * @throws ScheduleNotFoundException
 	 * @throws ConstraintViolationException if any of the {@link ScheduleDay}s is
 	 *                                      not valid
+	 * @throws DateTimeException if any of the given dates is not valid
 	 */
 	@PutMapping("")
 	public EntityModel<SchedulePublicDTO> updateSchedule(@PathVariable YearMonth yearMonth,

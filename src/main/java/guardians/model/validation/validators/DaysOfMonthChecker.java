@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
+import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 
@@ -52,8 +53,17 @@ public class DaysOfMonthChecker<Day extends AbstractDay> {
 			log.debug("The month " + this.yearMonth + " has " + lengthOfMonth + " days. However, only " + numDays
 					+ " days where provided. The days are invalid");
 			isValid = false;
-		} else if (days.parallelStream().anyMatch((day) -> { // If any of the days is invalid
-			return day == null || !validator.validate(day).isEmpty();
+		} else if (days.stream().anyMatch((day) -> { // If any of the days is invalid
+			log.debug("Validating day: " + day);
+			if (day == null) {
+				log.debug("The day is null, so it is not valid");
+				return false;
+			} else {
+				log.debug("Checking if the day violates any constraint");
+				Set<ConstraintViolation<Day>> violations = validator.validate(day);
+				log.debug("The constraint violations are: " + violations);
+				return !violations.isEmpty();
+			}
 		})) {
 			log.debug("At least one of the provided days is invalid. The days are invalid");
 			isValid = false;

@@ -16,6 +16,7 @@ import org.hibernate.validator.constraints.Range;
 
 import guardians.model.entities.primarykeys.DayMonthYearPK;
 import guardians.model.validation.annotations.ValidDayMonthYear;
+import guardians.model.validation.annotations.ValidScheduleDay;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -31,6 +32,7 @@ import lombok.EqualsAndHashCode;
 @Entity
 @IdClass(DayMonthYearPK.class)
 @ValidDayMonthYear
+@ValidScheduleDay
 public class ScheduleDay extends AbstractDay {
 	@Id
 	@Range(min = 1, max = 31)
@@ -58,8 +60,6 @@ public class ScheduleDay extends AbstractDay {
 	private Set<Doctor> cycle;
 	
 	@ManyToMany
-	@NotEmpty
-	// FIXME if isWorkingDay is false, this should be empty; otherwise, it cannot be empty
 	private Set<Doctor> shifts;
 	
 	@ManyToMany
