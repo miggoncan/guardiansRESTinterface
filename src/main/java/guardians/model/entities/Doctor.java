@@ -87,7 +87,8 @@ public class Doctor {
 					+ "lastNames=" + this.lastNames + ", "
 					+ "email=" + this.email + ", "
 					+ "status=" + this.status + ", "
-					+ "absence=" + this.absence
+					+ "absence=" + this.absence + ", "
+					+ "startDate=" + this.startDate
 				+ ")";
 	}
 	

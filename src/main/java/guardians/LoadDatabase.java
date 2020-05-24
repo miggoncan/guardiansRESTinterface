@@ -46,7 +46,7 @@ public class LoadDatabase {
 
 	// Currently, the database is already preloaded. The Bean annotation is
 	// commented to not load it every time the service is launched
-	@Bean
+//	@Bean
 	CommandLineRunner initDatabase() {
 		return args -> {
 			AllowedShift allowedShiftMonday = allowedShiftRepository.save(new AllowedShift("Monday"));
@@ -63,7 +63,7 @@ public class LoadDatabase {
 			// This will be a regular doctor
 			Doctor doctor1 = doctorRepository.save(new Doctor("Bilbo", "Baggins", "bilbo@mordor.com", LocalDate.of(2020, 6, 26)));
 			Set<AllowedShift> doctor1UnwantedShifts = new HashSet<>();
-			ShiftConfiguration doctor1ShiftConf = new ShiftConfiguration(3, 2, 2, true, false);
+			ShiftConfiguration doctor1ShiftConf = new ShiftConfiguration(2, 3, 2, true, false);
 			doctor1ShiftConf.setDoctor(doctor1);
 			doctor1UnwantedShifts.add(allowedShiftFriday);
 			doctor1UnwantedShifts.add(allowedShiftWednesday);

@@ -124,9 +124,9 @@ public class ShiftConfiguration {
 	@ManyToMany
 	private Set<AllowedShift> wantedConsultations;
 
-	public ShiftConfiguration(Integer maxShifts, Integer minShifts, Integer numConsultations, Boolean doesCycleShifts, Boolean hasShiftsOnlyWhenCycleShifts) {
-		this.maxShifts = maxShifts;
+	public ShiftConfiguration(Integer minShifts, Integer maxShifts, Integer numConsultations, Boolean doesCycleShifts, Boolean hasShiftsOnlyWhenCycleShifts) {
 		this.minShifts = minShifts;
+		this.maxShifts = maxShifts;
 		this.numConsultations = numConsultations;
 		this.doesCycleShifts = doesCycleShifts;
 		this.hasShiftsOnlyWhenCycleShifts = hasShiftsOnlyWhenCycleShifts;

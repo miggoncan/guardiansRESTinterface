@@ -248,6 +248,7 @@ public class ScheduleController {
 		if (!errorOcurred) {
 			log.debug("Waiting for the scheduler to finish");
 			try {
+				// TODO this number should be a constant in the configuration file
 				schedulerFinishedCorrectly = schedulerProcess.waitFor(5, TimeUnit.MINUTES);
 			} catch (InterruptedException e) {
 				log.error("The schedule generator thread has been interrupted");

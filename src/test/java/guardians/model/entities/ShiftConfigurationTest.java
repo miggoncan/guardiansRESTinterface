@@ -37,7 +37,7 @@ public class ShiftConfigurationTest {
 	 * @return The created {@link ShiftConfiguration}
 	 */
 	public static ShiftConfiguration createValidShiftConfiguration(Doctor doctor) {
-		ShiftConfiguration shiftConfiguration = new ShiftConfiguration(3, 2, 0, true, false);
+		ShiftConfiguration shiftConfiguration = new ShiftConfiguration(2, 3, 0, true, false);
 		shiftConfiguration.setDoctor(doctor);
 		return shiftConfiguration;
 	}
