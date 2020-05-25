@@ -85,9 +85,9 @@ public class CalendarController {
 		log.info("Request received: returning all available calendars");
 		List<Calendar> calendars = calendarRepository.findAll();
 		log.debug("Found calendars are: " + calendars);
-		List<CalendarPublicDTO> calendarsDTO = calendars.stream().map((calendar) -> {
-			return new CalendarPublicDTO(calendar);
-		}).collect(Collectors.toCollection(() -> new LinkedList<>()));
+		List<CalendarPublicDTO> calendarsDTO = calendars.stream()
+				.map(calendar ->  new CalendarPublicDTO(calendar))
+				.collect(Collectors.toCollection(() -> new LinkedList<>()));
 		log.debug("Calendars mapped to CalendarPublicDTOs are: " + calendarsDTO);
 		return calendarAssembler.toCollectionModel(calendarsDTO);
 	}

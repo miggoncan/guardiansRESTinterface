@@ -120,9 +120,8 @@ public class DoctorController {
 		}
 
 		List<DoctorPublicDTO> doctorsDTO = doctors.stream()
-				.map((doctor) -> {
-					return new DoctorPublicDTO(doctor);
-				}).collect(Collectors.toCollection(() -> new LinkedList<>()));
+				.map(doctor ->  new DoctorPublicDTO(doctor))
+				.collect(Collectors.toCollection(() -> new LinkedList<>()));
 
 		return doctorAssembler.toCollectionModel(doctorsDTO);
 	}

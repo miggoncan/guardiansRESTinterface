@@ -46,9 +46,8 @@ public class AllowedShiftsController {
 		log.info("Request received: returning all available allowed shifts");
 		List<AllowedShift> allowedShifts = allowedShiftRepository.findAll();
 		List<AllowedShiftPublicDTO> allowedShiftsDTO = allowedShifts.stream()
-				.map((allowedShift) -> {
-					return new AllowedShiftPublicDTO(allowedShift);
-				}).collect(Collectors.toCollection(() -> new LinkedList<>()));
+				.map(allowedShift -> new AllowedShiftPublicDTO(allowedShift))
+				.collect(Collectors.toCollection(() -> new LinkedList<>()));
 		return allowedShiftAssembler.toCollectionModel(allowedShiftsDTO);
 	}
 

@@ -149,9 +149,8 @@ public class ShiftConfigurationController {
 		log.info("Request received: returning all available shift configuratoins");
 		List<ShiftConfiguration> shiftConfigurations = shiftConfigurationRepository.findAll();
 		List<ShiftConfigurationPublicDTO> shiftConfigurationsDTO = shiftConfigurations.stream()
-				.map((shiftConfiguration) -> {
-					return new ShiftConfigurationPublicDTO(shiftConfiguration);
-				}).collect(Collectors.toCollection(() -> new LinkedList<>()));
+				.map(shiftConfiguration ->  new ShiftConfigurationPublicDTO(shiftConfiguration))
+				.collect(Collectors.toCollection(() -> new LinkedList<>()));
 		return shiftConfigurationAssembler.toCollectionModel(shiftConfigurationsDTO);
 	}
 
