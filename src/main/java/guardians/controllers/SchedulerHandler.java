@@ -60,6 +60,8 @@ public class SchedulerHandler {
 	private String scheduleFilePath;
 	@Value("${scheduler.timeout}")
 	private int schedulerTimeout;
+	@Value("${scheduler.file.outputRedirection}")
+	private String outputRedirectionPath;
 
 	/**
 	 * This method will request the scheduler to generate a {@link Schedule} for the
@@ -98,6 +100,7 @@ public class SchedulerHandler {
 		File shiftConfsFile = new File(shiftConfsFilePath);
 		File calendarFile = new File(calendarFilePath);
 		File scheduleFile = new File(scheduleFilePath);
+		File outputRedirectionFile = new File(outputRedirectionPath);
 
 		log.debug("Writing the information needed by the scheduler to files");
 		try {
@@ -115,7 +118,10 @@ public class SchedulerHandler {
 			log.debug("Starting the scheduler process");
 			try {
 				schedulerProcess = new ProcessBuilder(schedulerCommand, schedulerEntryPoint, doctorsFilePath,
-						shiftConfsFilePath, calendarFilePath, scheduleFilePath).start();
+						shiftConfsFilePath, calendarFilePath, scheduleFilePath)
+					.redirectError(outputRedirectionFile)
+					.redirectOutput(outputRedirectionFile)
+					.start();
 			} catch (IOException e) {
 				log.error("An error ocurred when trying to start the scheduler process: " + e.getMessage());
 				errorOcurred = true;
@@ -184,6 +190,9 @@ public class SchedulerHandler {
 		}
 		if (scheduleFile.exists()) {
 			scheduleFile.delete();
+		}
+		if (outputRedirectionFile.exists()) {
+			outputRedirectionFile.delete();
 		}
 	}
 }

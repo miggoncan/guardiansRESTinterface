@@ -17,7 +17,7 @@ import lombok.extern.slf4j.Slf4j;
  * @author miggoncan s
  */
 @Data
-@Relation(value = "shiftConfiguration", collectionRelation = "shiftConfigurations")
+@Relation(value = "shiftConfig", collectionRelation = "shifConfigs")
 @Slf4j
 public class ShiftConfigurationPublicDTO {
 	private Long doctorId;
