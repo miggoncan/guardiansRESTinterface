@@ -53,7 +53,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @RestController
-@RequestMapping("/guardians/doctors")
+@RequestMapping("/doctors")
 public class DoctorController {
 	@Autowired
 	private DoctorRepository doctorRepository;

@@ -26,7 +26,7 @@ import lombok.extern.slf4j.Slf4j;
  * @author miggoncan
  */
 @RestController
-@RequestMapping("/guardians/allowed-shifts")
+@RequestMapping("/allowed-shifts")
 @Slf4j
 public class AllowedShiftsController {
 

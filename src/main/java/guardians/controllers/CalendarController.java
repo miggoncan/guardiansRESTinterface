@@ -40,7 +40,7 @@ import lombok.extern.slf4j.Slf4j;
  * @author miggoncan
  */
 @RestController
-@RequestMapping("/guardians/calendars")
+@RequestMapping("/calendars")
 @Slf4j
 public class CalendarController {
 	@Autowired

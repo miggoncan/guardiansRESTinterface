@@ -20,7 +20,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @RestController
 @Slf4j
-@RequestMapping("/guardians")
+@RequestMapping("/")
 public class RootController {
 	
 	@Value("${api.links.doctors}")

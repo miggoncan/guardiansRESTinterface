@@ -49,7 +49,7 @@ import lombok.extern.slf4j.Slf4j;
  * @author miggoncan
  */
 @RestController
-@RequestMapping("/guardians/calendars/{yearMonth}/schedule")
+@RequestMapping("/calendars/{yearMonth}/schedule")
 @Slf4j
 public class ScheduleController {
 

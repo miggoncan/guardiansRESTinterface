@@ -48,7 +48,7 @@ import lombok.extern.slf4j.Slf4j;
  * @author miggoncan
  */
 @RestController
-@RequestMapping("/guardians/doctors/shift-configs")
+@RequestMapping("/doctors/shift-configs")
 @Slf4j
 public class ShiftConfigurationController {
 	@Autowired
