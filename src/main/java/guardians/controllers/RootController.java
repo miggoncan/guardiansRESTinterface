@@ -25,24 +25,20 @@ public class RootController {
 	
 	@Value("${api.links.doctors}")
 	private String doctorsLink;
-	
 	@Value("${api.links.doctor}")
 	private String doctorLink;
-	
 	@Value("${api.links.shiftconfs}")
 	private String shiftConfsLink;
-	
 	@Value("${api.links.shiftconf}")
 	private String shiftConfLink;
-	
 	@Value("${api.links.calendars}")
 	private String calendarsLink;
-	
 	@Value("${api.links.calendar}")
 	private String calendarLink;
-	
 	@Value("${api.links.schedule}")
 	private String scheduleLink;
+	@Value("${api.links.allowedshifts}")
+	private String allowedShiftsLink;
 
 	/**
 	 * Get requests to the base URL will return links to the main resources of the
@@ -53,7 +49,6 @@ public class RootController {
 	@GetMapping("/")
 	public CollectionModel<Object> getRootLinks() {
 		log.info("Request received: get root");
-		// FIXME add link to doctor, to calendar and to schedule
 		return new CollectionModel<Object>(Collections.emptyList(),
 				linkTo(methodOn(RootController.class).getRootLinks()).withSelfRel(),
 				linkTo(methodOn(DoctorController.class).getDoctors(null)).withRel(doctorsLink),
@@ -62,7 +57,8 @@ public class RootController {
 				linkTo(methodOn(ShiftConfigurationController.class).getShitfConfiguration(null)).withRel(shiftConfLink),
 				linkTo(methodOn(CalendarController.class).getCalendars()).withRel(calendarsLink),
 				linkTo(methodOn(CalendarController.class).getCalendar(null)).withRel(calendarLink),
-				linkTo(methodOn(ScheduleController.class).getScheduleRequest(null)).withRel(scheduleLink));
+				linkTo(methodOn(ScheduleController.class).getScheduleRequest(null)).withRel(scheduleLink),
+				linkTo(methodOn((AllowedShiftsController.class)).getAllowedShifts()).withRel(allowedShiftsLink));
 	}
 
 }
