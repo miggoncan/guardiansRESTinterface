@@ -32,6 +32,9 @@ public class DoctorAssembler implements RepresentationModelAssembler<DoctorPubli
 
 	@Value("${api.links.doctors}")
 	private String doctorsLink;
+	
+	@Value("${api.links.newDoctor}")
+	private String newDoctorLink;
 
 	@Value("${api.links.doctorUpdate}")
 	private String updateDoctorLink;
@@ -61,7 +64,9 @@ public class DoctorAssembler implements RepresentationModelAssembler<DoctorPubli
 		for (DoctorPublicDTO entity : entities) {
 			doctors.add(this.toModel(entity));
 		}
-		return new CollectionModel<>(doctors, linkTo(methodOn(DoctorController.class).getDoctors(null)).withSelfRel(),
+		return new CollectionModel<>(doctors, 
+				linkTo(methodOn(DoctorController.class).getDoctors(null)).withSelfRel(),
+				linkTo(methodOn(DoctorController.class).newDoctor(null, null)).withRel(newDoctorLink),
 				linkTo(methodOn(RootController.class).getRootLinks()).withRel(rootLink));
 	}
 }

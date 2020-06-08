@@ -27,6 +27,8 @@ public class RootController {
 	private String doctorsLink;
 	@Value("${api.links.doctor}")
 	private String doctorLink;
+	@Value("${api.links.newDoctor}")
+	private String newDoctorLink;
 	@Value("${api.links.shiftconfs}")
 	private String shiftConfsLink;
 	@Value("${api.links.shiftconf}")
@@ -53,6 +55,7 @@ public class RootController {
 				linkTo(methodOn(RootController.class).getRootLinks()).withSelfRel(),
 				linkTo(methodOn(DoctorController.class).getDoctors(null)).withRel(doctorsLink),
 				linkTo(methodOn(DoctorController.class).getDoctor(null)).withRel(doctorLink),
+				linkTo(methodOn(DoctorController.class).newDoctor(null, null)).withRel(newDoctorLink),
 				linkTo(methodOn(ShiftConfigurationController.class).getShitfConfigurations()).withRel(shiftConfsLink),
 				linkTo(methodOn(ShiftConfigurationController.class).getShitfConfiguration(null)).withRel(shiftConfLink),
 				linkTo(methodOn(CalendarController.class).getCalendars()).withRel(calendarsLink),
