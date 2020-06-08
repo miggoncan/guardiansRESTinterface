@@ -63,6 +63,7 @@ public class ShiftConfigurationPublicDTO {
 		shiftConf.setDoesCycleShifts(this.doesCycleShifts);
 		shiftConf.setHasShiftsOnlyWhenCycleShifts(this.hasShiftsOnlyWhenCycleShifts);
 		shiftConf.setUnwantedShifts(this.toSetAllowedShifts(this.unwantedShifts));
+		shiftConf.setWantedShifts(this.toSetAllowedShifts(this.wantedShifts));
 		shiftConf.setWantedConsultations(this.toSetAllowedShifts(this.wantedConsultations));
 		log.info("The created ShiftConfigurations is: " + shiftConf);
 		return shiftConf;
