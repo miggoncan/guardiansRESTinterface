@@ -39,3 +39,14 @@ Further instructions on the first four steps can be found [here](https://github.
     will indicate the number of minutes to wait before killing the 
     scheduler process and considering the schedule generation failed 
     (after a request to generate a schedule)
+
+## Production
+To get a production version of this project, there are two steps to be taken:
+1. Change all the default passwords defined in resources/application.properties
+2. Create a new keypair fot SSL, and move it to resources/keystore/guardiansREST.p12
+
+To generate this keypair, we can use `keytool`, as it is shipped with the Java Runtime Environment:
+```
+keytool -genkeypair -alias guardians -keyalg RSA -keysize 2048 -storetype PKCS12 -keystore guardiansREST.p12 -validity 3650 
+```
+And then, we have to move the generated key to the said location.
