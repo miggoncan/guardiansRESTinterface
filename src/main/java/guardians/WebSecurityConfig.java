@@ -29,11 +29,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
+		// TODO allow the automatic CSRF configuration
+		// This implies that access to PUT, POST and DELETE methods has to be granted
+		http.csrf().disable();
 		http
-			.requiresChannel()
-				.anyRequest().requiresSecure()
-				.and()
+//			.requiresChannel()
+//				.anyRequest().requiresSecure()
+//				.and()
 			.authorizeRequests()
+//				.anyRequest().permitAll()
 				.anyRequest().authenticated()
 				.and()
 			.formLogin()
