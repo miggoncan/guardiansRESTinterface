@@ -37,6 +37,8 @@ public class RootController {
 	private String calendarsLink;
 	@Value("${api.links.calendar}")
 	private String calendarLink;
+	@Value("${api.links.schedules}")
+	private String schedulesLink;
 	@Value("${api.links.schedule}")
 	private String scheduleLink;
 	@Value("${api.links.allowedshifts}")
@@ -60,6 +62,7 @@ public class RootController {
 				linkTo(methodOn(ShiftConfigurationController.class).getShitfConfiguration(null)).withRel(shiftConfLink),
 				linkTo(methodOn(CalendarController.class).getCalendars()).withRel(calendarsLink),
 				linkTo(methodOn(CalendarController.class).getCalendar(null)).withRel(calendarLink),
+				linkTo(methodOn(ScheduleController.class).getSchedules()).withRel(schedulesLink),
 				linkTo(methodOn(ScheduleController.class).getScheduleRequest(null)).withRel(scheduleLink),
 				linkTo(methodOn((AllowedShiftsController.class)).getAllowedShifts()).withRel(allowedShiftsLink));
 	}

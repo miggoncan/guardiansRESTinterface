@@ -2,14 +2,18 @@ package guardians.controllers;
 
 import java.time.DateTimeException;
 import java.time.YearMonth;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import javax.validation.Validator;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,6 +35,7 @@ import guardians.controllers.exceptions.InvalidScheduleStatusTransitionException
 import guardians.controllers.exceptions.ScheduleAlreadyExistsException;
 import guardians.controllers.exceptions.ScheduleNotFoundException;
 import guardians.model.dtos.general.SchedulePublicDTO;
+import guardians.model.dtos.general.ScheduleSummaryPublicDTO;
 import guardians.model.entities.Calendar;
 import guardians.model.entities.Schedule;
 import guardians.model.entities.Schedule.ScheduleStatus;
@@ -49,7 +54,7 @@ import lombok.extern.slf4j.Slf4j;
  * @author miggoncan
  */
 @RestController
-@RequestMapping("/calendars/{yearMonth}/schedule")
+@RequestMapping("/calendars/schedules")
 @Slf4j
 public class ScheduleController {
 
@@ -64,7 +69,7 @@ public class ScheduleController {
 	private Validator validator;
 	@Autowired
 	SchedulerHandler schedulerHandler;
-
+	
 	/**
 	 * This method will return a {@link Schedule} for the given {@link YearMonth} if
 	 * the corresponding {@link Calendar} exists
@@ -91,7 +96,8 @@ public class ScheduleController {
 		Optional<Schedule> optSchedule = scheduleRepository.findById(pk);
 		if (optSchedule.isPresent()) {
 			schedule = optSchedule.get();
-			log.info("The schedule found is: " + schedule);
+			log.info("The schedule has been found.");
+			log.debug("The schedule found is: " + schedule);
 		} else {
 			log.info("The schedule has not already been created. Returning a new NOT_CREATED schedule");
 			schedule = new Schedule(ScheduleStatus.NOT_CREATED);
@@ -103,6 +109,24 @@ public class ScheduleController {
 
 		return schedule;
 	}
+	
+	/**
+	 * This method will handle requests for the whole {@link Schedule} list
+	 * 
+	 * @return The summarized schedules found in the database. See
+	 *         {@link ScheduleSummaryPublicDTO}
+	 */
+	@GetMapping("")
+	public CollectionModel<EntityModel<ScheduleSummaryPublicDTO>> getSchedules() {
+		log.info("Request received: returning all available schedules");
+		List<Schedule> schedules = scheduleRepository.findAll();
+		log.debug("Found schedules are: " + schedules);
+		List<ScheduleSummaryPublicDTO> schedulesDTO = schedules.stream()
+				.map(schedule -> new ScheduleSummaryPublicDTO(schedule))
+				.collect(Collectors.toCollection(() -> new LinkedList<>()));
+		log.debug("Schedules mapped to ScheduleSummaryPublicDTOs are: " + schedulesDTO);
+		return scheduleAssembler.toCollectionModelSummary(schedulesDTO);
+	}
 
 	/**
 	 * This method handles GET requests of a specific {@link Schedule}
@@ -112,7 +136,7 @@ public class ScheduleController {
 	 * @throws ScheduleNotFoundException if the {@link Schedule} has not been
 	 *                                   generated yet
 	 */
-	@GetMapping("")
+	@GetMapping("/{yearMonth}")
 	public EntityModel<SchedulePublicDTO> getScheduleRequest(@PathVariable YearMonth yearMonth) {
 		log.info("Request received: get schedule of " + yearMonth);
 		Schedule schedule = this.getSchedule(yearMonth);
@@ -129,7 +153,7 @@ public class ScheduleController {
 	 * @throws ScheduleAlreadyExistsException if the {@link Schedule} of this
 	 *                                        yearMonth has already being generated
 	 */
-	@PostMapping("")
+	@PostMapping("/{yearMonth}")
 	@ResponseStatus(HttpStatus.ACCEPTED)
 	public void generateSchedule(@PathVariable YearMonth yearMonth) {
 		log.info("Request received to generate schedule for: " + yearMonth);
@@ -167,7 +191,7 @@ public class ScheduleController {
 	 *                                      not valid
 	 * @throws DateTimeException            if any of the given dates is not valid
 	 */
-	@PutMapping("")
+	@PutMapping("/{yearMonth}")
 	public EntityModel<SchedulePublicDTO> updateSchedule(@PathVariable YearMonth yearMonth,
 			@RequestBody SchedulePublicDTO scheduleDTO) {
 		log.info("Request received: update the schedule of " + yearMonth + " with " + scheduleDTO);
@@ -236,7 +260,7 @@ public class ScheduleController {
 	 *                                        change from its current status to the
 	 *                                        given one
 	 */
-	@PutMapping("/{status}")
+	@PutMapping("/{yearMonth}/{status}")
 	public EntityModel<SchedulePublicDTO> changeStatus(@PathVariable YearMonth yearMonth, @PathVariable String status) {
 		log.info("Request received: change status of the schedule of " + yearMonth + " to " + status);
 
@@ -279,7 +303,7 @@ public class ScheduleController {
 	 *                  deleted
 	 * @throws ScheduleNotFoundException
 	 */
-	@DeleteMapping("")
+	@DeleteMapping("/{yearMonth}")
 	public ResponseEntity<?> deleteSchedule(@PathVariable YearMonth yearMonth) {
 		log.info("Request received: delete schedule for " + yearMonth);
 

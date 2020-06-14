@@ -66,11 +66,6 @@ public class LoadInitialData {
 			preloadDoctor(21, refDate.plusDays(10), 4, 5, 2, false, false);
 			preloadDoctor(22, refDate.plusDays(10), 3, 5, 0, false, false);
 
-			// Preload the calendar of May
-			preloadCalendarFor(YearMonth.of(2020, 5));
-			// Preload the calendar of June
-			preloadCalendarFor(YearMonth.of(2020, 6));
-
 			// Preload allowed shifts
 			AllowedShift allowedShiftMonday = allowedShiftRepository.save(new AllowedShift("Monday"));
 			log.info("Preloading " + allowedShiftMonday);
@@ -83,6 +78,9 @@ public class LoadInitialData {
 			AllowedShift allowedShiftFriday = allowedShiftRepository.save(new AllowedShift("Friday"));
 			log.info("Preloading " + allowedShiftFriday);
 
+			// To preload a calendar, use:
+//			preloadCalendarFor(YearMonth.of(2020, 6));
+			
 			log.info("The preload of the initial data finished");
 		};
 	}

@@ -26,6 +26,7 @@ import guardians.controllers.exceptions.CalendarNotFoundException;
 import guardians.controllers.exceptions.InvalidCalendarException;
 import guardians.controllers.exceptions.InvalidDayConfigurationException;
 import guardians.model.dtos.general.CalendarPublicDTO;
+import guardians.model.dtos.general.CalendarSummaryPublicDTO;
 import guardians.model.entities.Calendar;
 import guardians.model.entities.DayConfiguration;
 import guardians.model.entities.primarykeys.CalendarPK;
@@ -81,15 +82,15 @@ public class CalendarController {
 	 * @return The calendars found in the database
 	 */
 	@GetMapping("")
-	public CollectionModel<EntityModel<CalendarPublicDTO>> getCalendars() {
+	public CollectionModel<EntityModel<CalendarSummaryPublicDTO>> getCalendars() {
 		log.info("Request received: returning all available calendars");
 		List<Calendar> calendars = calendarRepository.findAll();
 		log.debug("Found calendars are: " + calendars);
-		List<CalendarPublicDTO> calendarsDTO = calendars.stream()
-				.map(calendar ->  new CalendarPublicDTO(calendar))
+		List<CalendarSummaryPublicDTO> calendarsDTO = calendars.stream()
+				.map(calendar ->  new CalendarSummaryPublicDTO(calendar))
 				.collect(Collectors.toCollection(() -> new LinkedList<>()));
-		log.debug("Calendars mapped to CalendarPublicDTOs are: " + calendarsDTO);
-		return calendarAssembler.toCollectionModel(calendarsDTO);
+		log.debug("Calendars mapped to CalendarSummaryPublicDTOs are: " + calendarsDTO);
+		return calendarAssembler.toCollectionModelSummary(calendarsDTO);
 	}
 
 	/**
