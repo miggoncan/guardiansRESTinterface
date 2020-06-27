@@ -156,7 +156,6 @@ public class SchedulerHandler {
 						errorOcurred = true;
 					} else {
 						log.info("Schedule generated correctly. Attempting to persist it");
-						// FIXME Check the generated schedule meets the specified requirements
 						Schedule generatedSchedule = scheduleDTO.toSchedule();
 						generatedSchedule.setCalendar(calendar);
 						Schedule savedSchedule = scheduleRepository.save(generatedSchedule);
