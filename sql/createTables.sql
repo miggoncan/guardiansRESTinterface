@@ -9,7 +9,7 @@ engine=InnoDB;
 
 CREATE TABLE allowed_shift 
   ( 
-     id    INTEGER NOT NULL, 
+     id    INTEGER NOT NULL auto_increment, 
      shift VARCHAR(255) NOT NULL, 
      PRIMARY KEY (id) 
   ) 
@@ -93,7 +93,7 @@ engine=InnoDB;
 
 CREATE TABLE doctor 
   ( 
-     id         BIGINT NOT NULL, 
+     id         BIGINT NOT NULL auto_increment, 
      email      VARCHAR(255) NOT NULL, 
      first_name VARCHAR(255) NOT NULL, 
      last_names VARCHAR(255) NOT NULL, 
@@ -102,18 +102,6 @@ CREATE TABLE doctor
      PRIMARY KEY (id) 
   ) 
 engine=InnoDB; 
-
-CREATE TABLE hibernate_sequence 
-  ( 
-     next_val BIGINT 
-  ) 
-engine=InnoDB; 
-
-INSERT INTO hibernate_sequence 
-VALUES      ( 1 ); 
-
-INSERT INTO hibernate_sequence 
-VALUES      ( 1 ); 
 
 CREATE TABLE schedule 
   ( 
