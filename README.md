@@ -1,14 +1,12 @@
 # guardiansRESTinterface
-This repository implements the REST interface provided by the guardians 
-service.
+This repository implements the REST interface for the *Guardians Service*: A service to schedule and manage medical doctors' shifts.
 
-Currently, the first use case has been implemented. This is, allowing 
-to generate the schedule for a certain month.
+Currently, it only allows scheduling shifts.
 
 ## Understanding the service
-The explanation of the service as a whole can be found [here](TODO).
+**The complete explanation for this project can be found [here](https://idus.us.es/handle/11441/100991?locale-attribute=en).**
 
-The documentation of the REST interface can be found [here](https://miggoncan.github.io/guardiansRESTinterfaceDoc).
+The JavaDoc for the REST interface can be found [here](https://miggoncan.github.io/guardiansRESTinterfaceDoc).
 
 The scheduler repository can be found [here](https://github.com/miggoncan/guardiansScheduler).
 
