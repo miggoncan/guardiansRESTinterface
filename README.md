@@ -4,7 +4,7 @@ This repository implements the REST interface for the *Guardians Service*: A ser
 Currently, it only allows scheduling shifts.
 
 ## Understanding the service
-**The complete explanation for this project can be found [here](https://idus.us.es/handle/11441/100991?locale-attribute=en).**
+The **complete explanation for this project** can be found [here](https://idus.us.es/handle/11441/100991?locale-attribute=en).
 
 The JavaDoc for the REST interface can be found [here](https://miggoncan.github.io/guardiansRESTinterfaceDoc).
 
